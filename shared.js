@@ -28,6 +28,7 @@ const DEFAULT_CONFIG = {
 };
 
 const COMMUNITY_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/CwFPqDeRbmqL5Rtx02NOCP?mode=hq1tswi";
+const COMMUNITY_WHATSAPP_COMPOSE_URL = "https://wa.me/?text=";
 const LESEN_PROGRESS_STORAGE_KEY = "zdeutsch.lesen.progress.v1";
 
 function classNames(...items) {
@@ -222,6 +223,10 @@ function buildCommunitySuggestionMessage(details) {
   ].join("\n");
 }
 
+function buildWhatsAppComposeUrl(message) {
+  return `${COMMUNITY_WHATSAPP_COMPOSE_URL}${encodeURIComponent(message || "")}`;
+}
+
 function copyTextFallback(text) {
   const temp = document.createElement("textarea");
   temp.value = text;
@@ -330,8 +335,8 @@ function setupCommunityWidgets() {
   const copyBtn = createEl("button", "community-btn community-btn-secondary", "Copy suggestion");
   copyBtn.type = "button";
   copyBtn.id = "community-copy-btn";
-  const openGroup = createEl("a", "community-btn community-btn-primary", "Open WhatsApp Group");
-  openGroup.href = COMMUNITY_WHATSAPP_GROUP_URL;
+  const openGroup = createEl("a", "community-btn community-btn-primary", "Open WhatsApp (Prefilled)");
+  openGroup.href = buildWhatsAppComposeUrl("");
   openGroup.target = "_blank";
   openGroup.rel = "noopener noreferrer";
   actionRow.append(copyBtn, openGroup);
@@ -388,5 +393,18 @@ function setupCommunityWidgets() {
     }
     copyTextFallback(message);
     status.textContent = "Copied. Open WhatsApp and paste your suggestion.";
+  });
+
+  openGroup.addEventListener("click", (event) => {
+    const details = textarea.value.trim();
+    if (!details) {
+      status.textContent = "يرجى كتابة التفاصيل أولاً.";
+      event.preventDefault();
+      textarea.focus();
+      return;
+    }
+    const message = buildCommunitySuggestionMessage(details);
+    openGroup.href = buildWhatsAppComposeUrl(message);
+    status.textContent = "";
   });
 }
