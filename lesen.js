@@ -66,6 +66,57 @@ const state = {
   }
 };
 
+const selectionGuard = {
+  pointerDown: false,
+  startX: 0,
+  startY: 0,
+  suppressNextClick: false
+};
+
+function isInExamPanels(target) {
+  if (!(target instanceof Node)) {
+    return false;
+  }
+  return Boolean((leftPanel && leftPanel.contains(target)) || (rightPanel && rightPanel.contains(target)));
+}
+
+function hasSelectedText() {
+  const selection = window.getSelection?.();
+  return Boolean(selection && selection.toString().trim());
+}
+
+function handleExamPointerDown(event) {
+  if (state.view !== "exam" || event.button !== 0 || !isInExamPanels(event.target)) {
+    return;
+  }
+  selectionGuard.pointerDown = true;
+  selectionGuard.startX = event.clientX;
+  selectionGuard.startY = event.clientY;
+  selectionGuard.suppressNextClick = false;
+}
+
+function handleExamPointerUp(event) {
+  if (!selectionGuard.pointerDown) {
+    return;
+  }
+  selectionGuard.pointerDown = false;
+  if (!isInExamPanels(event.target)) {
+    return;
+  }
+  const moved = Math.abs(event.clientX - selectionGuard.startX) > 3
+    || Math.abs(event.clientY - selectionGuard.startY) > 3;
+  selectionGuard.suppressNextClick = moved && hasSelectedText();
+}
+
+function suppressClickAfterSelection(event) {
+  if (!selectionGuard.suppressNextClick || !isInExamPanels(event.target)) {
+    return;
+  }
+  event.preventDefault();
+  event.stopPropagation();
+  selectionGuard.suppressNextClick = false;
+}
+
 function applyFontScale(scale) {
   const safeScale = Number.isFinite(scale) ? scale : DEFAULT_CONFIG.fontScale;
   document.documentElement.style.setProperty("--font-scale", String(safeScale));
@@ -878,7 +929,9 @@ function renderLesenTeil1(content) {
       )
     );
     option.type = "button";
-    option.draggable = true;
+    option.draggable = false;
+    option.style.userSelect = "text";
+    option.style.webkitUserSelect = "text";
     option.append(createEl("span", "h-6 w-6 rounded-lg border border-black/10 bg-white flex items-center justify-center text-xs", headline.id));
     option.append(createEl("span", "text-sm", headline.text));
     if (isChoiceActive) {
@@ -903,10 +956,6 @@ function renderLesenTeil1(content) {
         active.headlineId = null;
         renderCurrentPart();
       }
-    });
-
-    option.addEventListener("dragstart", (event) => {
-      event.dataTransfer?.setData("text/plain", headline.id);
     });
 
     options.append(option);
@@ -1668,6 +1717,10 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+document.addEventListener("mousedown", handleExamPointerDown, true);
+document.addEventListener("mouseup", handleExamPointerUp, true);
+document.addEventListener("click", suppressClickAfterSelection, true);
+
 // Ensure state is correct on resize (desktop should show aside without overlay)
 window.addEventListener("resize", () => {
   if (window.matchMedia('(min-width: 768px)').matches) {
@@ -1678,7 +1731,11 @@ window.addEventListener("resize", () => {
     }
     if (asideOverlay) asideOverlay.classList.add("hidden");
     state.asideOpen = false;
-    document.body.classList.remove("overflow-hidden");
+    if (state.view === "exam") {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
   } else {
     // Mobile: if not open, ensure aside remains hidden
     if (!state.asideOpen && rightPanel) {

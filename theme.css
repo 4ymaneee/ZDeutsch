@@ -28,6 +28,13 @@ html {
   font-size: calc(1rem * var(--font-scale));
 }
 
+/* Allow selecting/copying text inside exam cards (many are rendered as buttons). */
+#exam-view,
+#exam-view * {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 #home-view .text-xs,
 #exam-view .text-xs {
   font-size: calc(0.75rem * var(--font-scale));
@@ -232,6 +239,214 @@ body.theme-body {
   border-radius: 999px;
 }
 
+.theme-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--flag-stone-300);
+  border-radius: 24px;
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 245, 204, 0.6) 100%);
+  padding: 18px;
+  min-height: 180px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 14px 26px rgba(26, 26, 26, 0.08);
+}
+
+.theme-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--flag-gold-dark), var(--flag-green));
+  opacity: 0.75;
+}
+
+.theme-card::after {
+  content: "";
+  position: absolute;
+  right: -36px;
+  bottom: -42px;
+  width: 130px;
+  height: 130px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 204, 0, 0.25) 0%, rgba(255, 204, 0, 0) 70%);
+  pointer-events: none;
+}
+
+.theme-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--flag-gold-dark);
+  box-shadow: 0 20px 34px rgba(26, 26, 26, 0.14);
+}
+
+.theme-card-active {
+  border-color: var(--flag-gold-dark);
+  box-shadow: 0 22px 36px rgba(198, 147, 0, 0.2);
+}
+
+.theme-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.theme-card-title-wrap {
+  min-width: 0;
+}
+
+.theme-card-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #131a21;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.theme-card-subtitle {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--flag-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.theme-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-card-level {
+  border-radius: 999px;
+  border: 1px solid var(--flag-gold-dark);
+  background: rgba(255, 245, 204, 0.85);
+  color: var(--flag-gold-dark);
+  padding: 6px 10px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  font-family: "Space Grotesk", sans-serif;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.theme-card-download {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid var(--flag-stone-300);
+  background: #fff;
+  color: var(--flag-black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 12px rgba(26, 26, 26, 0.08);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.theme-card-download:hover {
+  border-color: var(--flag-gold-dark);
+  transform: translateY(-1px);
+}
+
+.theme-card-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.theme-card-status {
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-family: "Space Grotesk", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  border: 1px solid transparent;
+  font-weight: 700;
+}
+
+.theme-card-status-new {
+  color: var(--flag-muted);
+  background: #ffffff;
+  border-color: var(--flag-stone-300);
+}
+
+.theme-card-status-progress {
+  color: var(--flag-gold-dark);
+  background: rgba(255, 245, 204, 0.85);
+  border-color: var(--flag-gold-dark);
+}
+
+.theme-card-status-passed {
+  color: #0f5f2f;
+  background: rgba(230, 246, 236, 0.95);
+  border-color: var(--flag-green);
+}
+
+.theme-card-score {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.theme-card-score-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--flag-muted);
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.theme-card-score-value {
+  font-size: 1.15rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  color: #0f1c27;
+}
+
+.theme-card-progress-track {
+  height: 10px;
+  width: 100%;
+  border-radius: 999px;
+  background: #ece5d8;
+  overflow: hidden;
+  border: 1px solid rgba(198, 147, 0, 0.25);
+}
+
+.theme-card-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--flag-gold-dark) 0%, var(--flag-green) 100%);
+  transition: width 0.3s ease;
+}
+
+.theme-card-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.theme-meta-pill {
+  border-radius: 999px;
+  border: 1px solid var(--flag-stone-300);
+  background: rgba(255, 255, 255, 0.88);
+  color: #2f3a44;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-family: "Space Grotesk", sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 /* Mobile aside animations */
 #right-panel {
   transition: transform 220ms cubic-bezier(.2,.8,.2,1), opacity 200ms linear;
@@ -251,6 +466,22 @@ body.theme-body {
 
 /* Header responsive tweaks for all pages on small screens */
 @media (max-width: 767px) {
+  .theme-card {
+    min-height: 165px;
+    padding: 14px;
+    gap: 10px;
+  }
+  .theme-card-title {
+    font-size: 1rem;
+  }
+  .theme-card-score-value {
+    font-size: 1rem;
+  }
+  .theme-meta-pill {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
   header {
     height: 56px;
     padding-left: 8px !important;

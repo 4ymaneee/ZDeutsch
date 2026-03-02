@@ -54,9 +54,38 @@ function renderChoiceButton(label, active) {
 function makeMetaPill(label) {
   return createEl(
     "span",
-    "rounded-full border border-stone-200 bg-stone-50 px-2 py-0.5 text-[10px] font-display uppercase tracking-[0.2em] text-slate",
+    "theme-meta-pill",
     label
   );
+}
+
+function clampPercent(value) {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+function getThemeStatus(progressSummary) {
+  const passMark = Number.isFinite(state.config?.scoreConfig?.passPercent)
+    ? state.config.scoreConfig.passPercent
+    : DEFAULT_CONFIG.scoreConfig.passPercent;
+  if (!progressSummary) {
+    return {
+      label: "New",
+      className: "theme-card-status-new"
+    };
+  }
+  if (progressSummary.passedExams > 0 || progressSummary.lastPercent >= passMark) {
+    return {
+      label: "Passed",
+      className: "theme-card-status-passed"
+    };
+  }
+  return {
+    label: "In progress",
+    className: "theme-card-status-progress"
+  };
 }
 
 function getThemeProgressSummary(levelKey, themeKey, versionKeys) {
@@ -1259,27 +1288,24 @@ function renderThemeCards() {
       || 0;
     const card = createEl(
       "button",
-      classNames(
-        "rounded-2xl border border-stone-300 bg-white/90 p-5 text-left shadow-panel transition-transform min-h-[140px] flex flex-col justify-between",
-        themeKey === state.theme ? "ring-2 ring-azure/30" : "hover:border-stone-300 hover:-translate-y-0.5"
-      )
+      classNames("theme-card", themeKey === state.theme ? "theme-card-active" : "")
     );
     card.type = "button";
-    const header = createEl("div", "flex items-start justify-between gap-3");
-    const titleWrap = createEl("div", "space-y-1");
+    const header = createEl("div", "theme-card-header");
+    const titleWrap = createEl("div", "theme-card-title-wrap");
     titleWrap.append(
-      createEl("div", "text-sm font-display text-ink", themeEntry.title || themeKey),
-      createEl("div", "text-xs text-slate", "Reading practice")
+      createEl("div", "theme-card-title", themeEntry.title || themeKey),
+      createEl("div", "theme-card-subtitle", "Reading practice")
     );
-    const actions = createEl("div", "flex items-center gap-2");
+    const actions = createEl("div", "theme-card-actions");
     const levelBadge = createEl(
       "span",
-      "rounded-full border border-azure/40 bg-azure/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] text-azure font-display",
+      "theme-card-level",
       (state.level || "").toUpperCase()
     );
     const downloadBtn = createEl(
       "button",
-      "h-7 w-7 rounded-lg border border-stone-200 bg-white/80 text-slate flex items-center justify-center shadow-sm hover:border-stone-300"
+      "theme-card-download"
     );
     downloadBtn.type = "button";
     downloadBtn.title = "Download PDF";
@@ -1291,21 +1317,39 @@ function renderThemeCards() {
     actions.append(levelBadge, downloadBtn);
     header.append(titleWrap, actions);
 
-    const meta = createEl("div", "mt-4 flex flex-wrap items-center gap-2");
+    const progressSummary = getThemeProgressSummary(levelKey, themeKey, versionKeys);
+    const status = getThemeStatus(progressSummary);
+    const lastPercent = clampPercent(progressSummary?.lastPercent || 0);
+
+    const summaryRow = createEl("div", "theme-card-summary");
+    const statusBadge = createEl("span", classNames("theme-card-status", status.className), status.label);
+    const scoreBox = createEl("div", "theme-card-score");
+    scoreBox.append(
+      createEl("span", "theme-card-score-label", "Last score"),
+      createEl("span", "theme-card-score-value", `${lastPercent}%`)
+    );
+    summaryRow.append(statusBadge, scoreBox);
+
+    const progressBar = createEl("div", "theme-card-progress-track");
+    const progressFill = createEl("div", "theme-card-progress-fill");
+    progressFill.style.width = `${lastPercent}%`;
+    progressBar.append(progressFill);
+
+    const meta = createEl("div", "theme-card-meta");
     meta.append(makeMetaPill(`${partCount} parts`));
     if (versionKeys.length > 1) {
       meta.append(makeMetaPill(`${versionKeys.length} versions`));
     }
-    const progressSummary = getThemeProgressSummary(levelKey, themeKey, versionKeys);
     if (progressSummary) {
-      meta.append(makeMetaPill(`Last ${progressSummary.lastPercent}%`));
       meta.append(makeMetaPill(`Passed ${progressSummary.passedExams} exams`));
       if (progressSummary.versionCount > 1) {
         meta.append(makeMetaPill(`Versions passed ${progressSummary.passedVersions}/${progressSummary.versionCount}`));
       }
+    } else {
+      meta.append(makeMetaPill("No attempts yet"));
     }
 
-    card.append(header, meta);
+    card.append(header, summaryRow, progressBar, meta);
     card.addEventListener("click", () => {
       handleThemeSelection(themeKey, themeEntry);
     });
