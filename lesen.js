@@ -57,6 +57,7 @@ const state = {
   active: {},
   view: "exam",
   asideOpen: false,
+  resultSavedFingerprint: null,
   timer: {
     enabled: true,
     durationMs: 0,
@@ -265,6 +266,7 @@ function setView(view) {
     examView.classList.add("hidden");
     resultView?.classList.remove("hidden");
     footer.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden");
     if (settingsBtn) {
       settingsBtn.classList.add("hidden");
     }
@@ -272,6 +274,7 @@ function setView(view) {
     examView.classList.remove("hidden");
     resultView?.classList.add("hidden");
     footer.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
     if (settingsBtn) {
       settingsBtn.classList.remove("hidden");
     }
@@ -601,6 +604,34 @@ function computePartScore(partKey, partData) {
   };
 }
 
+function saveResultProgress({ percent, totalEarned, totalMax, passed, scores }) {
+  if (typeof saveLesenProgressResult !== "function") {
+    return;
+  }
+  const fingerprint = [
+    state.level || "",
+    state.theme || "",
+    getActiveVersionKey(),
+    percent,
+    formatPoints(totalEarned),
+    formatPoints(totalMax),
+    (scores || []).map((score) => `${score.partKey}:${score.correct}/${score.total}`).join(";")
+  ].join("|");
+  if (state.resultSavedFingerprint === fingerprint) {
+    return;
+  }
+  saveLesenProgressResult({
+    levelKey: state.level || "",
+    themeKey: state.theme || "",
+    versionKey: getActiveVersionKey(),
+    percent,
+    earnedPoints: totalEarned,
+    maxPoints: totalMax,
+    passed
+  });
+  state.resultSavedFingerprint = fingerprint;
+}
+
 function renderResults() {
   if (!resultView) {
     return;
@@ -632,6 +663,7 @@ function renderResults() {
   const totalEarned = scores.reduce((sum, item) => sum + item.earnedPoints, 0);
   const percent = totalMax > 0 ? Math.round((totalEarned / totalMax) * 100) : 0;
   const passed = percent >= scoreConfig.passPercent;
+  saveResultProgress({ percent, totalEarned, totalMax, passed, scores });
 
   const versionEntry = getThemeVersionEntry(themeEntry);
   if (themeTitle) {
@@ -1438,6 +1470,7 @@ function resetCurrentTheme() {
     state.submitted[key] = false;
     state.active[key] = {};
   });
+  state.resultSavedFingerprint = null;
 }
 
 function toggleSettingsPanel(force) {
@@ -1600,7 +1633,11 @@ function closeAside() {
     rightPanel.classList.remove("hidden");
   }
   try { if (asideToggle) asideToggle.focus(); } catch (err) {}
-  document.body.classList.remove("overflow-hidden");
+  if (state.view === "exam") {
+    document.body.classList.add("overflow-hidden");
+  } else {
+    document.body.classList.remove("overflow-hidden");
+  }
 }
 
 function toggleAside() {

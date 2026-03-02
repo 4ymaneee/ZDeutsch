@@ -28,6 +28,7 @@ const DEFAULT_CONFIG = {
 };
 
 const COMMUNITY_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/CwFPqDeRbmqL5Rtx02NOCP?mode=hq1tswi";
+const LESEN_PROGRESS_STORAGE_KEY = "zdeutsch.lesen.progress.v1";
 
 function classNames(...items) {
   return items.filter(Boolean).join(" ");
@@ -127,6 +128,82 @@ function getVersionKeys(themeEntry) {
     return themeEntry.versionOrder;
   }
   return Object.keys(themeEntry.versions || {});
+}
+
+function makeLesenProgressEntryKey(levelKey, themeKey, versionKey) {
+  return [levelKey || "", themeKey || "", versionKey || "default"].join("|");
+}
+
+function loadLesenProgressStore() {
+  try {
+    const raw = window.localStorage.getItem(LESEN_PROGRESS_STORAGE_KEY);
+    if (!raw) {
+      return {};
+    }
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return parsed;
+    }
+  } catch (error) {
+    // ignore and fall back
+  }
+  return {};
+}
+
+function saveLesenProgressStore(store) {
+  try {
+    window.localStorage.setItem(LESEN_PROGRESS_STORAGE_KEY, JSON.stringify(store || {}));
+  } catch (error) {
+    // ignore storage failures
+  }
+}
+
+function getLesenProgressEntry(levelKey, themeKey, versionKey) {
+  const store = loadLesenProgressStore();
+  const key = makeLesenProgressEntryKey(levelKey, themeKey, versionKey);
+  const entry = store[key];
+  if (!entry || typeof entry !== "object") {
+    return null;
+  }
+  return entry;
+}
+
+function saveLesenProgressResult({
+  levelKey,
+  themeKey,
+  versionKey,
+  percent,
+  earnedPoints,
+  maxPoints,
+  passed
+}) {
+  const key = makeLesenProgressEntryKey(levelKey, themeKey, versionKey);
+  const store = loadLesenProgressStore();
+  const current = store[key] && typeof store[key] === "object" ? store[key] : {};
+  const safePercent = Number.isFinite(percent) ? Math.round(percent) : 0;
+  const safeEarned = Number.isFinite(earnedPoints) ? earnedPoints : 0;
+  const safeMax = Number.isFinite(maxPoints) ? maxPoints : 0;
+  const attempts = Number.isFinite(current.attempts) ? current.attempts + 1 : 1;
+  const passedAttempts = Number.isFinite(current.passedAttempts)
+    ? current.passedAttempts + (passed ? 1 : 0)
+    : (passed ? 1 : 0);
+
+  store[key] = {
+    levelKey: levelKey || "",
+    themeKey: themeKey || "",
+    versionKey: versionKey || "default",
+    attempts,
+    passedAttempts,
+    lastPercent: safePercent,
+    bestPercent: Math.max(Number.isFinite(current.bestPercent) ? current.bestPercent : 0, safePercent),
+    lastEarnedPoints: safeEarned,
+    lastMaxPoints: safeMax,
+    lastPassed: Boolean(passed),
+    lastAttemptAt: Date.now()
+  };
+
+  saveLesenProgressStore(store);
+  return store[key];
 }
 
 function getCommunitySuggestionStaticLines() {
@@ -239,12 +316,6 @@ function setupCommunityWidgets() {
     "community-modal-line",
     "DE: Schreibe deinen Vorschlag, kopiere ihn und sende ihn in der WhatsApp-Gruppe."
   );
-  const staticTemplate = createEl("pre", "community-modal-static");
-  staticTemplate.setAttribute("dir", "rtl");
-  staticTemplate.textContent = [
-    ...getCommunitySuggestionStaticLines(),
-    "التفاصيل:"
-  ].join("\n");
 
   const textarea = document.createElement("textarea");
   textarea.id = "community-suggest-text";
@@ -265,7 +336,7 @@ function setupCommunityWidgets() {
   openGroup.rel = "noopener noreferrer";
   actionRow.append(copyBtn, openGroup);
 
-  panel.append(closeBtn, title, textEn, textAr, textDe, staticTemplate, textarea, status, actionRow);
+  panel.append(closeBtn, title, textEn, textAr, textDe, textarea, status, actionRow);
   modal.append(backdrop, panel);
   document.body.append(modal);
 

@@ -59,6 +59,40 @@ function makeMetaPill(label) {
   );
 }
 
+function getThemeProgressSummary(levelKey, themeKey, versionKeys) {
+  if (typeof loadLesenProgressStore !== "function") {
+    return null;
+  }
+  const store = loadLesenProgressStore();
+  const keys = versionKeys?.length ? versionKeys : ["default"];
+  const entries = keys
+    .map((versionKey) => store[makeLesenProgressEntryKey(levelKey, themeKey, versionKey)])
+    .filter((entry) => entry && typeof entry === "object");
+  if (!entries.length) {
+    return null;
+  }
+  const latest = entries.reduce((current, item) => {
+    if (!current) {
+      return item;
+    }
+    const currentTime = Number.isFinite(current.lastAttemptAt) ? current.lastAttemptAt : 0;
+    const itemTime = Number.isFinite(item.lastAttemptAt) ? item.lastAttemptAt : 0;
+    return itemTime > currentTime ? item : current;
+  }, null);
+  const passedExams = entries.reduce((sum, item) => {
+    const value = Number.isFinite(item.passedAttempts) ? item.passedAttempts : 0;
+    return sum + value;
+  }, 0);
+  const passedVersions = entries.reduce((sum, item) => sum + (item.lastPassed ? 1 : 0), 0);
+  const lastPercent = Number.isFinite(latest?.lastPercent) ? latest.lastPercent : 0;
+  return {
+    lastPercent,
+    passedExams,
+    passedVersions,
+    versionCount: keys.length
+  };
+}
+
 function refreshIcons() {
   if (window.lucide && typeof window.lucide.createIcons === "function") {
     window.lucide.createIcons();
@@ -1261,6 +1295,14 @@ function renderThemeCards() {
     meta.append(makeMetaPill(`${partCount} parts`));
     if (versionKeys.length > 1) {
       meta.append(makeMetaPill(`${versionKeys.length} versions`));
+    }
+    const progressSummary = getThemeProgressSummary(levelKey, themeKey, versionKeys);
+    if (progressSummary) {
+      meta.append(makeMetaPill(`Last ${progressSummary.lastPercent}%`));
+      meta.append(makeMetaPill(`Passed ${progressSummary.passedExams} exams`));
+      if (progressSummary.versionCount > 1) {
+        meta.append(makeMetaPill(`Versions passed ${progressSummary.passedVersions}/${progressSummary.versionCount}`));
+      }
     }
 
     card.append(header, meta);
