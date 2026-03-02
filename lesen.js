@@ -1652,6 +1652,9 @@ window.addEventListener("resize", () => {
 });
 
 async function init() {
+  if (typeof setupCommunityWidgets === "function") {
+    setupCommunityWidgets();
+  }
   state.config = await loadConfig();
   const storedScale = getStoredFontScale();
   const scale = storedScale ?? state.config.fontScale ?? DEFAULT_CONFIG.fontScale;

@@ -1348,6 +1348,9 @@ if (versionOverlay) {
 }
 
 async function init() {
+  if (typeof setupCommunityWidgets === "function") {
+    setupCommunityWidgets();
+  }
   state.config = await loadConfig();
   setHomeLoaderVisible(true);
   state.db = await loadDatabase(state.config);

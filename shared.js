@@ -27,6 +27,8 @@ const DEFAULT_CONFIG = {
   dataFile: DEFAULT_MODULE.dataFile
 };
 
+const COMMUNITY_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/CwFPqDeRbmqL5Rtx02NOCP?mode=hq1tswi";
+
 function classNames(...items) {
   return items.filter(Boolean).join(" ");
 }
@@ -125,4 +127,195 @@ function getVersionKeys(themeEntry) {
     return themeEntry.versionOrder;
   }
   return Object.keys(themeEntry.versions || {});
+}
+
+function getCommunitySuggestionStaticLines() {
+  return [
+    "#suggestion",
+    `الصفحة: ${window.location.href}`,
+    "النوع: تعديل أو موضوع جديد"
+  ];
+}
+
+function buildCommunitySuggestionMessage(details) {
+  return [
+    ...getCommunitySuggestionStaticLines(),
+    "التفاصيل:",
+    details.trim()
+  ].join("\n");
+}
+
+function copyTextFallback(text) {
+  const temp = document.createElement("textarea");
+  temp.value = text;
+  temp.setAttribute("readonly", "true");
+  temp.style.position = "fixed";
+  temp.style.opacity = "0";
+  document.body.append(temp);
+  temp.select();
+  document.execCommand("copy");
+  temp.remove();
+}
+
+function setupCommunityWidgets() {
+  if (document.getElementById("community-suggest-modal")) {
+    return;
+  }
+
+  const promoTarget = document.getElementById("community-promo-target");
+  if (promoTarget) {
+    const promoCard = createEl("section", "community-promo");
+    const title = createEl(
+      "h3",
+      "community-promo-title",
+      "WhatsApp Community | مجتمع واتساب | WhatsApp Gemeinschaft"
+    );
+    const enLine = createEl(
+      "p",
+      "community-promo-line",
+      "Join our WhatsApp group to suggest website modifications and request new exam themes."
+    );
+    const arLine = createEl(
+      "p",
+      "community-promo-line community-promo-ar",
+      "انضم إلى مجموعة واتساب واقترح تعديلات على الموقع ومواضيع امتحان جديدة."
+    );
+    arLine.setAttribute("dir", "rtl");
+    const deLine = createEl(
+      "p",
+      "community-promo-line",
+      "Trete unserer WhatsApp-Gruppe bei und schlage Website-Anpassungen sowie neue Prüfungsthemen vor."
+    );
+    const actions = createEl("div", "community-promo-actions");
+    const joinLink = createEl("a", "community-btn community-btn-primary", "Join WhatsApp");
+    joinLink.href = COMMUNITY_WHATSAPP_GROUP_URL;
+    joinLink.target = "_blank";
+    joinLink.rel = "noopener noreferrer";
+    const suggestBtn = createEl("button", "community-btn community-btn-secondary community-open-btn", "Suggest a change");
+    suggestBtn.type = "button";
+    actions.append(joinLink, suggestBtn);
+    promoCard.append(title, enLine, arLine, deLine, actions);
+    promoTarget.append(promoCard);
+  }
+
+  const floatingButton = createEl("button", "community-floating-btn community-open-btn", "WhatsApp Suggestions");
+  floatingButton.type = "button";
+  floatingButton.id = "community-floating-btn";
+  document.body.append(floatingButton);
+
+  const modal = createEl("div", "community-modal hidden");
+  modal.id = "community-suggest-modal";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-labelledby", "community-modal-title");
+
+  const backdrop = createEl("div", "community-modal-backdrop");
+  backdrop.setAttribute("data-community-close", "true");
+  const panel = createEl("div", "community-modal-panel");
+  const closeBtn = createEl("button", "community-modal-close");
+  closeBtn.type = "button";
+  closeBtn.setAttribute("data-community-close", "true");
+  closeBtn.setAttribute("aria-label", "Close");
+  closeBtn.textContent = "×";
+  const title = createEl(
+    "h3",
+    "community-modal-title",
+    "Suggest Modifications / New Themes"
+  );
+  title.id = "community-modal-title";
+  const textEn = createEl(
+    "p",
+    "community-modal-line",
+    "EN: Write your idea, copy it, then open the WhatsApp group and paste it."
+  );
+  const textAr = createEl(
+    "p",
+    "community-modal-line",
+    "AR: اكتب اقتراحك، انسخه، ثم افتح مجموعة واتساب وأرسله."
+  );
+  textAr.setAttribute("dir", "rtl");
+  const textDe = createEl(
+    "p",
+    "community-modal-line",
+    "DE: Schreibe deinen Vorschlag, kopiere ihn und sende ihn in der WhatsApp-Gruppe."
+  );
+  const staticTemplate = createEl("pre", "community-modal-static");
+  staticTemplate.setAttribute("dir", "rtl");
+  staticTemplate.textContent = [
+    ...getCommunitySuggestionStaticLines(),
+    "التفاصيل:"
+  ].join("\n");
+
+  const textarea = document.createElement("textarea");
+  textarea.id = "community-suggest-text";
+  textarea.className = "community-modal-textarea";
+  textarea.rows = 7;
+  textarea.placeholder = "اكتب التفاصيل هنا...";
+
+  const status = createEl("p", "community-modal-status", "");
+  status.id = "community-copy-status";
+
+  const actionRow = createEl("div", "community-modal-actions");
+  const copyBtn = createEl("button", "community-btn community-btn-secondary", "Copy suggestion");
+  copyBtn.type = "button";
+  copyBtn.id = "community-copy-btn";
+  const openGroup = createEl("a", "community-btn community-btn-primary", "Open WhatsApp Group");
+  openGroup.href = COMMUNITY_WHATSAPP_GROUP_URL;
+  openGroup.target = "_blank";
+  openGroup.rel = "noopener noreferrer";
+  actionRow.append(copyBtn, openGroup);
+
+  panel.append(closeBtn, title, textEn, textAr, textDe, staticTemplate, textarea, status, actionRow);
+  modal.append(backdrop, panel);
+  document.body.append(modal);
+
+  const modalOpenButtons = Array.from(document.querySelectorAll(".community-open-btn"));
+
+  const closeModal = () => {
+    modal.classList.add("hidden");
+    document.body.classList.remove("community-modal-open");
+  };
+
+  const openModal = () => {
+    status.textContent = "";
+    modal.classList.remove("hidden");
+    document.body.classList.add("community-modal-open");
+    textarea.focus();
+  };
+
+  modalOpenButtons.forEach((button) => {
+    button.addEventListener("click", openModal);
+  });
+
+  modal.addEventListener("click", (event) => {
+    if (event.target instanceof HTMLElement && event.target.dataset.communityClose) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.classList.contains("hidden")) {
+      closeModal();
+    }
+  });
+
+  copyBtn.addEventListener("click", async () => {
+    const details = textarea.value.trim();
+    if (!details) {
+      status.textContent = "يرجى كتابة التفاصيل أولاً.";
+      return;
+    }
+    const message = buildCommunitySuggestionMessage(details);
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(message);
+        status.textContent = "Copied. Open WhatsApp and paste your suggestion.";
+        return;
+      } catch (error) {
+        // ignore and fallback
+      }
+    }
+    copyTextFallback(message);
+    status.textContent = "Copied. Open WhatsApp and paste your suggestion.";
+  });
 }
