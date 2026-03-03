@@ -242,51 +242,35 @@ body.theme-body {
 .theme-card {
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--flag-stone-300);
+  border: 1px solid var(--flag-gold-dark);
   border-radius: 24px;
-  background: linear-gradient(155deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 245, 204, 0.6) 100%);
+  background: #ffffff;
   padding: 18px;
   min-height: 180px;
   text-align: left;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow: 0 14px 26px rgba(26, 26, 26, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 20px rgba(26, 26, 26, 0.08);
 }
 
 .theme-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--flag-gold-dark), var(--flag-green));
-  opacity: 0.75;
+  content: none;
 }
 
 .theme-card::after {
-  content: "";
-  position: absolute;
-  right: -36px;
-  bottom: -42px;
-  width: 130px;
-  height: 130px;
-  border-radius: 999px;
-  background: radial-gradient(circle, rgba(255, 204, 0, 0.25) 0%, rgba(255, 204, 0, 0) 70%);
-  pointer-events: none;
+  content: none;
 }
 
 .theme-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--flag-gold-dark);
-  box-shadow: 0 20px 34px rgba(26, 26, 26, 0.14);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(26, 26, 26, 0.1);
 }
 
 .theme-card-active {
   border-color: var(--flag-gold-dark);
-  box-shadow: 0 22px 36px rgba(198, 147, 0, 0.2);
+  box-shadow: 0 14px 26px rgba(26, 26, 26, 0.12);
 }
 
 .theme-card-header {
@@ -325,9 +309,9 @@ body.theme-body {
 
 .theme-card-level {
   border-radius: 999px;
-  border: 1px solid var(--flag-gold-dark);
-  background: rgba(255, 245, 204, 0.85);
-  color: var(--flag-gold-dark);
+  border: none;
+  background: #f5f7fa;
+  color: #4b5563;
   padding: 6px 10px;
   font-size: 11px;
   letter-spacing: 0.22em;
@@ -340,19 +324,18 @@ body.theme-body {
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  border: 1px solid var(--flag-stone-300);
-  background: #fff;
+  border: none;
+  background: #f5f7fa;
   color: var(--flag-black);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 12px rgba(26, 26, 26, 0.08);
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  box-shadow: none;
+  transition: background-color 0.2s ease;
 }
 
 .theme-card-download:hover {
-  border-color: var(--flag-gold-dark);
-  transform: translateY(-1px);
+  background: #ebeff4;
 }
 
 .theme-card-summary {
@@ -369,26 +352,23 @@ body.theme-body {
   font-family: "Space Grotesk", sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.11em;
-  border: 1px solid transparent;
+  border: none;
   font-weight: 700;
 }
 
 .theme-card-status-new {
-  color: var(--flag-muted);
-  background: #ffffff;
-  border-color: var(--flag-stone-300);
+  color: #6b7280;
+  background: #f3f4f6;
 }
 
 .theme-card-status-progress {
-  color: var(--flag-gold-dark);
-  background: rgba(255, 245, 204, 0.85);
-  border-color: var(--flag-gold-dark);
+  color: #475569;
+  background: #edf2f7;
 }
 
 .theme-card-status-passed {
-  color: #0f5f2f;
-  background: rgba(230, 246, 236, 0.95);
-  border-color: var(--flag-green);
+  color: #166534;
+  background: #eaf7ef;
 }
 
 .theme-card-score {
@@ -416,15 +396,15 @@ body.theme-body {
   height: 10px;
   width: 100%;
   border-radius: 999px;
-  background: #ece5d8;
+  background: #eef2f6;
   overflow: hidden;
-  border: 1px solid rgba(198, 147, 0, 0.25);
+  border: none;
 }
 
 .theme-card-progress-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--flag-gold-dark) 0%, var(--flag-green) 100%);
+  background: #8ea0b8;
   transition: width 0.3s ease;
 }
 
@@ -437,8 +417,8 @@ body.theme-body {
 
 .theme-meta-pill {
   border-radius: 999px;
-  border: 1px solid var(--flag-stone-300);
-  background: rgba(255, 255, 255, 0.88);
+  border: none;
+  background: #f3f4f6;
   color: #2f3a44;
   padding: 5px 10px;
   font-size: 11px;

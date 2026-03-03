@@ -66,6 +66,17 @@ function clampPercent(value) {
   return Math.max(0, Math.min(100, Math.round(value)));
 }
 
+function formatPassedExamsLabel(value) {
+  const passedExams = Number.isFinite(value) ? Math.max(0, Math.round(value)) : 0;
+  if (passedExams === 0) {
+    return "No exams passed yet";
+  }
+  if (passedExams === 1) {
+    return "1 exam passed";
+  }
+  return `${passedExams} exams passed`;
+}
+
 function getThemeStatus(progressSummary) {
   const passMark = Number.isFinite(state.config?.scoreConfig?.passPercent)
     ? state.config.scoreConfig.passPercent
@@ -1341,9 +1352,9 @@ function renderThemeCards() {
       meta.append(makeMetaPill(`${versionKeys.length} versions`));
     }
     if (progressSummary) {
-      meta.append(makeMetaPill(`Passed ${progressSummary.passedExams} exams`));
+      meta.append(makeMetaPill(formatPassedExamsLabel(progressSummary.passedExams)));
       if (progressSummary.versionCount > 1) {
-        meta.append(makeMetaPill(`Versions passed ${progressSummary.passedVersions}/${progressSummary.versionCount}`));
+        meta.append(makeMetaPill(`Passed versions: ${progressSummary.passedVersions}/${progressSummary.versionCount}`));
       }
     } else {
       meta.append(makeMetaPill("No attempts yet"));

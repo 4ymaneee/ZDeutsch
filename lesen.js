@@ -285,6 +285,15 @@ function formatPoints(value) {
   return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
 }
 
+function shuffleList(items) {
+  const list = Array.isArray(items) ? [...items] : [];
+  for (let index = list.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [list[index], list[randomIndex]] = [list[randomIndex], list[index]];
+  }
+  return list;
+}
+
 function ensurePartState(partKey) {
   const versionKey = getActiveVersionKey();
   const key = [state.level, state.theme, versionKey, partKey].join("|");
@@ -1399,9 +1408,20 @@ function renderSprachbausteine2(content) {
     .map((key) => derivedOptions.find((text) => normalize(text) === key))
     .filter(Boolean);
 
-  const wordBank = (content.wordBank && content.wordBank.length)
+  const baseWordBank = (content.wordBank && content.wordBank.length)
     ? content.wordBank
     : uniqueOptions.map((text) => ({ id: "", text }));
+
+  const wordBankSignature = baseWordBank
+    .map((word) => `${normalize(word.id || "")}:${normalize(word.text || "")}`)
+    .join("|");
+
+  if (!Array.isArray(active.shuffledWordBank) || active.wordBankSignature !== wordBankSignature) {
+    active.shuffledWordBank = shuffleList(baseWordBank);
+    active.wordBankSignature = wordBankSignature;
+  }
+
+  const wordBank = active.shuffledWordBank;
 
   if (!wordBank.length) {
     rightPanel.append(
