@@ -206,6 +206,7 @@ const state = {
   data: null,
   levelKey: "b2",
   partKey: "teil-1",
+  taskId: null,
   drafts: {},
   editorFontSize: DEFAULT_EDITOR_FONT_SIZE
 };
@@ -237,6 +238,15 @@ function getLevelEntry() {
 
 function getPart(partKey) {
   return getLevelEntry()?.parts?.[partKey] || null;
+}
+
+function partHasTask(partKey, taskId) {
+  const selectedTaskId = String(taskId || "").trim();
+  if (!selectedTaskId) {
+    return false;
+  }
+  const tasks = getPart(partKey)?.content?.tasks || [];
+  return tasks.some((task) => String(task?.id || "").trim() === selectedTaskId);
 }
 
 function buildDraftStorageKey(levelKey, partKey, taskId) {
@@ -318,6 +328,9 @@ function renderPartList() {
         return;
       }
       state.partKey = partKey;
+      if (!partHasTask(partKey, state.taskId)) {
+        state.taskId = null;
+      }
       renderPartList();
       renderActivePart();
     });
@@ -366,9 +379,64 @@ function insertCharacterAtCursor(textarea, value) {
   textarea.setSelectionRange(nextPosition, nextPosition);
 }
 
-function buildChatGptCorrectionUrl(userText) {
-  const fullPrompt = `${CHATGPT_CORRECTION_PROMPT}\n${String(userText || "").trim()}`;
-  return `https://chatgpt.com/?q=${encodeURIComponent(fullPrompt)}`;
+function buildChatGptCorrectionUrl() {
+  return "https://chatgpt.com/";
+}
+
+function buildCorrectionPrompt(userText) {
+  return `${CHATGPT_CORRECTION_PROMPT}\n${String(userText || "").trim()}`;
+}
+
+async function copyTextToClipboard(value) {
+  const text = String(value || "");
+  if (!text) {
+    return false;
+  }
+  try {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (error) {
+    // fallback below
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "true");
+  textarea.style.position = "absolute";
+  textarea.style.left = "-9999px";
+  document.body.append(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  textarea.remove();
+  return copied;
+}
+
+async function copyPromptAndOpenChatGpt(userText) {
+  const prompt = buildCorrectionPrompt(userText);
+  const copied = await copyTextToClipboard(prompt);
+  const notice = copied
+    ? [
+        "Prompt copied successfully.",
+        "You will now be redirected to ChatGPT.",
+        "Please paste the prompt there to see the correction.",
+        "",
+        "تم نسخ البرومبت بنجاح.",
+        "سيتم الآن تحويلك إلى ChatGPT.",
+        "يرجى لصق البرومبت هناك لرؤية التصحيح."
+      ].join("\n")
+    : [
+        "Prompt could not be copied automatically.",
+        "You will now be redirected to ChatGPT.",
+        "Please copy/paste the prompt manually to see the correction.",
+        "",
+        "تعذر نسخ البرومبت تلقائيًا.",
+        "سيتم الآن تحويلك إلى ChatGPT.",
+        "يرجى نسخ/لصق البرومبت يدويًا لرؤية التصحيح."
+      ].join("\n");
+
+  window.alert(notice);
+  window.location.href = buildChatGptCorrectionUrl();
 }
 
 function renderInfoBlock(title, children) {
@@ -411,7 +479,6 @@ function renderTask(task) {
     const address = createEl("p", "mt-3 text-sm text-slate leading-relaxed", task.ad.address.join(", "));
     adNodes.push(address);
   }
-  card.append(renderInfoBlock("Anzeige", adNodes));
 
   const promptNodes = [createEl("p", "mt-3 text-sm text-ink leading-relaxed", task.prompt || "")];
   if ((task.requirements?.mode || []).length) {
@@ -428,34 +495,25 @@ function renderTask(task) {
     });
     promptNodes.push(pointsList);
   }
-  card.append(renderInfoBlock("Aufgabe", promptNodes));
 
-  const writingBlock = createEl("section", "rounded-2xl border border-azure/30 bg-azure/10 p-4");
+  const layout = createEl("div", "space-y-4 lg:grid lg:grid-cols-2 lg:gap-5 lg:space-y-0");
+  const leftColumn = createEl("div", "space-y-4 lg:h-[calc(100vh-15rem)] lg:overflow-y-auto lg:pr-1");
+  leftColumn.append(
+    renderInfoBlock("Anzeige", adNodes),
+    renderInfoBlock("Aufgabe", promptNodes)
+  );
+
+  const rightColumn = createEl("div", "lg:h-[calc(100vh-15rem)] lg:pl-1");
+  const writingBlock = createEl("section", "rounded-2xl border border-azure/30 bg-azure/10 p-4 flex flex-col gap-3 h-full");
   writingBlock.append(createEl("h4", "text-sm font-display uppercase tracking-[0.2em] text-azure", "Ihre Antwort"));
 
   const textarea = document.createElement("textarea");
-  textarea.className = "shreiben-editor mt-3 w-full min-h-[220px] rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-ink focus:outline-none focus:border-azure/50 focus:ring-2 focus:ring-azure/20";
+  textarea.className = "shreiben-editor w-full flex-1 min-h-[320px] lg:min-h-0 rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-ink focus:outline-none focus:border-azure/50 focus:ring-2 focus:ring-azure/20";
   textarea.placeholder = "Schreiben Sie hier Ihre Beschwerde...";
   textarea.value = getDraft(task.id);
   textarea.style.fontSize = `${state.editorFontSize}px`;
 
-  const toolbar = createEl("div", "mt-3 flex flex-wrap items-center gap-2");
-  toolbar.append(createEl("span", "text-[10px] font-display uppercase tracking-[0.2em] text-slate", "Sonderzeichen:"));
-  GERMAN_SPECIAL_CHARS.forEach((char) => {
-    const button = createEl(
-      "button",
-      "h-8 min-w-[2.25rem] rounded-xl border border-stone-300 bg-white px-2 text-sm font-display text-ink hover:border-stone-300",
-      char
-    );
-    button.type = "button";
-    button.addEventListener("click", () => {
-      insertCharacterAtCursor(textarea, char);
-      textarea.dispatchEvent(new Event("input", { bubbles: true }));
-    });
-    toolbar.append(button);
-  });
-
-  const infoRow = createEl("div", "mt-2 flex flex-wrap items-center justify-between gap-2");
+  const infoRow = createEl("div", "flex flex-wrap items-center justify-between gap-2");
   const wordCounter = createEl("p", "text-xs uppercase tracking-[0.2em] text-slate font-display");
   const saveStatus = createEl("p", "text-xs uppercase tracking-[0.2em] text-slate font-display");
 
@@ -475,26 +533,45 @@ function renderTask(task) {
   updateSaveStatus(getDraftSavedAt(task.id));
   infoRow.append(wordCounter, saveStatus);
 
-  const actionsRow = createEl("div", "mt-3 flex flex-wrap items-center gap-2");
-  const correctBtn = createEl(
+  const actionsRow = createEl("div", "flex flex-wrap items-center gap-2");
+  const actionButtonClasses = "inline-flex items-center gap-2 rounded-xl border border-stone-300 bg-white px-3 py-2 text-xs font-display uppercase tracking-[0.12em] text-ink hover:border-azure/40 hover:bg-stone-50";
+  const copyAndOpenBtn = createEl(
     "button",
-    "inline-flex items-center gap-2 rounded-xl border border-stone-300 bg-white px-3 py-2 text-xs font-display uppercase tracking-[0.12em] text-ink hover:border-azure/40 hover:bg-stone-50",
-    "Correct in ChatGPT"
+    actionButtonClasses,
+    "Copy Prompt"
   );
-  correctBtn.type = "button";
-  correctBtn.addEventListener("click", () => {
+  copyAndOpenBtn.type = "button";
+  copyAndOpenBtn.addEventListener("click", async () => {
     const userText = String(textarea.value || "").trim();
     if (!userText) {
       window.alert("Bitte schreiben Sie zuerst Ihren Text.");
       return;
     }
-    const url = buildChatGptCorrectionUrl(userText);
-    window.open(url, "_blank", "noopener,noreferrer");
+    await copyPromptAndOpenChatGpt(userText);
   });
-  actionsRow.append(correctBtn);
+  actionsRow.append(copyAndOpenBtn);
 
-  writingBlock.append(toolbar, textarea, infoRow, actionsRow);
-  card.append(writingBlock);
+  const toolbar = createEl("div", "mt-auto pt-2 border-t border-stone-200/80 flex flex-wrap items-center gap-2");
+  toolbar.append(createEl("span", "text-[10px] font-display uppercase tracking-[0.2em] text-slate", "Sonderzeichen:"));
+  GERMAN_SPECIAL_CHARS.forEach((char) => {
+    const button = createEl(
+      "button",
+      "h-8 min-w-[2.25rem] rounded-xl border border-stone-300 bg-white px-2 text-sm font-display text-ink hover:border-stone-300",
+      char
+    );
+    button.type = "button";
+    button.addEventListener("click", () => {
+      insertCharacterAtCursor(textarea, char);
+      textarea.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    toolbar.append(button);
+  });
+
+  writingBlock.append(textarea, infoRow, actionsRow, toolbar);
+  rightColumn.append(writingBlock);
+
+  layout.append(leftColumn, rightColumn);
+  card.append(layout);
 
   return card;
 }
@@ -528,7 +605,19 @@ function renderActivePart() {
     return;
   }
 
-  tasks.forEach((task) => {
+  const taskId = String(state.taskId || "").trim();
+  const tasksToRender = taskId
+    ? tasks.filter((task) => String(task?.id || "").trim() === taskId)
+    : tasks;
+
+  if (!tasksToRender.length) {
+    contentContainer.append(
+      createEl("div", "rounded-2xl border border-rose/30 bg-rose/10 p-4 text-sm text-rose", "Die ausgewählte Schreiben-Aufgabe wurde nicht gefunden.")
+    );
+    return;
+  }
+
+  tasksToRender.forEach((task) => {
     contentContainer.append(renderTask(task));
   });
   refreshIcons();
@@ -601,6 +690,11 @@ async function init() {
     state.partKey = requestedPart;
   } else if (levelEntry?.partOrder?.length) {
     state.partKey = levelEntry.partOrder[0];
+  }
+
+  const requestedTask = String(params.get("task") || "").trim();
+  if (requestedTask && partHasTask(state.partKey, requestedTask)) {
+    state.taskId = requestedTask;
   }
 
   applyEditorFontSize(getStoredEditorFontSize());

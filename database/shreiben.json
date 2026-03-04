@@ -199,6 +199,350 @@
                     "Beschreiben Sie, wen Sie außer dem Hersteller noch informiert haben."
                   ]
                 }
+              },
+              {
+                "id": "freizeitverein-6",
+                "title": "6. Freizeitverein",
+                "ad": {
+                  "header": "Freizeitverein",
+                  "paragraphs": [
+                    "Sie wollen in Ihrer Freizeit mehr erleben? Neue Leute aus Mainz kennenlernen? Am Wochenende nie mehr allein sein? Dann werden Sie Mitglied im Freizeitverein!",
+                    "Wir organisieren verschiedene Aktivitäten in Mainz und Umgebung.",
+                    "Ob Sport oder Kultur: Bei uns kommt jeder auf seine Kosten. Sie können viel Neues ausprobieren und lernen dabei nette Leute kennen.",
+                    "Unsere Mitglieder sind zwischen 26 und 85 Jahre alt. Bei uns ist jeder willkommen, ob Student oder Seniorin."
+                  ],
+                  "offer": [
+                    "Wanderungen",
+                    "Fahrradtouren",
+                    "Museums- und Theaterbesuche",
+                    "Spiele- und Kinoabende",
+                    "Restaurantbesuche und Ausflüge",
+                    "Jede Woche mindestens zwei unterschiedliche Angebote"
+                  ],
+                  "price": "Mitgliedschaft: 20 Euro pro Monat"
+                },
+                "prompt": "Sie sind seit zwei Wochen Mitglied im Freizeitverein. Doch Sie sind nicht zufrieden. Schreiben Sie eine Beschwerde.",
+                "requirements": {
+                  "mode": [
+                    "Behandeln Sie alle vier Punkte."
+                  ],
+                  "points": [
+                    "Erklären Sie, was Sie nach dem Lesen der Anzeige erwartet hatten.",
+                    "Erklären Sie, warum Sie mit dem Angebot des Freizeitvereins nicht zufrieden sind.",
+                    "Machen Sie Verbesserungsvorschläge zum Programm.",
+                    "Erklären Sie, was Sie tun werden, wenn sich nichts ändert."
+                  ]
+                }
+              },
+              {
+                "id": "backstage-musical-7",
+                "title": "7. Backstage Musical",
+                "ad": {
+                  "header": "Backstage-Musical",
+                  "paragraphs": [
+                    "Sie haben Geld bezahlt, um hinter die Kulissen eines Theaterstücks zu gehen.",
+                    "Dabei sollten Sie das Archiv der alten Theatermusik, die Masken und die Kostüme sehen."
+                  ]
+                },
+                "prompt": "Sie haben eine Backstage-Führung hinter die Kulissen eines Theaterstücks besucht. Leider waren Sie nicht zufrieden. Schreiben Sie eine Beschwerde.",
+                "requirements": {
+                  "mode": [
+                    "Behandeln Sie alle drei Punkte."
+                  ],
+                  "points": [
+                    "Erklären Sie, warum Sie unzufrieden waren.",
+                    "Beschreiben Sie, warum Sie sich für diese Vorstellung entschieden haben und was Sie daran interessiert hat.",
+                    "Schreiben Sie, was Sie vom Veranstalter erwarten, um den Service zu verbessern."
+                  ]
+                }
+              },
+              {
+                "id": "kursbeschreibung-8",
+                "title": "8. Kursbeschreibung",
+                "ad": {
+                  "header": "Kursbeschreibung",
+                  "paragraphs": [
+                    "Sie haben an einem zweitägigen Kurs teilgenommen, der 120 Euro kostete.",
+                    "Am ersten Tag gab es eine Schulung, in der Sie lernen sollten, sich professionell vorzustellen und zu kommunizieren sowie Ihre körperliche Leistungsfähigkeit zu verbessern.",
+                    "Am zweiten Tag absolvierten Sie ein Praktikum, um das Gelernte aus der Schulung anzuwenden."
+                  ],
+                  "price": "Teilnahmegebühr: 120 Euro"
+                },
+                "prompt": "Sie haben an einem Kurs teilgenommen, waren aber leider nicht zufrieden. Schreiben Sie eine Beschwerde.",
+                "requirements": {
+                  "mode": [
+                    "Behandeln Sie alle drei Punkte."
+                  ],
+                  "points": [
+                    "Beschreiben Sie, welche Erwartungen Sie an den Kurs hatten und was Sie sich von der Teilnahme erhofft haben.",
+                    "Erklären Sie, warum Sie mit diesem Kurs unzufrieden waren.",
+                    "Schreiben Sie einen weiteren Punkt Ihrer Wahl."
+                  ]
+                }
+              },
+              {
+                "id": "appartementhaus-9",
+                "title": "9. Appartementhaus",
+                "ad": {
+                  "header": "Appartement-Haus",
+                  "tagline": "Komfortable und zentrale Unterkunft",
+                  "paragraphs": [
+                    "Unser Appartementhaus bietet Ihnen modern eingerichtete Apartments in verschiedenen Größen, ideal für Geschäftsreisende, Paare und Familien.",
+                    "Unsere Lage: in der Nähe von Restaurants, Geschäften und Sehenswürdigkeiten sowie mit guter Anbindung an öffentliche Verkehrsmittel."
+                  ],
+                  "offer": [
+                    "Voll ausgestattete Küche",
+                    "Kostenloses WLAN",
+                    "Sat-TV",
+                    "Balkon oder Terrasse",
+                    "Waschmaschine und Trockner (gegen Gebühr)",
+                    "Wöchentliche Reinigung",
+                    "Privatparkplatz (gegen Gebühr)"
+                  ]
+                },
+                "prompt": "Sie haben ein Apartment im Appartementhaus gemietet, jedoch entsprach es nicht Ihren Erwartungen. Schreiben Sie eine Beschwerde.",
+                "requirements": {
+                  "mode": [
+                    "Behandeln Sie alle drei Punkte."
+                  ],
+                  "points": [
+                    "Beschreiben Sie die Probleme, die Sie im Apartment gefunden haben.",
+                    "Berichten Sie von einer früheren Erfahrung, die besser war als diese.",
+                    "Erklären Sie, warum Sie sich für dieses Appartementhaus entschieden haben."
+                  ]
+                }
+              },
+              {
+                "id": "meine-kiste-10",
+                "title": "10. Meine Kiste",
+                "ad": {
+                  "header": "Meine Kiste: Obst und Gemüse bestellbar im Abo",
+                  "paragraphs": [
+                    "Gesunde Ernährung wird direkt an Ihre Haustür oder an Ihren Arbeitsplatz geliefert. Sie wählen wöchentlich eine unserer Kisten aus und bekommen biologisch angebautes Obst und Gemüse.",
+                    "Wir liefern auf Wunsch auch andere heimische Produkte wie Backwaren, Eier, Käse und Getränke."
+                  ],
+                  "offer": [
+                    "Meine Kiste Single: 10 Euro",
+                    "Meine Kiste Familie: 20 Euro",
+                    "Meine Kiste Büro: 40 Euro",
+                    "Meine Kiste Obst und Gemüse: 20 Euro",
+                    "Meine Kiste Obst: 10 Euro",
+                    "Meine Kiste Gemüse: 10 Euro",
+                    "Kurze Transportwege und Produkte von regionalen Erzeugern",
+                    "Kostenlose Rezepte zur Zubereitung von Gemüse",
+                    "Lieferung mit Wunschort"
+                  ],
+                  "address": [
+                    "Bestellung: www.diegesundeobstkiste.de",
+                    "Telefon: 017654xxxxxx"
+                  ]
+                },
+                "prompt": "Sie haben sich Obst und Gemüse liefern lassen, aber Sie sind nicht zufrieden. Schreiben Sie eine Beschwerde.",
+                "requirements": {
+                  "mode": [
+                    "Behandeln Sie alle vier Punkte."
+                  ],
+                  "points": [
+                    "Schreiben Sie, warum Sie sich regelmäßig Obst und Gemüse liefern lassen wollten.",
+                    "Erklären Sie, warum Ihnen biologisch angebautes Obst und Gemüse aus der Region wichtig sind.",
+                    "Erläutern Sie, womit Sie unzufrieden waren.",
+                    "Machen Sie Verbesserungsvorschläge."
+                  ]
+                }
+              },
+              {
+                "id": "museum-11",
+                "title": "11. Museum",
+                "ad": {
+                  "header": "Naturmuseum",
+                  "paragraphs": [
+                    "Sie sind mit Ihren Sprachkurskollegen ins Naturmuseum gegangen.",
+                    "Das Museum hat eine Fläche von etwa 4000 Quadratmetern.",
+                    "Dort werden Naturphänomene und verschiedene Bereiche der Natur präsentiert."
+                  ]
+                },
+                "prompt": "Sie haben mit Ihren Sprachkurskollegen ein Naturmuseum besucht. Leider waren Sie nicht zufrieden. Schreiben Sie eine Beschwerde.",
+                "requirements": {
+                  "mode": [
+                    "Behandeln Sie alle vier Punkte."
+                  ],
+                  "points": [
+                    "Beschreiben Sie Ihre Erfahrungen mit anderen Naturmuseen und was Ihnen im Vergleich dort besser gefallen hat.",
+                    "Erklären Sie, was Ihnen in diesem Museum nicht gefallen hat und welche Erwartungen enttäuscht wurden.",
+                    "Machen Sie Verbesserungsvorschläge für das Museum.",
+                    "Schreiben Sie, was Sie in diesem Fall weiter tun würden und welche Beschwerden Sie äußern."
+                  ]
+                }
+              },
+              {
+                "id": "kultur-kulinarik-12",
+                "title": "12. Kultur und Kulinarik",
+                "ad": {
+                  "header": "KULTUR UND KULINARIK",
+                  "tagline": "Fahren Sie mit uns von Berlin \"ins Blaue\"",
+                  "paragraphs": [
+                    "Verbringen Sie einen Tag in angenehmer Gesellschaft. Genießen Sie die Fahrt und schauen Sie sich die vorbeiziehende Landschaft in Ruhe an.",
+                    "Wir besichtigen unterwegs Kirchen, Klöster, Burgen oder Schlösser und bieten Ihnen zusätzlich verschiedene Waren zum Kauf an."
+                  ],
+                  "offer": [
+                    "Frühstück: Frühstücksbuffet, frisch und reichhaltig",
+                    "Mittagessen: Berliner Spezialitäten, so viel Sie essen können",
+                    "Kaffee: Kuchen und Torten zur freien Auswahl"
+                  ],
+                  "price": "Preis: 18,99 Euro",
+                  "address": [
+                    "Gute-Laune-Reisen",
+                    "Vulkanstraße",
+                    "10315 Berlin-Lichtenberg",
+                    "Telefon: 030-85 95 65",
+                    "gute-laune-reisen@info.de"
+                  ]
+                },
+                "prompt": "Sie haben an dieser Fahrt teilgenommen und waren überhaupt nicht zufrieden. Nur der Reisebus hat Ihnen sehr gut gefallen. Schreiben Sie an den Reiseveranstalter und beschweren Sie sich.",
+                "requirements": {
+                  "mode": [
+                    "A) Behandeln Sie drei der folgenden Punkte.",
+                    "B) Oder behandeln Sie zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl."
+                  ],
+                  "points": [
+                    "Beschreiben Sie, warum Sie sich für den Tagesausflug entschieden haben.",
+                    "Erklären Sie, was Ihnen am Besichtigungsprogramm missfiel.",
+                    "Beschreiben Sie die Reaktionen der anderen Fahrgäste.",
+                    "Erläutern Sie, wie Sie die angebotenen Waren fanden."
+                  ]
+                }
+              },
+              {
+                "id": "kostenlose-apps-13",
+                "title": "13. Kostenlose Apps für Handy",
+                "ad": {
+                  "header": "prima-app.net - Kostenlose Apps für dein Handy!",
+                  "paragraphs": [
+                    "prima-app.net ist die Spaßseite für alle Smartphone-Benutzer: Spiele, Sport-Live-Sendungen, Filme, Schlagzeilen und Social-Media-Angebote.",
+                    "Registrieren Sie sich jetzt und Sie haben sofort unbegrenzten Zugang zu den Angeboten unserer Webseite."
+                  ],
+                  "offer": [
+                    "Apps für Spiele",
+                    "Sport-Live-Sendungen",
+                    "Filme und Schlagzeilen",
+                    "Schneller Zugang zu Social-Media-Angeboten"
+                  ],
+                  "address": [
+                    "prima-app.net",
+                    "info@prima-app.net",
+                    "prima-app GmbH, Sommerweg 34-36, 37269 Eschwege"
+                  ]
+                },
+                "prompt": "Schreiben Sie eine Beschwerde und nehmen Sie Bezug auf die Anzeige.",
+                "requirements": {
+                  "mode": [
+                    "A) Behandeln Sie mindestens drei der folgenden Punkte.",
+                    "B) Oder behandeln Sie mindestens zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl."
+                  ],
+                  "points": [
+                    "Probleme bei der Nutzung",
+                    "Welche Angebote Sie nutzen wollten",
+                    "Preis-Leistungs-Verhältnis",
+                    "Ihre Forderungen"
+                  ]
+                }
+              },
+              {
+                "id": "mehr-bewegen-14",
+                "title": "14. Mehr bewegen",
+                "ad": {
+                  "header": "Mehr bewegen - aber wie?",
+                  "paragraphs": [
+                    "Wir bieten Radtouren mit Trainern am Abend und am Wochenende an.",
+                    "Ein großes Angebot an modernen Rädern steht bereit, falls Sie kein eigenes Fahrrad haben.",
+                    "Treffpunkt ist auf unserem Vereinsgelände auf der Heidewiese. Fünfstündige Touren mit Trainer kosten 5 Euro oder Sie werden Mitglied für 25 Euro pro Monat."
+                  ],
+                  "address": [
+                    "Radel dich munter e. V.",
+                    "Heidewiese 1",
+                    "44777 Heimerstadt",
+                    "info@radeldichmunter.de"
+                  ]
+                },
+                "prompt": "Sie haben an einer Fahrradtour mit Trainer teilgenommen. Leider waren Sie nicht zufrieden. Schreiben Sie an den Verein \"Radel dich munter e. V.\" und beschweren Sie sich.",
+                "requirements": {
+                  "mode": [
+                    "A) Behandeln Sie mindestens drei der folgenden Punkte.",
+                    "B) Oder behandeln Sie mindestens zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl."
+                  ],
+                  "points": [
+                    "Beschreiben Sie, warum Sie das Angebot sehr interessant fanden.",
+                    "Beschreiben Sie detailliert die Probleme.",
+                    "Erklären Sie, was Ihnen an der Fahrradtour gefallen hat.",
+                    "Beschreiben Sie genau die Reaktion des Trainers auf Ihre Fragen."
+                  ]
+                }
+              },
+              {
+                "id": "komfort-matratze-15",
+                "title": "15. Komfort-Matratze",
+                "ad": {
+                  "header": "Nie mehr schlaflos in Deutschland!",
+                  "paragraphs": [
+                    "Gönnen Sie sich ein neues Bett mit einer Komfort-Matratze. Probeliegen in unseren Showrooms in 20 deutschen Innenstädten oder online bestellen.",
+                    "Wir bieten eine große Auswahl an Betten, Lattenrosten und Matratzen zu Sonderpreisen.",
+                    "Beim Kauf einer Matratze entsorgen wir auf Wunsch die alte. Für Mitnahme und Entsorgung fällt eine Kostenpauschale von 15 Euro pro Stück an."
+                  ],
+                  "offer": [
+                    "Bettgestelle aus Holz oder Metall, Einzel- oder Doppelbetten",
+                    "Matratzen in verschiedenen Größen und Materialien",
+                    "Kostenlose Lieferung",
+                    "Mitnahme und Entsorgung alter Teile (gegen Pauschale)"
+                  ],
+                  "address": [
+                    "www.baumeister-betten.de",
+                    "Baumeister Service Hotline: 0800-222333444",
+                    "baumeister-betten@info.de"
+                  ]
+                },
+                "prompt": "Sie haben bei der Firma Baumeister-Betten eingekauft. Sie sind mit der Qualität und dem Service unzufrieden. Schreiben Sie eine Beschwerde.",
+                "requirements": {
+                  "mode": [
+                    "A) Behandeln Sie drei der folgenden Punkte.",
+                    "B) Oder behandeln Sie zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl."
+                  ],
+                  "points": [
+                    "Beschreiben Sie, warum Sie sich für Produkte dieser Firma entschieden haben.",
+                    "Erklären Sie, warum Sie mit der Warenqualität unzufrieden sind.",
+                    "Beschreiben Sie Ihre Erfahrungen mit dem Service und der Service-Hotline.",
+                    "Machen Sie Vorschläge, wie Baumeister-Betten kundenfreundlicher werden kann."
+                  ]
+                }
+              },
+              {
+                "id": "reisebuero-16",
+                "title": "16. Reisebüro",
+                "ad": {
+                  "header": "Reisebüro Sonnenschein",
+                  "tagline": "Ihr Online Reisebüro für Last-Minute-Urlaub",
+                  "paragraphs": [
+                    "Verreisen Sie spontan ohne Monate vorher zu planen. Unsere Last-Minute-Reisen bieten bis zu 50 Prozent Rabatt.",
+                    "Wir bieten Kurzreisen, Kreuzfahrten, All-Inclusive-Urlaub und Pauschalreisen mit Flug, Hotel und Transfer."
+                  ],
+                  "address": [
+                    "Buchung online unter: reisebuero-sonnenschein.net",
+                    "Reisebüro Sonnenschein",
+                    "Käfergasse 5",
+                    "01109 Dresden"
+                  ]
+                },
+                "prompt": "Sie haben bei diesem Reisebüro eine Pauschalreise gebucht. Als Sie abends im Hotel ankamen, gab es kein freies Zimmer für Sie. Schreiben Sie eine Beschwerde an das Reisebüro.",
+                "requirements": {
+                  "mode": [
+                    "Behandeln Sie alle vier Punkte."
+                  ],
+                  "points": [
+                    "Berichten Sie, was Sie an diesem Abend gemacht haben.",
+                    "Beschreiben Sie, wie der Reiseleiter reagiert hat.",
+                    "Erläutern Sie, welche Erwartungen Sie vor dem Urlaub hatten.",
+                    "Berichten Sie, wie der Urlaub insgesamt war."
+                  ]
+                }
               }
             ]
           }

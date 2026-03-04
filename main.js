@@ -23,6 +23,39 @@ const state = {
   parts: null
 };
 
+const SECTION_KEYS = ["lesen", "horen", "shreiben"];
+
+function getSectionFromHash() {
+  const raw = String(window.location.hash || "")
+    .replace(/^#/, "")
+    .trim()
+    .toLowerCase();
+  if (!raw) {
+    return null;
+  }
+  return SECTION_KEYS.includes(raw) ? raw : null;
+}
+
+function syncSectionHash(section, options = {}) {
+  const target = String(section || "").trim().toLowerCase();
+  if (!target || !SECTION_KEYS.includes(target)) {
+    return;
+  }
+  const current = String(window.location.hash || "")
+    .replace(/^#/, "")
+    .trim()
+    .toLowerCase();
+  if (current === target) {
+    return;
+  }
+  const nextUrl = `${window.location.pathname}${window.location.search}#${target}`;
+  if (options.replace) {
+    window.history.replaceState(null, "", nextUrl);
+    return;
+  }
+  window.location.hash = target;
+}
+
 function setHomeLoaderVisible(show) {
   if (!homeLoader) {
     return;
@@ -198,23 +231,46 @@ async function loadNamedDatabase(fileName) {
   return null;
 }
 
-function getShreibenTaskTitles(levelKey) {
+function getShreibenTasks(levelKey) {
   const levelEntry = state.shreibenDb?.levels?.[levelKey];
   if (!levelEntry) {
     return [];
   }
   const order = levelEntry.partOrder || Object.keys(levelEntry.parts || {});
-  const titles = [];
+  const tasks = [];
   order.forEach((partKey) => {
-    const tasks = levelEntry.parts?.[partKey]?.content?.tasks || [];
-    tasks.forEach((task) => {
-      const title = String(task?.title || "").trim();
-      if (title) {
-        titles.push(title);
-      }
+    const partEntry = levelEntry.parts?.[partKey];
+    const partTasks = partEntry?.content?.tasks || [];
+    partTasks.forEach((task, index) => {
+      const id = String(task?.id || `${partKey}-task-${index + 1}`).trim();
+      const title = String(task?.title || `Aufgabe ${index + 1}`).trim();
+      const prompt = String(task?.prompt || "").trim();
+      tasks.push({
+        id,
+        title,
+        prompt,
+        partKey,
+        partLabel: partEntry?.meta?.partLabel || partKey
+      });
     });
   });
-  return titles;
+  return tasks;
+}
+
+function countWords(text) {
+  return String(text || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+}
+
+function getShreibenWordCount(levelKey, partKey, taskId) {
+  if (!levelKey || !partKey || !taskId) {
+    return 0;
+  }
+  const storageKey = `zdeutsch.shreiben.${levelKey}.${partKey}.${taskId}`;
+  const text = window.localStorage.getItem(storageKey) || "";
+  return countWords(text);
 }
 
 const PDF_STYLES = `
@@ -1273,6 +1329,7 @@ function renderSectionButtons() {
   if (!availableSections.includes(state.section)) {
     state.section = availableSections[0] || "lesen";
   }
+  syncSectionHash(state.section, { replace: true });
 
   availableSections.forEach((value) => {
     const label = sectionLabels[value] || value.toUpperCase();
@@ -1280,9 +1337,11 @@ function renderSectionButtons() {
     button.type = "button";
     button.addEventListener("click", () => {
       if (state.section === value) {
+        syncSectionHash(value);
         return;
       }
       state.section = value;
+      syncSectionHash(state.section);
       renderSectionButtons();
       renderThemeCards();
     });
@@ -1317,16 +1376,11 @@ function renderThemeCards() {
   }
   if (state.section === "shreiben") {
     const partConfig = getPartConfig(levelKey, "shreiben");
-    const taskTitles = getShreibenTaskTitles(levelKey);
-    themeGrid.append(
-      createEl(
-        "div",
-        "rounded-3xl border border-stone-200 bg-white/90 p-6 text-sm text-slate",
-        "Schreiben öffnet eine separate Übung mit Schreibaufgaben und Leitpunkten."
-      )
-    );
-    if (partConfig) {
-      themeGrid.append(buildShreibenCard(levelKey, partConfig, taskTitles));
+    const tasks = getShreibenTasks(levelKey);
+    if (partConfig && tasks.length) {
+      tasks.forEach((task) => {
+        themeGrid.append(buildShreibenCard(levelKey, task));
+      });
     } else {
       themeGrid.append(
         createEl(
@@ -1472,14 +1526,15 @@ function buildHorenCard(levelKey, partConfig) {
   return card;
 }
 
-function buildShreibenCard(levelKey, partConfig, taskTitles = []) {
-  const title = partConfig?.name || "Schreiben";
-  const subtitle = taskTitles.length
-    ? `Thema: ${taskTitles.join(" • ")}`
-    : (partConfig?.description || "Bearbeiten Sie eine Schreibaufgabe mit klaren Leitpunkten.");
-  const topicCount = taskTitles.length || 1;
+function buildShreibenCard(levelKey, task) {
+  const title = task?.title || "Schreiben";
+  const wordCount = getShreibenWordCount(levelKey, task?.partKey, task?.id);
+  const progressTarget = 150;
+  const progressPercent = Math.max(0, Math.min(100, Math.round((wordCount / progressTarget) * 100)));
+  const statusLabel = wordCount > 0 ? "In progress" : "Not started";
+  const href = `shreiben.html?level=${encodeURIComponent(levelKey)}&part=${encodeURIComponent(task?.partKey || "teil-1")}&task=${encodeURIComponent(task?.id || "")}`;
   const card = createEl("a", "theme-card");
-  card.href = `shreiben.html?level=${levelKey}`;
+  card.href = href;
 
   const topRow = createEl("div", "theme-card-header");
   const titleWrap = createEl("div", "theme-card-title-wrap");
@@ -1500,22 +1555,20 @@ function buildShreibenCard(levelKey, partConfig, taskTitles = []) {
   const summaryRow = createEl("div", "theme-card-summary");
   const scoreBox = createEl("div", "theme-card-score");
   scoreBox.append(
-    createEl("span", "theme-card-score-label", "Topics"),
-    createEl("span", "theme-card-score-value", String(topicCount))
+    createEl("span", "theme-card-score-label", "Words"),
+    createEl("span", "theme-card-score-value", `${wordCount}`)
   );
   summaryRow.append(
-    createEl("span", "theme-card-status theme-card-status-progress", "Ready to write"),
+    createEl("span", "theme-card-status theme-card-status-progress", statusLabel),
     scoreBox
   );
 
-  const topicPreview = createEl("div", "text-sm text-slate leading-relaxed", subtitle);
-  const meta = createEl("div", "theme-card-meta");
-  meta.append(
-    makeMetaPill(topicCount === 1 ? "1 writing task" : `${topicCount} writing tasks`),
-    makeMetaPill("Autosave enabled")
-  );
+  const progressBar = createEl("div", "theme-card-progress-track");
+  const progressFill = createEl("div", "theme-card-progress-fill");
+  progressFill.style.width = `${progressPercent}%`;
+  progressBar.append(progressFill);
 
-  card.append(topRow, summaryRow, topicPreview, meta);
+  card.append(topRow, summaryRow, progressBar);
   return card;
 }
 
@@ -1553,6 +1606,19 @@ if (themeSearchInput) {
   });
 }
 
+window.addEventListener("hashchange", () => {
+  if (!state.db) {
+    return;
+  }
+  const hashSection = getSectionFromHash();
+  if (!hashSection || hashSection === state.section) {
+    return;
+  }
+  state.section = hashSection;
+  renderSectionButtons();
+  renderThemeCards();
+});
+
 if (versionCloseBtn) {
   versionCloseBtn.addEventListener("click", () => {
     closeVersionModal();
@@ -1589,6 +1655,10 @@ async function init() {
   }
 
   state.level = resolveInitialLevel();
+  const hashSection = getSectionFromHash();
+  if (hashSection) {
+    state.section = hashSection;
+  }
   renderHome();
 }
 
