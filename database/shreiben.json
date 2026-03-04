@@ -3,7 +3,7 @@
     "module": "shreiben",
     "title": "Schreiben",
     "description": "Beschwerde- und formelle Schreibaufgaben",
-    "generatedAt": "2026-03-03T00:00:00.000Z"
+    "generatedAt": "2026-03-04T00:00:00.000Z"
   },
   "levels": {
     "b2": {
@@ -54,6 +54,149 @@
                     "Beschreiben Sie, wovon Sie sich erholen wollten.",
                     "Erläutern Sie, warum Sie unzufrieden sind.",
                     "Machen Sie Verbesserungsvorschläge."
+                  ]
+                }
+              },
+              {
+                "id": "autovermietung-neustadt-2",
+                "title": "2. Autovermietung",
+                "ad": {
+                  "header": "Autovermietung Neustadt",
+                  "tagline": "Wir haben das passende Modell für Sie",
+                  "paragraphs": [
+                    "Brauchen Sie ein Auto? Buchen Sie noch heute Ihr Wunschauto ganz bequem online.",
+                    "Wir stellen Ihnen ein modernes, sicheres und sauberes Fahrzeug zur Verfügung.",
+                    "Mieten Sie Ihr Auto für wenige Stunden, ein Wochenende oder mehrere Tage.",
+                    "Bei Fragen und Problemen können Sie sich rund um die Uhr an unseren Service wenden. Unsere kompetenten Mitarbeiter helfen Ihnen gern."
+                  ],
+                  "offer": [
+                    "Preiswerte Kleinwagen",
+                    "Geräumige Kleinbusse",
+                    "Praktische Kombis",
+                    "Chice Cabrios",
+                    "Luxuriöse Oberklasse u. v. m."
+                  ]
+                },
+                "prompt": "Sie haben bei der Autovermietung Neustadt ein Auto fürs Wochenende gemietet. Leider waren Sie mit dem Auto und mit dem Service der Firma sehr unzufrieden. Das Auto war weder modern noch sauber und Sie konnten keinen Service-Mitarbeiter erreichen. Schreiben Sie eine E-Mail, in der Sie sich über die Unannehmlichkeiten beschweren.",
+                "requirements": {
+                  "mode": [
+                    "Behandeln Sie alle vier Punkte."
+                  ],
+                  "points": [
+                    "Schreiben Sie, warum Sie sich für die Autovermietung Neustadt entschieden haben.",
+                    "Schreiben Sie, welche Probleme es mit dem Auto gab.",
+                    "Erklären Sie, welche Probleme es mit dem Service der Firma gab.",
+                    "Schreiben Sie, was Sie jetzt von der Autovermietung Neustadt erwarten."
+                  ]
+                }
+              },
+              {
+                "id": "renovierungskurs-3",
+                "title": "3. Kurs Renovierung",
+                "ad": {
+                  "header": "Renovierungskurs",
+                  "tagline": "Tapezieren und Streichen für Anfänger (Wochenendkurs im Urbi-Baumarkt)",
+                  "paragraphs": [
+                    "Selbermachen will gelernt sein.",
+                    "Ihre Küche kann neue Farbe gebrauchen? Oder Sie möchten Ihr Wohnzimmer neu tapezieren und wissen nicht, wie das geht?",
+                    "Bei uns erfahren Sie alles, was Sie über das Renovieren wissen müssen.",
+                    "Mit vielen praktischen Übungen. Ihr Kursleiter steht Ihnen mit Tipps und Expertenwissen zur Seite.",
+                    "Samstag und Sonntag von 14 bis 17 Uhr, maximal acht Teilnehmer."
+                  ],
+                  "offer": [
+                    "Die Auswahl der richtigen Tapete",
+                    "Welches Werkzeug ist notwendig?",
+                    "Welche Arbeiten sind vorher und nachher erforderlich?",
+                    "Neue Streichtechniken kennenlernen",
+                    "Teilnahmegebühr inklusive Materialien"
+                  ],
+                  "address": [
+                    "Urbi-Baumarkt",
+                    "Industriestraße 12",
+                    "56478 Montabaur"
+                  ]
+                },
+                "prompt": "Sie haben an diesem Wochenendkurs teilgenommen. Leider haben Sie nicht viel gelernt und sind unzufrieden. Schreiben Sie eine Beschwerde.",
+                "requirements": {
+                  "mode": [
+                    "Behandeln Sie alle vier Punkte."
+                  ],
+                  "points": [
+                    "Beschreiben Sie, warum Sie sich für diesen Kurs entschieden haben.",
+                    "Legen Sie dar, welche Probleme es im Kurs gab.",
+                    "Berichten Sie von Ihren Erfahrungen mit ähnlichen Kursen.",
+                    "Erklären Sie, wie der Kurs verbessert werden kann."
+                  ]
+                }
+              },
+              {
+                "id": "engagement-jugendliche-4",
+                "title": "4. Engagement Jugendliche",
+                "ad": {
+                  "header": "Engagement für Jugendliche",
+                  "paragraphs": [
+                    "Wie soll es nach dem Schulabschluss weitergehen? Was wäre der ideale Beruf? Wie findet man einen Ausbildungsplatz und wie bewirbt man sich?",
+                    "Wollen Sie Jugendlichen dabei helfen, die richtigen Antworten auf diese Fragen zu finden und so ihre Zukunftsperspektiven zu verbessern? Dann werden Sie Bildungspatin oder Bildungspate.",
+                    "Wir suchen Bildungspatinnen und Bildungspaten, die Schülerinnen und Schüler ab 14 Jahren unterstützen: bei Problemen mit dem Schulabschluss, bei der Suche nach einem Ausbildungsplatz, beim Bewerbungsprozess und beim Berufseinstieg.",
+                    "In drei Wochenendseminaren bereiten wir Sie auf diese spannende und anspruchsvolle Aufgabe vor. Sie erhalten außerdem regelmäßig Beratung und Unterstützung durch unser erfahrenes Team.",
+                    "Setzen Sie Ihre Zeit, Ihr Wissen und Ihr Engagement ein, um das Leben eines Jugendlichen positiv zu beeinflussen.",
+                    "Mehr Informationen: www.bildungspaten-fuer-jugendliche.net"
+                  ],
+                  "address": [
+                    "Bildungspaten für Jugendliche e. V.",
+                    "Hamburger Str. 112",
+                    "60824 Frankfurt am Main"
+                  ]
+                },
+                "prompt": "Sie wollten sich ehrenamtlich für Jugendliche engagieren, waren aber mit der Organisation unzufrieden. Schreiben Sie eine Beschwerde an den Verein.",
+                "requirements": {
+                  "mode": [
+                    "Behandeln Sie alle vier Punkte."
+                  ],
+                  "points": [
+                    "Beschreiben Sie, welche Erfahrungen Sie bei Ihrem Engagement in dem Verein gemacht haben.",
+                    "Erklären Sie, warum Sie Jugendlichen helfen wollten.",
+                    "Beschreiben Sie, wie Sie sich die Mitarbeit im Verein vorgestellt haben.",
+                    "Machen Sie Verbesserungsvorschläge."
+                  ]
+                }
+              },
+              {
+                "id": "kaese-beschwerde-5",
+                "title": "5. Käse",
+                "ad": {
+                  "header": "Schmelzkäse - Alpengeschmack",
+                  "tagline": "Die Reinheit der Natur auf Ihrem Teller",
+                  "paragraphs": [
+                    "Schmelzkäse ist eine besondere Spezialität und wird aus gereiftem Schnittkäse oder Frischkäse auf Grundlage einer traditionellen Methode weiterverarbeitet und gleichzeitig haltbar gemacht.",
+                    "Schmelzkäse Alpengeschmack ist in der modernen Küche besonders beliebt: Er bindet Soßen und Suppen, verleiht Gerichten eine feinwürzige Note, ist perfekt zum Überbacken geeignet und darf auf keinem Frühstücks- oder Abendbrottisch fehlen."
+                  ],
+                  "offer": [
+                    "Zutaten: 50 % Käse, Süßmolke, Butter, Schmelzsalze, Natriumphosphate, Natriumcitrate, Polyphosphate, Magermilch aus Kuhmilch, Milcheiweiß, Speisesalz",
+                    "Farbstoffe: Paprikaextrakt, Carotin",
+                    "10 Scheiben, einzeln in Folie verpackt",
+                    "Ungeöffnet mindestens 24 Tage haltbar. Nach dem Öffnen gekühlt lagern",
+                    "Artikelnummer: 9977 8855"
+                  ],
+                  "address": [
+                    "Hersteller: Molkerei Alpengeschmack",
+                    "Lindauer Straße 5",
+                    "87437 Kempten",
+                    "Tel. 0831-181921",
+                    "www.molkerei-alpengeschmack.de"
+                  ]
+                },
+                "prompt": "Sie haben dieses Produkt gekauft, es war aber verunreinigt. Der Käse enthielt Fremdkörper. Sie sind nach dem Essen erkrankt. Schreiben Sie einen Brief an den Hersteller, in dem Sie sich beschweren.",
+                "requirements": {
+                  "mode": [
+                    "A) Behandeln Sie mindestens drei der folgenden Punkte.",
+                    "B) Oder behandeln Sie mindestens zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl."
+                  ],
+                  "points": [
+                    "Erläutern Sie, wozu Sie diesen Käse verwenden.",
+                    "Beschreiben Sie, welche gesundheitlichen Beschwerden Sie nach dem Essen hatten.",
+                    "Erklären Sie, warum die Fremdkörper gesundheitsgefährdend sind.",
+                    "Beschreiben Sie, wen Sie außer dem Hersteller noch informiert haben."
                   ]
                 }
               }
