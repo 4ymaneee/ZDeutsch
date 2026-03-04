@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "module": "shreiben",
+    "title": "Schreiben",
+    "description": "Beschwerde- und formelle Schreibaufgaben",
+    "generatedAt": "2026-03-03T00:00:00.000Z"
+  },
+  "levels": {
+    "b2": {
+      "partOrder": [
+        "teil-1"
+      ],
+      "parts": {
+        "teil-1": {
+          "meta": {
+            "partLabel": "Schreiben Teil 1",
+            "partNumber": 1
+          },
+          "content": {
+            "instruction": "Lesen Sie die Anzeige und schreiben Sie eine formelle Beschwerde.",
+            "tasks": [
+              {
+                "id": "hotel-beschwerde-1",
+                "title": "1. Hotel",
+                "ad": {
+                  "header": "Octavian-Therme mit Hotel und Frühstück",
+                  "tagline": "Wasser, Wärme, Wohlfühlen",
+                  "paragraphs": [
+                    "Einfach mal raus aus dem Alltag? In den komfortablen Zimmern im Hotel an der Therme finden Sie Ruhe und Entspannung. Von Ihrem Balkon aus genießen Sie einen wunderschönen Blick in die Natur. Unser gut geschulter Service sorgt dafür, dass alle Gäste rundum wohlfühlen.",
+                    "In der Octavian-Therme können Sie ein großes Schwimmbecken, ein Dampfbad, eine Saunalandschaft, ein hervorragendes gastronomisches Angebot und vor allem viel Ruhe genießen. Hier können Sie allen Stress vergessen."
+                  ],
+                  "offer": [
+                    "Kururlaub: 2 Übernachtungen im Doppelzimmer",
+                    "Tageskarte für die Therme",
+                    "Frühstück vom Buffet",
+                    "Frisches Obst auf dem Zimmer",
+                    "Kostenloser Parkplatz"
+                  ],
+                  "price": "150 Euro pro Person",
+                  "address": [
+                    "Hotel an der Therme",
+                    "Thermenallee 5",
+                    "61352 Bad Hamburg"
+                  ]
+                },
+                "prompt": "Sie haben ein Wochenende in diesem Hotel verbracht und die Therme besucht. Leider waren Sie nicht zufrieden. Schreiben Sie eine Beschwerde.",
+                "requirements": {
+                  "mode": [
+                    "A) Behandeln Sie drei der folgenden Punkte.",
+                    "B) Oder behandeln Sie zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl."
+                  ],
+                  "points": [
+                    "Schreiben Sie, was Sie von Ihrem Aufenthalt erwartet hätten.",
+                    "Beschreiben Sie, wovon Sie sich erholen wollten.",
+                    "Erläutern Sie, warum Sie unzufrieden sind.",
+                    "Machen Sie Verbesserungsvorschläge."
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

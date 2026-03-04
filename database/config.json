@@ -36,6 +36,20 @@
           "teil-3": { "pointsPerQuestion": 1 }
         }
       }
+    },
+    {
+      "name": "shreiben",
+      "dataFile": "shreiben.json",
+      "timer": {
+        "enabled": false,
+        "durationMinutes": 45
+      },
+      "scoreConfig": {
+        "passPercent": 60,
+        "parts": {
+          "teil-1": { "pointsPerQuestion": 1 }
+        }
+      }
     }
   ]
 }

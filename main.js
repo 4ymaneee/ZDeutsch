@@ -14,6 +14,7 @@ const versionCloseBtn = document.getElementById("version-close");
 const state = {
   db: null,
   config: null,
+  shreibenDb: null,
   level: null,
   theme: null,
   pendingTheme: null,
@@ -177,6 +178,43 @@ function getPartConfig(levelKey, module) {
 function getPdfFilename(levelKey, themeKey, versionKey) {
   const version = versionKey || "default";
   return `${levelKey}-${themeKey}-${version}.pdf`;
+}
+
+async function loadNamedDatabase(fileName) {
+  if (!fileName) {
+    return null;
+  }
+  const paths = [`database/${fileName}`, `../database/${fileName}`];
+  for (const path of paths) {
+    try {
+      const response = await fetch(path);
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (error) {
+      // ignore and try next
+    }
+  }
+  return null;
+}
+
+function getShreibenTaskTitles(levelKey) {
+  const levelEntry = state.shreibenDb?.levels?.[levelKey];
+  if (!levelEntry) {
+    return [];
+  }
+  const order = levelEntry.partOrder || Object.keys(levelEntry.parts || {});
+  const titles = [];
+  order.forEach((partKey) => {
+    const tasks = levelEntry.parts?.[partKey]?.content?.tasks || [];
+    tasks.forEach((task) => {
+      const title = String(task?.title || "").trim();
+      if (title) {
+        titles.push(title);
+      }
+    });
+  });
+  return titles;
 }
 
 const PDF_STYLES = `
@@ -1220,18 +1258,31 @@ function renderLevelButtons() {
 
 function renderSectionButtons() {
   sectionList.innerHTML = "";
-  const sections = [
-    { label: "LESEN", value: "lesen" },
-    { label: "HÖREN", value: "horen" }
-  ];
-  sections.forEach((section) => {
-    const button = renderChoiceButton(section.label, state.section === section.value);
+  const sectionLabels = {
+    lesen: "LESEN",
+    horen: "HÖREN",
+    shreiben: "SHREIBEN"
+  };
+  const levelKey = state.level || "b1";
+  const levelEntry = state.parts?.levels?.[levelKey];
+  const partConfigs = Array.isArray(levelEntry) ? levelEntry : (levelEntry?.parts || []);
+  const availableSections = partConfigs.length
+    ? Array.from(new Set(partConfigs.map((entry) => normalize(entry.module)).filter(Boolean)))
+    : ["lesen", "horen"];
+
+  if (!availableSections.includes(state.section)) {
+    state.section = availableSections[0] || "lesen";
+  }
+
+  availableSections.forEach((value) => {
+    const label = sectionLabels[value] || value.toUpperCase();
+    const button = renderChoiceButton(label, state.section === value);
     button.type = "button";
     button.addEventListener("click", () => {
-      if (state.section === section.value) {
+      if (state.section === value) {
         return;
       }
-      state.section = section.value;
+      state.section = value;
       renderSectionButtons();
       renderThemeCards();
     });
@@ -1259,6 +1310,29 @@ function renderThemeCards() {
           "div",
           "rounded-2xl border border-rose/30 bg-rose/10 p-4 text-sm text-rose",
           "Für diese Ebene sind noch keine Hören-Codes verfügbar."
+        )
+      );
+    }
+    return;
+  }
+  if (state.section === "shreiben") {
+    const partConfig = getPartConfig(levelKey, "shreiben");
+    const taskTitles = getShreibenTaskTitles(levelKey);
+    themeGrid.append(
+      createEl(
+        "div",
+        "rounded-3xl border border-stone-200 bg-white/90 p-6 text-sm text-slate",
+        "Schreiben öffnet eine separate Übung mit Schreibaufgaben und Leitpunkten."
+      )
+    );
+    if (partConfig) {
+      themeGrid.append(buildShreibenCard(levelKey, partConfig, taskTitles));
+    } else {
+      themeGrid.append(
+        createEl(
+          "div",
+          "rounded-2xl border border-rose/30 bg-rose/10 p-4 text-sm text-rose",
+          "Für diese Ebene sind noch keine Schreiben-Aufgaben verfügbar."
         )
       );
     }
@@ -1398,6 +1472,53 @@ function buildHorenCard(levelKey, partConfig) {
   return card;
 }
 
+function buildShreibenCard(levelKey, partConfig, taskTitles = []) {
+  const title = partConfig?.name || "Schreiben";
+  const subtitle = taskTitles.length
+    ? `Thema: ${taskTitles.join(" • ")}`
+    : (partConfig?.description || "Bearbeiten Sie eine Schreibaufgabe mit klaren Leitpunkten.");
+  const topicCount = taskTitles.length || 1;
+  const card = createEl("a", "theme-card");
+  card.href = `shreiben.html?level=${levelKey}`;
+
+  const topRow = createEl("div", "theme-card-header");
+  const titleWrap = createEl("div", "theme-card-title-wrap");
+  titleWrap.append(
+    createEl("div", "theme-card-title", title),
+    createEl("div", "theme-card-subtitle", "Writing practice")
+  );
+
+  const levelBadge = createEl(
+    "span",
+    "theme-card-level",
+    levelKey.toUpperCase()
+  );
+  const actions = createEl("div", "theme-card-actions");
+  actions.append(levelBadge);
+  topRow.append(titleWrap, actions);
+
+  const summaryRow = createEl("div", "theme-card-summary");
+  const scoreBox = createEl("div", "theme-card-score");
+  scoreBox.append(
+    createEl("span", "theme-card-score-label", "Topics"),
+    createEl("span", "theme-card-score-value", String(topicCount))
+  );
+  summaryRow.append(
+    createEl("span", "theme-card-status theme-card-status-progress", "Ready to write"),
+    scoreBox
+  );
+
+  const topicPreview = createEl("div", "text-sm text-slate leading-relaxed", subtitle);
+  const meta = createEl("div", "theme-card-meta");
+  meta.append(
+    makeMetaPill(topicCount === 1 ? "1 writing task" : `${topicCount} writing tasks`),
+    makeMetaPill("Autosave enabled")
+  );
+
+  card.append(topRow, summaryRow, topicPreview, meta);
+  return card;
+}
+
 function renderHome() {
   renderLevelButtons();
   renderSectionButtons();
@@ -1451,6 +1572,7 @@ async function init() {
   state.config = await loadConfig();
   setHomeLoaderVisible(true);
   state.db = await loadDatabase(state.config);
+  state.shreibenDb = await loadNamedDatabase("shreiben.json");
   state.parts = await loadParts();
   setHomeLoaderVisible(false);
   if (!state.db) {

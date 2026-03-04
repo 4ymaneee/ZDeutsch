@@ -1135,13 +1135,13 @@
                           "id": "469770097314284-den-europawahlen-3",
                           "number": 3,
                           "text": "",
-                          "correct": false
+                          "correct": true
                         },
                         {
                           "id": "469770097314284-den-europawahlen-4",
                           "number": 4,
                           "text": "4 : ..............................................................",
-                          "correct": true
+                          "correct": false
                         },
                         {
                           "id": "469770097314284-den-europawahlen-5",
