@@ -572,6 +572,51 @@ function getSprachAnswerMap(content) {
   return new Map((answers || []).map((item) => [String(item.id), item.answer || item.text || ""]));
 }
 
+function parseSprachTextTemplate(value) {
+  const template = String(value || "");
+  const tokens = [];
+  const matcher = /\[\[\s*([^\]]+)\s*\]\]/g;
+  let lastIndex = 0;
+  let match = null;
+
+  while ((match = matcher.exec(template)) !== null) {
+    if (match.index > lastIndex) {
+      tokens.push({
+        type: "text",
+        value: template.slice(lastIndex, match.index)
+      });
+    }
+    tokens.push({
+      type: "blank",
+      id: String(match[1] || "").trim()
+    });
+    lastIndex = matcher.lastIndex;
+  }
+
+  if (lastIndex < template.length) {
+    tokens.push({
+      type: "text",
+      value: template.slice(lastIndex)
+    });
+  }
+
+  return tokens;
+}
+
+function getTemplateBlankIds(tokens) {
+  const ids = [];
+  (tokens || []).forEach((token) => {
+    if (token?.type !== "blank") {
+      return;
+    }
+    const id = String(token.id || "").trim();
+    if (id && !ids.includes(id)) {
+      ids.push(id);
+    }
+  });
+  return ids;
+}
+
 function countCorrectSprach(content, responses) {
   const answerMap = getSprachAnswerMap(content);
   let correct = 0;
@@ -625,7 +670,7 @@ function countAnsweredTeil3(content, responses) {
 }
 
 function countAnsweredSprach(content, responses) {
-  const blanks = (content.blanks && content.blanks.length) ? content.blanks : (content.answers || []);
+  const blanks = (content.answers && content.answers.length) ? content.answers : (content.blanks || []);
   let answered = 0;
   blanks.forEach((blank) => {
     if (hasResponseValue(responses[blank.id])) {
@@ -1199,26 +1244,38 @@ function renderSprachbausteine1(content) {
   leftPanel.append(createEl("h2", "font-display text-xl", content.title || "Sprachbausteine"));
   leftPanel.append(createEl("p", "mt-2 text-sm text-slate", content.instruction || ""));
 
-  const blanks = content.blanks || [];
-  const answers = (content.answers || []).length ? content.answers : blanks;
-  if (!active.blankId && blanks.length) {
-    active.blankId = blanks[0].id;
+  const blanks = Array.isArray(content.blanks) ? content.blanks : [];
+  const answers = Array.isArray(content.answers) ? content.answers : [];
+  const answerMap = new Map((answers || []).map((item) => [String(item.id), item.answer || item.text || ""]));
+  const templateTokens = parseSprachTextTemplate(content.text || "");
+  const templateBlankIds = getTemplateBlankIds(templateTokens);
+  const blankOrder = blanks.length
+    ? blanks.map((blank) => String(blank.id))
+    : templateBlankIds;
+  const blankIds = Array.from(new Set([...templateBlankIds, ...blankOrder]));
+
+  if ((!active.blankId || !blankIds.includes(String(active.blankId))) && blankIds.length) {
+    active.blankId = blankIds[0];
   }
 
-  const answerMap = new Map((answers || []).map((item) => [item.id, item.answer || item.text || ""]));
-  const textBlock = createEl("p", "mt-6 text-sm leading-relaxed");
+  const textBlock = createEl("p", "mt-6 text-sm leading-relaxed whitespace-pre-wrap");
 
-  (content.segments || []).forEach((segment) => {
-    if (segment.type === "text") {
-      textBlock.append(document.createTextNode(segment.value));
+  templateTokens.forEach((token) => {
+    if (token.type === "text") {
+      textBlock.append(document.createTextNode(token.value));
       return;
     }
 
-    const selected = responses[segment.id];
-    const correct = answerMap.get(segment.id) || segment.answer || "";
+    const blankId = String(token.id || "").trim();
+    if (!blankId) {
+      return;
+    }
+
+    const selected = responses[blankId];
+    const correct = answerMap.get(blankId) || "";
     const isCorrect = submitted && selected && normalize(selected) === normalize(correct);
     const isWrong = submitted && selected && normalize(selected) !== normalize(correct);
-    const isActive = segment.id === active.blankId;
+    const isActive = blankId === String(active.blankId);
 
     const blank = createEl(
       "button",
@@ -1230,11 +1287,11 @@ function renderSprachbausteine1(content) {
         "border-stone-300 bg-stone-50 text-slate",
         isActive ? "ring-2 ring-azure/20" : ""
       ),
-      selected || `(${segment.id})`
+      selected || `(${blankId})`
     );
     blank.type = "button";
     blank.addEventListener("click", () => {
-      active.blankId = segment.id;
+      active.blankId = blankId;
       renderCurrentPart();
     });
     textBlock.append(blank);
@@ -1249,20 +1306,22 @@ function renderSprachbausteine1(content) {
   rightPanel.append(header);
 
   const list = createEl("div", "mt-4 space-y-4");
-  blanks.forEach((blank) => {
-    const selected = responses[blank.id];
-    const correct = answerMap.get(blank.id) || "";
+  blankOrder.forEach((id) => {
+    const blankId = String(id);
+    const blank = blanks.find((item) => String(item.id) === blankId) || { id: blankId, options: [] };
+    const selected = responses[blankId];
+    const correct = answerMap.get(blankId) || "";
     const card = createEl(
       "div",
       classNames(
         "rounded-2xl border p-3",
-        blank.id === active.blankId ? "border-azure/50 bg-azure/10" : "border-stone-200 bg-white"
+        blankId === String(active.blankId) ? "border-azure/50 bg-azure/10" : "border-stone-200 bg-white"
       )
     );
 
     const heading = createEl("div", "flex items-center justify-between gap-2");
     heading.append(
-      createEl("div", "text-xs uppercase tracking-[0.2em] text-slate font-display", `Lücke ${blank.id}`)
+      createEl("div", "text-xs uppercase tracking-[0.2em] text-slate font-display", `Lücke ${blankId}`)
     );
     card.append(heading);
 
@@ -1285,8 +1344,8 @@ function renderSprachbausteine1(content) {
       );
       option.type = "button";
       option.addEventListener("click", () => {
-        active.blankId = blank.id;
-        responses[blank.id] = optionText;
+        active.blankId = blankId;
+        responses[blankId] = optionText;
         renderCurrentPart();
       });
       options.append(option);
@@ -1308,32 +1367,41 @@ function renderSprachbausteine2(content) {
   leftPanel.append(createEl("h2", "font-display text-xl", content.title || "Sprachbausteine"));
   leftPanel.append(createEl("p", "mt-2 text-sm text-slate", content.instruction || ""));
 
-  const blanks = (content.blanks && content.blanks.length) ? content.blanks : (content.answers || []);
-  const answers = (content.answers || []).length ? content.answers : content.blanks || [];
-  if (!active.blankId && blanks.length) {
-    active.blankId = blanks[0].id;
+  const answers = Array.isArray(content.answers) ? content.answers : [];
+  const answerMap = new Map((answers || []).map((item) => [String(item.id), item.answer || item.text || ""]));
+  const templateTokens = parseSprachTextTemplate(content.text || "");
+  const templateBlankIds = getTemplateBlankIds(templateTokens);
+  const answerIds = answers.map((item) => String(item.id));
+  const blankIds = Array.from(new Set([...templateBlankIds, ...answerIds]));
+
+  if ((!active.blankId || !blankIds.includes(String(active.blankId))) && blankIds.length) {
+    active.blankId = blankIds[0];
   }
 
-  const answerMap = new Map((answers || []).map((item) => [item.id, item.answer || item.text || ""]));
   const usedWords = new Map();
   Object.entries(responses).forEach(([blankId, selected]) => {
     if (selected) {
-      usedWords.set(normalize(selected), Number.parseInt(blankId, 10));
+      usedWords.set(normalize(selected), String(blankId));
     }
   });
-  const textBlock = createEl("p", "mt-6 text-sm leading-relaxed");
+  const textBlock = createEl("p", "mt-6 text-sm leading-relaxed whitespace-pre-wrap");
 
-  (content.segments || []).forEach((segment) => {
-    if (segment.type === "text") {
-      textBlock.append(document.createTextNode(segment.value));
+  templateTokens.forEach((token) => {
+    if (token.type === "text") {
+      textBlock.append(document.createTextNode(token.value));
       return;
     }
 
-    const selected = responses[segment.id];
-    const correct = answerMap.get(segment.id) || segment.answer || "";
+    const blankId = String(token.id || "").trim();
+    if (!blankId) {
+      return;
+    }
+
+    const selected = responses[blankId];
+    const correct = answerMap.get(blankId) || "";
     const isCorrect = submitted && selected && normalize(selected) === normalize(correct);
     const isWrong = submitted && selected && normalize(selected) !== normalize(correct);
-    const isActive = segment.id === active.blankId;
+    const isActive = blankId === String(active.blankId);
 
     const blank = createEl(
       "button",
@@ -1345,26 +1413,26 @@ function renderSprachbausteine2(content) {
         "border-stone-300 bg-stone-50 text-slate",
         isActive ? "ring-2 ring-azure/20" : ""
       ),
-      selected || `(${segment.id})`
+      selected || `(${blankId})`
     );
     blank.type = "button";
     blank.addEventListener("click", () => {
       if (active.wordText) {
         const usedBy = usedWords.get(normalize(active.wordText));
-        if (!usedBy || usedBy === segment.id) {
-          responses[segment.id] = active.wordText;
-          active.blankId = segment.id;
+        if (!usedBy || usedBy === blankId) {
+          responses[blankId] = active.wordText;
+          active.blankId = blankId;
           active.wordText = null;
           renderCurrentPart();
           return;
         }
       }
-      active.blankId = segment.id;
+      active.blankId = blankId;
       renderCurrentPart();
     });
     blank.addEventListener("dblclick", () => {
-      if (responses[segment.id]) {
-        delete responses[segment.id];
+      if (responses[blankId]) {
+        delete responses[blankId];
         renderCurrentPart();
       }
     });
@@ -1378,11 +1446,11 @@ function renderSprachbausteine2(content) {
         return;
       }
       const usedBy = usedWords.get(normalize(wordText));
-      if (usedBy && usedBy !== segment.id) {
+      if (usedBy && usedBy !== blankId) {
         return;
       }
-      responses[segment.id] = wordText;
-      active.blankId = segment.id;
+      responses[blankId] = wordText;
+      active.blankId = blankId;
       active.wordText = null;
       renderCurrentPart();
     });
@@ -1401,23 +1469,17 @@ function renderSprachbausteine2(content) {
   );
   rightPanel.append(header);
 
-  const derivedOptions = (content.options && content.options.length)
-    ? content.options
-    : (content.blanks || []).map((blank) => blank.answer).filter(Boolean);
-  const uniqueOptions = Array.from(new Set(derivedOptions.map((text) => normalize(text))))
-    .map((key) => derivedOptions.find((text) => normalize(text) === key))
+  const optionSource = Array.isArray(content.options) ? content.options : [];
+  const uniqueOptions = Array.from(new Set(optionSource.map((text) => normalize(text))))
+    .map((key) => optionSource.find((text) => normalize(text) === key))
     .filter(Boolean);
 
-  const baseWordBank = (content.wordBank && content.wordBank.length)
-    ? content.wordBank
-    : uniqueOptions.map((text) => ({ id: "", text }));
-
-  const wordBankSignature = baseWordBank
-    .map((word) => `${normalize(word.id || "")}:${normalize(word.text || "")}`)
+  const wordBankSignature = uniqueOptions
+    .map((word) => normalize(word))
     .join("|");
 
   if (!Array.isArray(active.shuffledWordBank) || active.wordBankSignature !== wordBankSignature) {
-    active.shuffledWordBank = shuffleList(baseWordBank);
+    active.shuffledWordBank = shuffleList(uniqueOptions);
     active.wordBankSignature = wordBankSignature;
   }
 
@@ -1429,15 +1491,15 @@ function renderSprachbausteine2(content) {
     );
   } else {
     const grid = createEl("div", "mt-4 grid grid-cols-2 gap-2");
-    wordBank.forEach((word) => {
+    wordBank.forEach((wordText) => {
       const selected = responses[active.blankId];
       const correct = answerMap.get(active.blankId) || "";
-      const isSelected = normalize(word.text) === normalize(selected);
-      const isCorrect = submitted && normalize(word.text) === normalize(correct);
-      const isWrong = submitted && isSelected && normalize(word.text) !== normalize(correct);
-      const usedBy = usedWords.get(normalize(word.text));
+      const isSelected = normalize(wordText) === normalize(selected);
+      const isCorrect = submitted && normalize(wordText) === normalize(correct);
+      const isWrong = submitted && isSelected && normalize(wordText) !== normalize(correct);
+      const usedBy = usedWords.get(normalize(wordText));
       const isUsedByOther = !submitted && usedBy && usedBy !== active.blankId;
-      const isChoiceActive = normalize(active.wordText) === normalize(word.text);
+      const isChoiceActive = normalize(active.wordText) === normalize(wordText);
 
       const card = createEl(
         "button",
@@ -1449,7 +1511,7 @@ function renderSprachbausteine2(content) {
           isUsedByOther ? "border-stone-200 bg-stone-50 text-slate opacity-50 cursor-not-allowed" :
           "border-stone-300 bg-white text-ink hover:border-stone-300"
         ),
-        `${word.id} ${word.text}`.trim()
+        wordText
       );
       card.type = "button";
       card.draggable = true;
@@ -1458,7 +1520,7 @@ function renderSprachbausteine2(content) {
       }
       card.addEventListener("click", () => {
         if (active.blankId && (!isUsedByOther || usedBy === active.blankId)) {
-          responses[active.blankId] = word.text;
+          responses[active.blankId] = wordText;
           active.wordText = null;
           renderCurrentPart();
           return;
@@ -1466,7 +1528,7 @@ function renderSprachbausteine2(content) {
         if (isUsedByOther) {
           return;
         }
-        active.wordText = word.text;
+        active.wordText = wordText;
         renderCurrentPart();
       });
       card.addEventListener("dblclick", () => {
@@ -1477,7 +1539,7 @@ function renderSprachbausteine2(content) {
         }
       });
       card.addEventListener("dragstart", (event) => {
-        event.dataTransfer?.setData("text/plain", word.text);
+        event.dataTransfer?.setData("text/plain", wordText);
       });
       grid.append(card);
     });
