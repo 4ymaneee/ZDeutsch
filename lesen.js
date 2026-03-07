@@ -617,6 +617,52 @@ function getTemplateBlankIds(tokens) {
   return ids;
 }
 
+function createTranslationToggle(translatedText) {
+  const text = String(translatedText || "").trim();
+  if (!text) {
+    return null;
+  }
+
+  const wrapper = createEl("div", "mt-2");
+  const showBtn = createEl(
+    "button",
+    "rounded-full border border-amber/40 bg-amber/10 px-3 py-1 text-[10px] font-display uppercase tracking-[0.2em] text-amber",
+    "Arabic Translation"
+  );
+  showBtn.type = "button";
+
+  const panel = createEl("div", "mt-2 hidden rounded-xl border border-amber/40 bg-amber/10 p-3");
+  const header = createEl("div", "flex items-center justify-between gap-2");
+  const title = createEl("div", "text-[10px] font-display uppercase tracking-[0.2em] text-amber", "Arabic");
+  const closeBtn = createEl(
+    "button",
+    "h-6 w-6 rounded-lg border border-amber/40 bg-white text-amber flex items-center justify-center",
+    "×"
+  );
+  closeBtn.type = "button";
+  const body = createEl("p", "mt-2 text-sm leading-relaxed whitespace-pre-wrap text-ink", text);
+  body.setAttribute("dir", "rtl");
+  panel.append(header, body);
+  header.append(title, closeBtn);
+
+  showBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    panel.classList.remove("hidden");
+    showBtn.classList.add("hidden");
+  });
+
+  closeBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    panel.classList.add("hidden");
+    showBtn.classList.remove("hidden");
+  });
+
+  wrapper.append(showBtn, panel);
+  return wrapper;
+}
+
 function countCorrectSprach(content, responses) {
   const answerMap = getSprachAnswerMap(content);
   let correct = 0;
@@ -929,9 +975,16 @@ function renderLesenTeil1(content) {
 
     card.append(createEl("div", "h-8 w-8 rounded-xl border border-stone-200 bg-stone-50 flex items-center justify-center text-sm font-display text-slate", item.id));
 
-    card.append(createEl("p", "mt-3 text-sm text-ink", item.text));
+    card.append(createEl("p", "mt-3 text-sm text-ink whitespace-pre-wrap", item.text));
 
-    list.append(card);
+    const cardWrap = createEl("div", "rounded-2xl");
+    cardWrap.append(card);
+    const translationToggle = createTranslationToggle(item.translated);
+    if (translationToggle) {
+      cardWrap.append(translationToggle);
+    }
+
+    list.append(cardWrap);
   });
   leftPanel.append(list);
 
@@ -1012,7 +1065,14 @@ function renderLesenTeil1(content) {
       }
     });
 
-    options.append(option);
+    const optionWrap = createEl("div", "space-y-2");
+    optionWrap.append(option);
+    const translationToggle = createTranslationToggle(headline.translated);
+    if (translationToggle) {
+      optionWrap.append(translationToggle);
+    }
+
+    options.append(optionWrap);
   });
   rightPanel.append(options, renderActionBar(partKey));
 }
@@ -1026,8 +1086,15 @@ function renderLesenTeil2(content) {
   leftPanel.append(createEl("span", "inline-flex items-center rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-slate font-display", "Lesetext"));
   leftPanel.append(createEl("h2", "mt-4 text-2xl font-display", content.passage?.title || ""));
 
-  (content.passage?.paragraphs || []).forEach((para) => {
-    leftPanel.append(createEl("p", "mt-4 text-sm text-ink leading-relaxed", para));
+  const translatedParagraphs = Array.isArray(content.passage?.translated) ? content.passage.translated : [];
+  (content.passage?.paragraphs || []).forEach((para, index) => {
+    const block = createEl("div", "mt-4");
+    block.append(createEl("p", "text-sm text-ink leading-relaxed whitespace-pre-wrap", para));
+    const translationToggle = createTranslationToggle(translatedParagraphs[index]);
+    if (translationToggle) {
+      block.append(translationToggle);
+    }
+    leftPanel.append(block);
   });
 
   const header = createEl("div", "space-y-1");
@@ -1122,7 +1189,7 @@ function renderLesenTeil3(content) {
     item.type = "button";
     item.draggable = true;
     item.append(createEl("div", "h-7 w-7 rounded-lg border border-stone-300 bg-white flex items-center justify-center text-xs font-display text-slate", ad.id));
-    item.append(createEl("p", "mt-2 text-sm", ad.text));
+    item.append(createEl("p", "mt-2 text-sm whitespace-pre-wrap", ad.text));
     if (isChoiceActive) {
       item.classList.add("ring-2", "ring-azure/30");
     }
@@ -1153,7 +1220,13 @@ function renderLesenTeil3(content) {
       event.dataTransfer?.setData("text/plain", ad.id);
     });
 
-    adsGrid.append(item);
+    const adWrap = createEl("div", "space-y-2");
+    adWrap.append(item);
+    const adTranslationToggle = createTranslationToggle(ad.translated);
+    if (adTranslationToggle) {
+      adWrap.append(adTranslationToggle);
+    }
+    adsGrid.append(adWrap);
   });
   leftPanel.append(adsGrid);
 
@@ -1228,9 +1301,16 @@ function renderLesenTeil3(content) {
 
     card.append(createEl("p", "text-xs uppercase tracking-[0.2em] text-slate font-display", `Situation ${item.id}`));
 
-    card.append(createEl("p", "mt-2 text-sm", item.text));
+    card.append(createEl("p", "mt-2 text-sm whitespace-pre-wrap", item.text));
 
-    list.append(card);
+    const cardWrap = createEl("div", "space-y-2");
+    cardWrap.append(card);
+    const translationToggle = createTranslationToggle(item.translated);
+    if (translationToggle) {
+      cardWrap.append(translationToggle);
+    }
+
+    list.append(cardWrap);
   });
   rightPanel.append(list, renderActionBar(partKey));
 }
@@ -1297,6 +1377,10 @@ function renderSprachbausteine1(content) {
     textBlock.append(blank);
   });
   leftPanel.append(textBlock);
+  const textTranslationToggle = createTranslationToggle(content.translated);
+  if (textTranslationToggle) {
+    leftPanel.append(textTranslationToggle);
+  }
 
   const header = createEl("div", "space-y-1");
   header.append(
@@ -1457,6 +1541,10 @@ function renderSprachbausteine2(content) {
     textBlock.append(blank);
   });
   leftPanel.append(textBlock);
+  const textTranslationToggle = createTranslationToggle(content.translated);
+  if (textTranslationToggle) {
+    leftPanel.append(textTranslationToggle);
+  }
 
   const header = createEl("div", "space-y-1");
   header.append(
