@@ -31,6 +31,7 @@ const DEFAULT_CONFIG = {
 const COMMUNITY_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/CwFPqDeRbmqL5Rtx02NOCP?mode=hq1tswi";
 const COMMUNITY_WHATSAPP_COMPOSE_URL = "https://wa.me/?text=";
 const LESEN_PROGRESS_STORAGE_KEY = "zdeutsch.lesen.progress.v1";
+const MEINLANG_AD_PREF_KEY = "zdeutsch.meinlang.showAd.override";
 
 function classNames(...items) {
   return items.filter(Boolean).join(" ");
@@ -94,10 +95,32 @@ function normalizeConfig(config) {
 }
 
 function isMeinLangAdEnabled(config) {
+  const stored = getStoredMeinLangAdPreference();
+  if (typeof stored === "boolean") {
+    return stored;
+  }
   if (typeof config?.showMeinLangAd === "boolean") {
     return config.showMeinLangAd;
   }
   return DEFAULT_CONFIG.showMeinLangAd;
+}
+
+function getStoredMeinLangAdPreference() {
+  const raw = window.localStorage.getItem(MEINLANG_AD_PREF_KEY);
+  if (raw === null) {
+    return null;
+  }
+  if (raw === "true") {
+    return true;
+  }
+  if (raw === "false") {
+    return false;
+  }
+  return null;
+}
+
+function setMeinLangAdPreference(enabled) {
+  window.localStorage.setItem(MEINLANG_AD_PREF_KEY, enabled ? "true" : "false");
 }
 
 async function loadConfig() {

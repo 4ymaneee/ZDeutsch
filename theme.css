@@ -509,80 +509,77 @@ body.community-modal-open {
 }
 
 .meinlang-promo-shell {
-  --ml-ink: #153d2e;
+  --ml-ink: #11382a;
   --ml-mint: #1f9d62;
-  border: 1px solid #d6e2da;
-  border-radius: 22px;
-  padding: 14px;
-  background: linear-gradient(160deg, #ffffff 0%, #f7fbf9 100%);
-  box-shadow: 0 8px 18px rgba(14, 56, 37, 0.08);
+  --ml-mint-deep: #15784b;
+  --ml-chip: #e8f6ef;
+  width: min(680px, 100%);
+  border: 1px solid #d4e6dd;
+  border-radius: 18px;
+  padding: 10px 12px;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(31, 157, 98, 0.26), transparent 34%),
+    radial-gradient(circle at 20% 88%, rgba(255, 204, 0, 0.14), transparent 36%),
+    linear-gradient(145deg, #ffffff 0%, #f5fbf7 56%, #eff8f3 100%);
+  box-shadow: 0 9px 20px rgba(14, 56, 37, 0.1);
+  overflow: hidden;
 }
 
-.meinlang-promo-head {
+.meinlang-promo-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  align-items: stretch;
+}
+
+.meinlang-promo-copy {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
 }
 
 .meinlang-brand-row {
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  flex: 1 1 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   min-width: 0;
 }
 
 .meinlang-brand-logo {
-  width: 164px;
-  max-width: 42vw;
+  width: 118px;
   height: auto;
   display: block;
 }
 
-.meinlang-brand-copy {
-  min-width: 0;
-  align-self: center;
+.meinlang-site-link {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.61rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #2f6d53;
+  text-decoration: none;
+  border-bottom: 1px dashed #81b79b;
+  white-space: nowrap;
 }
 
 .meinlang-title {
   margin: 0;
   font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(1.08rem, 1.9vw, 1.4rem);
-  line-height: 1.18;
+  font-size: clamp(0.95rem, 1.35vw, 1.45rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
   color: var(--ml-ink);
+  max-width: 20ch;
 }
 
 .meinlang-subtitle {
-  margin: 5px 0 0;
-  font-size: 0.84rem;
-  color: #4f6459;
-  max-width: 60ch;
-}
-
-.meinlang-promo-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  flex: 0 0 auto;
-}
-
-.meinlang-video-frame {
-  width: 240px;
-  max-width: 34vw;
-  aspect-ratio: 16 / 9;
-  border-radius: 12px;
-  border: 1px solid #d6e2da;
-  background: #111a15;
-  overflow: hidden;
-}
-
-.meinlang-promo-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+  margin: 0;
+  font-size: 0.71rem;
+  line-height: 1.35;
+  color: #315245;
+  max-width: 52ch;
 }
 
 .meinlang-cta {
@@ -590,48 +587,54 @@ body.community-modal-open {
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  padding: 0.48rem 0.9rem;
+  padding: 0.4rem 0.72rem;
   text-decoration: none;
-  border: 1px solid transparent;
+  border: 1px solid #c4decf;
   font-family: "Space Grotesk", sans-serif;
-  font-size: 0.62rem;
+  font-size: 0.53rem;
   text-transform: uppercase;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.15em;
   font-weight: 700;
   transition: transform 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease, border-color 0.16s ease;
 }
 
 .meinlang-cta:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .meinlang-cta-primary {
-  background: var(--ml-mint);
-  border-color: #168551;
+  background: linear-gradient(135deg, var(--ml-mint) 0%, var(--ml-mint-deep) 100%);
+  border-color: #166f45;
   color: #ffffff;
-  box-shadow: 0 8px 16px rgba(31, 157, 98, 0.18);
+  box-shadow: 0 14px 22px rgba(31, 157, 98, 0.3);
+}
+
+.meinlang-promo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 0;
 }
 
 .meinlang-feature-pills {
-  margin-top: 9px;
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 4px;
 }
 
 .meinlang-feature-pill {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
-  padding: 0.18rem 0.55rem;
+  padding: 0.18rem 0.42rem;
   font-family: "Space Grotesk", sans-serif;
-  font-size: 0.56rem;
-  letter-spacing: 0.11em;
+  font-size: 0.48rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 700;
-  color: #365246;
-  background: #f2f6f4;
-  border: 1px solid #d8e2dc;
+  color: #2d5a45;
+  background: var(--ml-chip);
+  border: 1px solid #cae2d5;
 }
 
 .meinlang-header-ad-link {
@@ -912,49 +915,53 @@ body.community-modal-open {
 
 @media (max-width: 767px) {
   .meinlang-promo-shell {
-    border-radius: 18px;
-    padding: 12px;
+    width: 100%;
+    border-radius: 16px;
+    padding: 9px 10px;
   }
 
-  .meinlang-promo-head {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 10px;
+  .meinlang-promo-grid {
+    grid-template-columns: 1fr;
+    gap: 11px;
   }
 
   .meinlang-brand-row {
-    align-items: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
   }
 
   .meinlang-brand-logo {
-    width: 146px;
-    max-width: 52vw;
+    width: 104px;
+  }
+
+  .meinlang-site-link {
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
   }
 
   .meinlang-title {
-    font-size: 1.02rem;
-  }
-
-  .meinlang-subtitle {
-    font-size: 0.8rem;
-  }
-
-  .meinlang-promo-right {
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .meinlang-video-frame {
-    width: min(176px, 50vw);
+    font-size: 0.95rem;
     max-width: none;
   }
 
+  .meinlang-subtitle {
+    font-size: 0.66rem;
+  }
+
+  .meinlang-promo-actions {
+    width: 100%;
+  }
+
   .meinlang-cta {
-    white-space: nowrap;
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 0.5rem;
+    padding: 0.4rem 0.54rem;
+  }
+
+  .meinlang-feature-pill {
+    font-size: 0.46rem;
   }
 
   .community-promo {

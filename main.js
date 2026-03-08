@@ -10,8 +10,6 @@ const versionOverlay = document.getElementById("version-overlay");
 const versionTitle = document.getElementById("version-title");
 const versionOptions = document.getElementById("version-options");
 const versionCloseBtn = document.getElementById("version-close");
-const meinlangPromoShell = document.getElementById("meinlang-promo-shell");
-const meinlangPromoVideo = document.getElementById("meinlang-promo-video");
 
 const state = {
   db: null,
@@ -26,44 +24,6 @@ const state = {
 };
 
 const SECTION_KEYS = ["lesen", "horen", "shreiben"];
-const MEINLANG_PROMO_VIDEOS = [
-  "assets/meinlang/ads/promo-arabic.mp4",
-  "assets/meinlang/ads/promo-pro-v3.mp4"
-];
-
-function setupMeinLangPromo() {
-  const adEnabled = typeof isMeinLangAdEnabled === "function"
-    ? isMeinLangAdEnabled(state.config)
-    : state.config?.showMeinLangAd !== false;
-
-  if (!adEnabled) {
-    if (meinlangPromoShell) {
-      meinlangPromoShell.classList.add("hidden");
-    }
-    return;
-  }
-
-  if (meinlangPromoShell) {
-    meinlangPromoShell.classList.remove("hidden");
-  }
-  if (!meinlangPromoVideo) {
-    return;
-  }
-
-  const pool = MEINLANG_PROMO_VIDEOS.filter(Boolean);
-  if (!pool.length) {
-    return;
-  }
-
-  const selected = pool[Math.floor(Math.random() * pool.length)];
-  meinlangPromoVideo.src = selected;
-  const playPromise = meinlangPromoVideo.play();
-  if (playPromise && typeof playPromise.catch === "function") {
-    playPromise.catch(() => {
-      // autoplay may be blocked by browser policies
-    });
-  }
-}
 
 function getSectionFromHash() {
   const raw = String(window.location.hash || "")
@@ -1676,7 +1636,6 @@ async function init() {
     setupCommunityWidgets();
   }
   state.config = await loadConfig();
-  setupMeinLangPromo();
   setHomeLoaderVisible(true);
   state.db = await loadDatabase(state.config);
   state.shreibenDb = await loadNamedDatabase("shreiben.json");
