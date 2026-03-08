@@ -1,6 +1,7 @@
 {
   "fontScale": 1,
   "asideWidth": "40%",
+  "showMeinLangAd": false,
   "defaultModule": "lesen",
   "modules": [
     {

@@ -31,6 +31,7 @@ const prevBtn = document.getElementById("prev-btn");
 const nextBtn = document.getElementById("next-btn");
 const asideToggle = document.getElementById("aside-toggle");
 const asideOverlay = document.getElementById("aside-overlay");
+const headerRoot = document.querySelector("header");
 
 // initialize ARIA state
 if (asideToggle) {
@@ -65,6 +66,29 @@ const state = {
     intervalId: null
   }
 };
+
+const PART_AD_INTERVAL_MS = 3 * 60 * 60 * 1000;
+const PART_AD_LAST_SHOWN_KEY = "zdeutsch.meinlang.partAd.lastShownAt";
+const PART_AD_HEADER_VISIBLE_KEY = "zdeutsch.meinlang.partAd.headerVisible";
+const PART_AD_VIDEOS = [
+  "assets/meinlang/ads/promo-arabic.mp4",
+  "assets/meinlang/ads/promo-pro-v3.mp4"
+];
+
+let partTransitionBusy = false;
+let adTimerIntervalId = null;
+let partAdOverlay = null;
+let partAdVideo = null;
+let partAdCountdown = null;
+let partAdVisitLink = null;
+let partAdHeaderLink = null;
+
+function isPartAdEnabled() {
+  if (typeof isMeinLangAdEnabled === "function") {
+    return isMeinLangAdEnabled(state.config);
+  }
+  return state.config?.showMeinLangAd !== false;
+}
 
 const selectionGuard = {
   pointerDown: false,
@@ -248,6 +272,226 @@ function setTimerEnabled(enabled) {
     startExamTimer();
   } else {
     updateTimerDisplay();
+  }
+}
+
+function clearPartAdTimer() {
+  if (adTimerIntervalId) {
+    window.clearInterval(adTimerIntervalId);
+    adTimerIntervalId = null;
+  }
+}
+
+function formatAdCountdown(seconds) {
+  const safe = Math.max(0, Math.ceil(seconds));
+  const mins = Math.floor(safe / 60);
+  const secs = safe % 60;
+  return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+}
+
+function getPartAdLastShownAt() {
+  const raw = window.localStorage.getItem(PART_AD_LAST_SHOWN_KEY);
+  const parsed = raw ? Number.parseInt(raw, 10) : NaN;
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function setPartAdLastShownAt(timestamp) {
+  window.localStorage.setItem(PART_AD_LAST_SHOWN_KEY, String(timestamp));
+}
+
+function shouldShowPartTransitionAd() {
+  if (!isPartAdEnabled()) {
+    return false;
+  }
+  const now = Date.now();
+  const lastShownAt = getPartAdLastShownAt();
+  return now - lastShownAt >= PART_AD_INTERVAL_MS;
+}
+
+function pickPartAdVideo() {
+  const pool = PART_AD_VIDEOS.filter(Boolean);
+  if (!pool.length) {
+    return "";
+  }
+  const index = Math.floor(Math.random() * pool.length);
+  return pool[index];
+}
+
+function ensurePartAdHeaderLink() {
+  if (partAdHeaderLink && document.body.contains(partAdHeaderLink)) {
+    return;
+  }
+  const rightGroup = settingsBtn?.parentElement;
+  if (!rightGroup) {
+    return;
+  }
+  const link = createEl("a", "meinlang-header-ad-link", "Visit MeinLang");
+  link.href = "https://meinlang.com";
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  partAdHeaderLink = link;
+  rightGroup.insertBefore(link, settingsBtn || null);
+}
+
+function removePartAdHeaderLink() {
+  if (partAdHeaderLink && partAdHeaderLink.parentElement) {
+    partAdHeaderLink.parentElement.removeChild(partAdHeaderLink);
+  }
+  partAdHeaderLink = null;
+}
+
+function applyHeaderAdStateFromStorage() {
+  if (!isPartAdEnabled()) {
+    removePartAdHeaderLink();
+    return;
+  }
+  if (window.localStorage.getItem(PART_AD_HEADER_VISIBLE_KEY) === "1") {
+    ensurePartAdHeaderLink();
+  }
+}
+
+function markHeaderAdVisible() {
+  if (!isPartAdEnabled()) {
+    return;
+  }
+  window.localStorage.setItem(PART_AD_HEADER_VISIBLE_KEY, "1");
+  ensurePartAdHeaderLink();
+}
+
+function ensurePartAdOverlay() {
+  if (partAdOverlay && document.body.contains(partAdOverlay)) {
+    return;
+  }
+  const overlay = createEl("div", "meinlang-video-ad-overlay hidden");
+  overlay.id = "meinlang-video-ad-overlay";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.setAttribute("aria-label", "Advertisement");
+
+  const panel = createEl("div", "meinlang-video-ad-panel");
+  const head = createEl("div", "meinlang-video-ad-head");
+  const label = createEl("span", "meinlang-video-ad-label", "Sponsored by MeinLang");
+  const timer = createEl("span", "meinlang-video-ad-countdown", "Ad ends in 00:00");
+  head.append(label, timer);
+
+  const video = document.createElement("video");
+  video.className = "meinlang-video-ad-player";
+  video.playsInline = true;
+  video.preload = "metadata";
+  video.controls = false;
+  video.disablePictureInPicture = true;
+  video.setAttribute("controlsList", "nodownload noplaybackrate noremoteplayback");
+
+  const footerRow = createEl("div", "meinlang-video-ad-foot");
+  const link = createEl("a", "meinlang-video-ad-link", "Visit meinlang.com");
+  link.href = "https://meinlang.com";
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  footerRow.append(link);
+
+  panel.append(head, video, footerRow);
+  overlay.append(panel);
+  document.body.append(overlay);
+
+  partAdOverlay = overlay;
+  partAdVideo = video;
+  partAdCountdown = timer;
+  partAdVisitLink = link;
+}
+
+function updatePartAdCountdown() {
+  if (!partAdVideo || !partAdCountdown) {
+    return;
+  }
+  const duration = Number.isFinite(partAdVideo.duration) ? partAdVideo.duration : 0;
+  const current = Number.isFinite(partAdVideo.currentTime) ? partAdVideo.currentTime : 0;
+  const remaining = duration > 0 ? Math.max(0, duration - current) : 0;
+  partAdCountdown.textContent = `Ad ends in ${formatAdCountdown(remaining)}`;
+}
+
+function showPartTransitionAd() {
+  if (!isPartAdEnabled()) {
+    return Promise.resolve(false);
+  }
+  if (!shouldShowPartTransitionAd()) {
+    return Promise.resolve(false);
+  }
+  ensurePartAdOverlay();
+  if (!partAdOverlay || !partAdVideo) {
+    return Promise.resolve(false);
+  }
+
+  return new Promise((resolve) => {
+    const selectedVideo = pickPartAdVideo();
+    if (!selectedVideo) {
+      resolve(false);
+      return;
+    }
+
+    let settled = false;
+    const finish = (didShow) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      clearPartAdTimer();
+      partAdVideo.pause();
+      partAdVideo.removeAttribute("src");
+      partAdVideo.load();
+      partAdOverlay.classList.add("hidden");
+      document.body.classList.remove("meinlang-video-ad-open");
+      partAdVideo.onended = null;
+      partAdVideo.onerror = null;
+      partAdVideo.onloadedmetadata = null;
+      partAdVideo.ontimeupdate = null;
+      if (didShow) {
+        setPartAdLastShownAt(Date.now());
+        markHeaderAdVisible();
+      }
+      resolve(didShow);
+    };
+
+    partAdVideo.onended = () => finish(true);
+    partAdVideo.onerror = () => finish(false);
+    partAdVideo.onloadedmetadata = () => {
+      updatePartAdCountdown();
+      clearPartAdTimer();
+      adTimerIntervalId = window.setInterval(updatePartAdCountdown, 250);
+    };
+    partAdVideo.ontimeupdate = updatePartAdCountdown;
+
+    partAdVideo.src = selectedVideo;
+    partAdVideo.currentTime = 0;
+    partAdVideo.muted = false;
+    partAdOverlay.classList.remove("hidden");
+    document.body.classList.add("meinlang-video-ad-open");
+    updatePartAdCountdown();
+
+    const start = partAdVideo.play();
+    if (start && typeof start.catch === "function") {
+      start.catch(() => {
+        partAdVideo.muted = true;
+        partAdVideo.play().catch(() => {
+          finish(false);
+        });
+      });
+    }
+  });
+}
+
+async function navigateToPart(nextPartKey) {
+  if (!nextPartKey || nextPartKey === state.part || partTransitionBusy) {
+    return;
+  }
+  partTransitionBusy = true;
+  try {
+    if (state.view === "exam") {
+      await showPartTransitionAd();
+    }
+    state.part = nextPartKey;
+    renderCurrentPart();
+  } finally {
+    partTransitionBusy = false;
   }
 }
 
@@ -463,9 +707,10 @@ function renderPartCards() {
       card.append(makeCheckBadge());
     }
     card.addEventListener("click", () => {
-      state.part = partKey;
-      setView("exam");
-      renderCurrentPart();
+      if (state.view !== "exam") {
+        setView("exam");
+      }
+      void navigateToPart(partKey);
     });
     partCards.append(card);
   });
@@ -975,7 +1220,7 @@ function renderLesenTeil1(content) {
 
     card.append(createEl("div", "h-8 w-8 rounded-xl border border-stone-200 bg-stone-50 flex items-center justify-center text-sm font-display text-slate", item.id));
 
-    card.append(createEl("p", "mt-3 text-sm text-ink whitespace-pre-wrap", item.text));
+    card.append(createEl("p", "mt-3 text-sm text-ink", item.text));
 
     const cardWrap = createEl("div", "rounded-2xl");
     cardWrap.append(card);
@@ -1089,7 +1334,7 @@ function renderLesenTeil2(content) {
   const translatedParagraphs = Array.isArray(content.passage?.translated) ? content.passage.translated : [];
   (content.passage?.paragraphs || []).forEach((para, index) => {
     const block = createEl("div", "mt-4");
-    block.append(createEl("p", "text-sm text-ink leading-relaxed whitespace-pre-wrap", para));
+    block.append(createEl("p", "text-sm text-ink leading-relaxed", para));
     const translationToggle = createTranslationToggle(translatedParagraphs[index]);
     if (translationToggle) {
       block.append(translationToggle);
@@ -1784,8 +2029,7 @@ prevBtn.addEventListener("click", () => {
   const order = getActiveLesen(themeEntry)?.partOrder || [];
   const index = order.indexOf(state.part);
   if (index > 0) {
-    state.part = order[index - 1];
-    renderCurrentPart();
+    void navigateToPart(order[index - 1]);
   }
 });
 
@@ -1794,8 +2038,7 @@ nextBtn.addEventListener("click", () => {
   const order = getActiveLesen(themeEntry)?.partOrder || [];
   const index = order.indexOf(state.part);
   if (index >= 0 && index < order.length - 1) {
-    state.part = order[index + 1];
-    renderCurrentPart();
+    void navigateToPart(order[index + 1]);
     return;
   }
   if (index === order.length - 1) {
@@ -1952,6 +2195,7 @@ async function init() {
     return;
   }
   state.version = resolveVersion(themeEntry, versionKey);
+  applyHeaderAdStateFromStorage();
 
   const lesenEntry = getActiveLesen(themeEntry);
   const order = lesenEntry?.partOrder || Object.keys(lesenEntry?.parts || {});

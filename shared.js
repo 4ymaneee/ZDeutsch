@@ -20,6 +20,7 @@ const DEFAULT_MODULE = {
 const DEFAULT_CONFIG = {
   fontScale: 1,
   asideWidth: "40%",
+  showMeinLangAd: true,
   modules: [DEFAULT_MODULE],
   defaultModule: DEFAULT_MODULE.name,
   timer: DEFAULT_MODULE.timer,
@@ -71,6 +72,9 @@ function buildModuleConfig(entry) {
 
 function normalizeConfig(config) {
   const merged = { ...DEFAULT_CONFIG, ...(config || {}) };
+  const showMeinLangAd = typeof config?.showMeinLangAd === "boolean"
+    ? config.showMeinLangAd
+    : DEFAULT_CONFIG.showMeinLangAd;
   const entries = Array.isArray(config?.modules) && config.modules.length
     ? config.modules
     : [{ name: config?.name || merged.defaultModule, dataFile: config?.dataFile, timer: config?.timer, scoreConfig: config?.scoreConfig }];
@@ -79,6 +83,7 @@ function normalizeConfig(config) {
   const activeModule = modules.find((module) => module.name === defaultModuleName) || modules[0];
   return {
     ...merged,
+    showMeinLangAd,
     modules,
     defaultModule: defaultModuleName,
     dataFile: activeModule.dataFile,
@@ -86,6 +91,13 @@ function normalizeConfig(config) {
     scoreConfig: activeModule.scoreConfig,
     activeModuleName: activeModule.name
   };
+}
+
+function isMeinLangAdEnabled(config) {
+  if (typeof config?.showMeinLangAd === "boolean") {
+    return config.showMeinLangAd;
+  }
+  return DEFAULT_CONFIG.showMeinLangAd;
 }
 
 async function loadConfig() {
@@ -247,26 +259,16 @@ function setupCommunityWidgets() {
   const promoTarget = document.getElementById("community-promo-target");
   if (promoTarget) {
     const promoCard = createEl("section", "community-promo");
+    const content = createEl("div", "community-promo-content");
     const title = createEl(
       "h3",
       "community-promo-title",
       "WhatsApp Community | مجتمع واتساب | WhatsApp Gemeinschaft"
     );
-    const enLine = createEl(
+    const line = createEl(
       "p",
       "community-promo-line",
-      "Join our WhatsApp group to suggest website modifications and request new exam themes."
-    );
-    const arLine = createEl(
-      "p",
-      "community-promo-line community-promo-ar",
-      "انضم إلى مجموعة واتساب واقترح تعديلات على الموقع ومواضيع امتحان جديدة."
-    );
-    arLine.setAttribute("dir", "rtl");
-    const deLine = createEl(
-      "p",
-      "community-promo-line",
-      "Trete unserer WhatsApp-Gruppe bei und schlage Website-Anpassungen sowie neue Prüfungsthemen vor."
+      "Suggest updates or new exam themes: EN | AR | DE"
     );
     const actions = createEl("div", "community-promo-actions");
     const joinLink = createEl("a", "community-btn community-btn-primary", "Join WhatsApp");
@@ -276,7 +278,8 @@ function setupCommunityWidgets() {
     const suggestBtn = createEl("button", "community-btn community-btn-secondary community-open-btn", "Suggest a change");
     suggestBtn.type = "button";
     actions.append(joinLink, suggestBtn);
-    promoCard.append(title, enLine, arLine, deLine, actions);
+    content.append(title, line);
+    promoCard.append(content, actions);
     promoTarget.append(promoCard);
   }
 

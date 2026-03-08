@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="320" viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MeinLang logo color">
+  <g transform="translate(16,16) scale(0.4705882353)">
+    
+    <g>
+      <rect x="52" y="52" width="408" height="408" rx="108" fill="#1f9d62" />
+      <path d="M132 336V186c0-30 24-54 54-54h70v220h-70c-30 0-54-24-54-54Z" fill="#ffffff" opacity="0.98" />
+      <path d="M380 336V186c0-30-24-54-54-54h-70v220h70c30 0 54-24 54-54Z" fill="#ffffff" opacity="0.98" />
+      <rect x="240" y="120" width="32" height="248" rx="16" fill="#0f6a42" />
+      <circle cx="256" cy="100" r="15" fill="#a8ebcb" />
+    </g>
+  
+  </g>
+  <text x="252" y="122" fill="#0f5d3a" font-family="'Plus Jakarta Sans', 'Instrument Sans', 'Segoe UI', sans-serif" font-size="92" font-weight="800" letter-spacing="-1.8">MeinLang</text>
+  <text x="256" y="174" fill="#4f7663" font-family="'Instrument Sans', 'Plus Jakarta Sans', 'Segoe UI', sans-serif" font-size="33" font-weight="600" letter-spacing="0.5">read. learn. remember.</text>
+</svg>

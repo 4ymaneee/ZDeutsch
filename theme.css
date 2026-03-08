@@ -508,38 +508,267 @@ body.community-modal-open {
   overflow: hidden;
 }
 
+.meinlang-promo-shell {
+  --ml-ink: #153d2e;
+  --ml-mint: #1f9d62;
+  border: 1px solid #d6e2da;
+  border-radius: 22px;
+  padding: 14px;
+  background: linear-gradient(160deg, #ffffff 0%, #f7fbf9 100%);
+  box-shadow: 0 8px 18px rgba(14, 56, 37, 0.08);
+}
+
+.meinlang-promo-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.meinlang-brand-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.meinlang-brand-logo {
+  width: 164px;
+  max-width: 42vw;
+  height: auto;
+  display: block;
+}
+
+.meinlang-brand-copy {
+  min-width: 0;
+  align-self: center;
+}
+
+.meinlang-title {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(1.08rem, 1.9vw, 1.4rem);
+  line-height: 1.18;
+  color: var(--ml-ink);
+}
+
+.meinlang-subtitle {
+  margin: 5px 0 0;
+  font-size: 0.84rem;
+  color: #4f6459;
+  max-width: 60ch;
+}
+
+.meinlang-promo-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.meinlang-video-frame {
+  width: 240px;
+  max-width: 34vw;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  border: 1px solid #d6e2da;
+  background: #111a15;
+  overflow: hidden;
+}
+
+.meinlang-promo-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.meinlang-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.48rem 0.9rem;
+  text-decoration: none;
+  border: 1px solid transparent;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 700;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.meinlang-cta:hover {
+  transform: translateY(-1px);
+}
+
+.meinlang-cta-primary {
+  background: var(--ml-mint);
+  border-color: #168551;
+  color: #ffffff;
+  box-shadow: 0 8px 16px rgba(31, 157, 98, 0.18);
+}
+
+.meinlang-feature-pills {
+  margin-top: 9px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.meinlang-feature-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.18rem 0.55rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #365246;
+  background: #f2f6f4;
+  border: 1px solid #d8e2dc;
+}
+
+.meinlang-header-ad-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid #168551;
+  background: #1f9d62;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 0.34rem 0.7rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(31, 157, 98, 0.24);
+}
+
+.meinlang-video-ad-open {
+  overflow: hidden;
+}
+
+.meinlang-video-ad-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(8, 12, 18, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.meinlang-video-ad-overlay.hidden {
+  display: none;
+}
+
+.meinlang-video-ad-panel {
+  width: min(1120px, 100%);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(11, 18, 26, 0.9);
+  padding: 12px;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.45);
+}
+
+.meinlang-video-ad-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.meinlang-video-ad-label,
+.meinlang-video-ad-countdown {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #dce9e2;
+}
+
+.meinlang-video-ad-player {
+  width: 100%;
+  max-height: 72vh;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: #000000;
+  display: block;
+}
+
+.meinlang-video-ad-foot {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.meinlang-video-ad-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid #22a865;
+  color: #dff8eb;
+  text-decoration: none;
+  padding: 0.34rem 0.76rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  background: rgba(31, 157, 98, 0.2);
+}
+
 .community-promo {
-  border: 1px solid var(--flag-stone-300);
-  border-radius: 24px;
-  padding: 20px;
+  border: 1px solid #d6d1c5;
+  border-radius: 16px;
+  padding: 12px 14px;
   background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 12px 30px rgba(26, 26, 26, 0.08);
+  box-shadow: 0 8px 16px rgba(26, 26, 26, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+}
+
+.community-promo-content {
+  min-width: 0;
+  flex: 1 1 360px;
 }
 
 .community-promo-title {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--flag-black);
 }
 
 .community-promo-line {
-  margin: 10px 0 0;
+  margin: 4px 0 0;
   color: var(--flag-muted);
-  line-height: 1.45;
-}
-
-.community-promo-ar {
-  font-weight: 600;
+  line-height: 1.3;
+  font-size: 0.92rem;
 }
 
 .community-promo-actions {
-  margin-top: 14px;
+  margin-top: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .community-btn {
@@ -547,8 +776,8 @@ body.community-modal-open {
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  padding: 10px 16px;
-  font-size: 11px;
+  padding: 0.5rem 0.86rem;
+  font-size: 0.66rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   text-decoration: none;
@@ -682,6 +911,99 @@ body.community-modal-open {
 }
 
 @media (max-width: 767px) {
+  .meinlang-promo-shell {
+    border-radius: 18px;
+    padding: 12px;
+  }
+
+  .meinlang-promo-head {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .meinlang-brand-row {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .meinlang-brand-logo {
+    width: 146px;
+    max-width: 52vw;
+  }
+
+  .meinlang-title {
+    font-size: 1.02rem;
+  }
+
+  .meinlang-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .meinlang-promo-right {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .meinlang-video-frame {
+    width: min(176px, 50vw);
+    max-width: none;
+  }
+
+  .meinlang-cta {
+    white-space: nowrap;
+  }
+
+  .community-promo {
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .community-promo-title {
+    font-size: 0.72rem;
+  }
+
+  .community-promo-line {
+    font-size: 0.82rem;
+  }
+
+  .community-promo-actions {
+    width: 100%;
+  }
+
+  .community-promo-actions .community-btn {
+    width: auto;
+    flex: 1 1 46%;
+  }
+
+  .meinlang-header-ad-link {
+    display: none;
+  }
+
+  .meinlang-video-ad-panel {
+    width: 100%;
+    border-radius: 14px;
+    padding: 8px;
+  }
+
+  .meinlang-video-ad-head {
+    margin-bottom: 6px;
+  }
+
+  .meinlang-video-ad-label,
+  .meinlang-video-ad-countdown {
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+  }
+
+  .meinlang-video-ad-player {
+    max-height: 78vh;
+    border-radius: 10px;
+  }
+
   .community-floating-btn {
     right: 10px;
     bottom: 74px;
