@@ -377,7 +377,7 @@ function ensurePartAdOverlay() {
   const video = document.createElement("video");
   video.className = "meinlang-video-ad-player";
   video.playsInline = true;
-  video.preload = "metadata";
+  video.preload = "auto";
   video.controls = false;
   video.disablePictureInPicture = true;
   video.setAttribute("controlsList", "nodownload noplaybackrate noremoteplayback");
@@ -407,6 +407,60 @@ function updatePartAdCountdown() {
   const current = Number.isFinite(partAdVideo.currentTime) ? partAdVideo.currentTime : 0;
   const remaining = duration > 0 ? Math.max(0, duration - current) : 0;
   partAdCountdown.textContent = `Ad ends in ${formatAdCountdown(remaining)}`;
+}
+
+function waitForPartAdVideoReady(video, timeoutMs = 12000) {
+  if (!video) {
+    return Promise.resolve(false);
+  }
+  if (video.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA) {
+    return Promise.resolve(true);
+  }
+  return new Promise((resolve) => {
+    let settled = false;
+    let timeoutId = null;
+
+    const cleanup = () => {
+      video.removeEventListener("canplaythrough", onCanPlayThrough);
+      video.removeEventListener("canplay", onCanPlay);
+      video.removeEventListener("error", onError);
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+    };
+
+    const finish = (ready) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      cleanup();
+      resolve(ready);
+    };
+
+    const onCanPlayThrough = () => {
+      finish(true);
+    };
+
+    const onCanPlay = () => {
+      if (video.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA) {
+        finish(true);
+      }
+    };
+
+    const onError = () => {
+      finish(false);
+    };
+
+    video.addEventListener("canplaythrough", onCanPlayThrough);
+    video.addEventListener("canplay", onCanPlay);
+    video.addEventListener("error", onError);
+
+    timeoutId = window.setTimeout(() => {
+      finish(false);
+    }, timeoutMs);
+  });
 }
 
 function showPartTransitionAd() {
@@ -463,19 +517,27 @@ function showPartTransitionAd() {
     partAdVideo.src = selectedVideo;
     partAdVideo.currentTime = 0;
     partAdVideo.muted = false;
-    partAdOverlay.classList.remove("hidden");
-    document.body.classList.add("meinlang-video-ad-open");
-    updatePartAdCountdown();
+    partAdVideo.load();
 
-    const start = partAdVideo.play();
-    if (start && typeof start.catch === "function") {
-      start.catch(() => {
-        partAdVideo.muted = true;
-        partAdVideo.play().catch(() => {
-          finish(false);
+    waitForPartAdVideoReady(partAdVideo).then((isReady) => {
+      if (!isReady) {
+        finish(false);
+        return;
+      }
+      partAdOverlay.classList.remove("hidden");
+      document.body.classList.add("meinlang-video-ad-open");
+      updatePartAdCountdown();
+
+      const start = partAdVideo.play();
+      if (start && typeof start.catch === "function") {
+        start.catch(() => {
+          partAdVideo.muted = true;
+          partAdVideo.play().catch(() => {
+            finish(false);
+          });
         });
-      });
-    }
+      }
+    });
   });
 }
 

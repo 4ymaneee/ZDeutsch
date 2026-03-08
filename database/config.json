@@ -1,7 +1,7 @@
 {
   "fontScale": 1,
   "asideWidth": "40%",
-  "showMeinLangAd": true,
+  "showMeinLangAd": false,
   "defaultModule": "lesen",
   "modules": [
     {
@@ -14,11 +14,21 @@
       "scoreConfig": {
         "passPercent": 60,
         "parts": {
-          "teil-1": { "pointsPerQuestion": 5 },
-          "teil-2": { "pointsPerQuestion": 5 },
-          "teil-3": { "pointsPerQuestion": 2.5 },
-          "sprachbausteine-1": { "pointsPerQuestion": 1.5 },
-          "sprachbausteine-2": { "pointsPerQuestion": 1.5 }
+          "teil-1": {
+            "pointsPerQuestion": 5
+          },
+          "teil-2": {
+            "pointsPerQuestion": 5
+          },
+          "teil-3": {
+            "pointsPerQuestion": 2.5
+          },
+          "sprachbausteine-1": {
+            "pointsPerQuestion": 1.5
+          },
+          "sprachbausteine-2": {
+            "pointsPerQuestion": 1.5
+          }
         }
       }
     },
@@ -32,9 +42,15 @@
       "scoreConfig": {
         "passPercent": 60,
         "parts": {
-          "teil-1": { "pointsPerQuestion": 1 },
-          "teil-2": { "pointsPerQuestion": 1 },
-          "teil-3": { "pointsPerQuestion": 1 }
+          "teil-1": {
+            "pointsPerQuestion": 1
+          },
+          "teil-2": {
+            "pointsPerQuestion": 1
+          },
+          "teil-3": {
+            "pointsPerQuestion": 1
+          }
         }
       }
     },
@@ -48,7 +64,9 @@
       "scoreConfig": {
         "passPercent": 60,
         "parts": {
-          "teil-1": { "pointsPerQuestion": 1 }
+          "teil-1": {
+            "pointsPerQuestion": 1
+          }
         }
       }
     }
