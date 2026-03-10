@@ -10,6 +10,12 @@
         "module": "horen",
         "name": "Hören Codes",
         "file": "horen-codes.json"
+      },
+      {
+        "module": "shreiben",
+        "name": "Schreiben",
+        "file": "shreiben.json",
+        "description": "Bearbeiten Sie strukturierte Schreibaufgaben mit Leitpunkten."
       }
     ],
     "b2": [

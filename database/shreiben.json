@@ -7,547 +7,270 @@
   },
   "levels": {
     "b2": {
-      "partOrder": [
-        "teil-1"
-      ],
-      "parts": {
-        "teil-1": {
-          "meta": {
-            "partLabel": "Schreiben Teil 1",
-            "partNumber": 1
-          },
-          "content": {
-            "instruction": "Lesen Sie die Anzeige und schreiben Sie eine formelle Beschwerde.",
-            "tasks": [
-              {
-                "id": "hotel-beschwerde-1",
-                "title": "1. Hotel",
-                "ad": {
-                  "header": "Octavian-Therme mit Hotel und Frühstück",
-                  "tagline": "Wasser, Wärme, Wohlfühlen",
-                  "paragraphs": [
-                    "Einfach mal raus aus dem Alltag? In den komfortablen Zimmern im Hotel an der Therme finden Sie Ruhe und Entspannung. Von Ihrem Balkon aus genießen Sie einen wunderschönen Blick in die Natur. Unser gut geschulter Service sorgt dafür, dass alle Gäste rundum wohlfühlen.",
-                    "In der Octavian-Therme können Sie ein großes Schwimmbecken, ein Dampfbad, eine Saunalandschaft, ein hervorragendes gastronomisches Angebot und vor allem viel Ruhe genießen. Hier können Sie allen Stress vergessen."
-                  ],
-                  "offer": [
-                    "Kururlaub: 2 Übernachtungen im Doppelzimmer",
-                    "Tageskarte für die Therme",
-                    "Frühstück vom Buffet",
-                    "Frisches Obst auf dem Zimmer",
-                    "Kostenloser Parkplatz"
-                  ],
-                  "price": "150 Euro pro Person",
-                  "address": [
-                    "Hotel an der Therme",
-                    "Thermenallee 5",
-                    "61352 Bad Hamburg"
-                  ]
-                },
-                "prompt": "Sie haben ein Wochenende in diesem Hotel verbracht und die Therme besucht. Leider waren Sie nicht zufrieden. Schreiben Sie eine Beschwerde.",
-                "requirements": {
-                  "mode": [
-                    "A) Behandeln Sie drei der folgenden Punkte.",
-                    "B) Oder behandeln Sie zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl."
-                  ],
-                  "points": [
-                    "Schreiben Sie, was Sie von Ihrem Aufenthalt erwartet hätten.",
-                    "Beschreiben Sie, wovon Sie sich erholen wollten.",
-                    "Erläutern Sie, warum Sie unzufrieden sind.",
-                    "Machen Sie Verbesserungsvorschläge."
-                  ]
-                }
-              },
-              {
-                "id": "autovermietung-neustadt-2",
-                "title": "2. Autovermietung",
-                "ad": {
-                  "header": "Autovermietung Neustadt",
-                  "tagline": "Wir haben das passende Modell für Sie",
-                  "paragraphs": [
-                    "Brauchen Sie ein Auto? Buchen Sie noch heute Ihr Wunschauto ganz bequem online.",
-                    "Wir stellen Ihnen ein modernes, sicheres und sauberes Fahrzeug zur Verfügung.",
-                    "Mieten Sie Ihr Auto für wenige Stunden, ein Wochenende oder mehrere Tage.",
-                    "Bei Fragen und Problemen können Sie sich rund um die Uhr an unseren Service wenden. Unsere kompetenten Mitarbeiter helfen Ihnen gern."
-                  ],
-                  "offer": [
-                    "Preiswerte Kleinwagen",
-                    "Geräumige Kleinbusse",
-                    "Praktische Kombis",
-                    "Chice Cabrios",
-                    "Luxuriöse Oberklasse u. v. m."
-                  ]
-                },
-                "prompt": "Sie haben bei der Autovermietung Neustadt ein Auto fürs Wochenende gemietet. Leider waren Sie mit dem Auto und mit dem Service der Firma sehr unzufrieden. Das Auto war weder modern noch sauber und Sie konnten keinen Service-Mitarbeiter erreichen. Schreiben Sie eine E-Mail, in der Sie sich über die Unannehmlichkeiten beschweren.",
-                "requirements": {
-                  "mode": [
-                    "Behandeln Sie alle vier Punkte."
-                  ],
-                  "points": [
-                    "Schreiben Sie, warum Sie sich für die Autovermietung Neustadt entschieden haben.",
-                    "Schreiben Sie, welche Probleme es mit dem Auto gab.",
-                    "Erklären Sie, welche Probleme es mit dem Service der Firma gab.",
-                    "Schreiben Sie, was Sie jetzt von der Autovermietung Neustadt erwarten."
-                  ]
-                }
-              },
-              {
-                "id": "renovierungskurs-3",
-                "title": "3. Kurs Renovierung",
-                "ad": {
-                  "header": "Renovierungskurs",
-                  "tagline": "Tapezieren und Streichen für Anfänger (Wochenendkurs im Urbi-Baumarkt)",
-                  "paragraphs": [
-                    "Selbermachen will gelernt sein.",
-                    "Ihre Küche kann neue Farbe gebrauchen? Oder Sie möchten Ihr Wohnzimmer neu tapezieren und wissen nicht, wie das geht?",
-                    "Bei uns erfahren Sie alles, was Sie über das Renovieren wissen müssen.",
-                    "Mit vielen praktischen Übungen. Ihr Kursleiter steht Ihnen mit Tipps und Expertenwissen zur Seite.",
-                    "Samstag und Sonntag von 14 bis 17 Uhr, maximal acht Teilnehmer."
-                  ],
-                  "offer": [
-                    "Die Auswahl der richtigen Tapete",
-                    "Welches Werkzeug ist notwendig?",
-                    "Welche Arbeiten sind vorher und nachher erforderlich?",
-                    "Neue Streichtechniken kennenlernen",
-                    "Teilnahmegebühr inklusive Materialien"
-                  ],
-                  "address": [
-                    "Urbi-Baumarkt",
-                    "Industriestraße 12",
-                    "56478 Montabaur"
-                  ]
-                },
-                "prompt": "Sie haben an diesem Wochenendkurs teilgenommen. Leider haben Sie nicht viel gelernt und sind unzufrieden. Schreiben Sie eine Beschwerde.",
-                "requirements": {
-                  "mode": [
-                    "Behandeln Sie alle vier Punkte."
-                  ],
-                  "points": [
-                    "Beschreiben Sie, warum Sie sich für diesen Kurs entschieden haben.",
-                    "Legen Sie dar, welche Probleme es im Kurs gab.",
-                    "Berichten Sie von Ihren Erfahrungen mit ähnlichen Kursen.",
-                    "Erklären Sie, wie der Kurs verbessert werden kann."
-                  ]
-                }
-              },
-              {
-                "id": "engagement-jugendliche-4",
-                "title": "4. Engagement Jugendliche",
-                "ad": {
-                  "header": "Engagement für Jugendliche",
-                  "paragraphs": [
-                    "Wie soll es nach dem Schulabschluss weitergehen? Was wäre der ideale Beruf? Wie findet man einen Ausbildungsplatz und wie bewirbt man sich?",
-                    "Wollen Sie Jugendlichen dabei helfen, die richtigen Antworten auf diese Fragen zu finden und so ihre Zukunftsperspektiven zu verbessern? Dann werden Sie Bildungspatin oder Bildungspate.",
-                    "Wir suchen Bildungspatinnen und Bildungspaten, die Schülerinnen und Schüler ab 14 Jahren unterstützen: bei Problemen mit dem Schulabschluss, bei der Suche nach einem Ausbildungsplatz, beim Bewerbungsprozess und beim Berufseinstieg.",
-                    "In drei Wochenendseminaren bereiten wir Sie auf diese spannende und anspruchsvolle Aufgabe vor. Sie erhalten außerdem regelmäßig Beratung und Unterstützung durch unser erfahrenes Team.",
-                    "Setzen Sie Ihre Zeit, Ihr Wissen und Ihr Engagement ein, um das Leben eines Jugendlichen positiv zu beeinflussen.",
-                    "Mehr Informationen: www.bildungspaten-fuer-jugendliche.net"
-                  ],
-                  "address": [
-                    "Bildungspaten für Jugendliche e. V.",
-                    "Hamburger Str. 112",
-                    "60824 Frankfurt am Main"
-                  ]
-                },
-                "prompt": "Sie wollten sich ehrenamtlich für Jugendliche engagieren, waren aber mit der Organisation unzufrieden. Schreiben Sie eine Beschwerde an den Verein.",
-                "requirements": {
-                  "mode": [
-                    "Behandeln Sie alle vier Punkte."
-                  ],
-                  "points": [
-                    "Beschreiben Sie, welche Erfahrungen Sie bei Ihrem Engagement in dem Verein gemacht haben.",
-                    "Erklären Sie, warum Sie Jugendlichen helfen wollten.",
-                    "Beschreiben Sie, wie Sie sich die Mitarbeit im Verein vorgestellt haben.",
-                    "Machen Sie Verbesserungsvorschläge."
-                  ]
-                }
-              },
-              {
-                "id": "kaese-beschwerde-5",
-                "title": "5. Käse",
-                "ad": {
-                  "header": "Schmelzkäse - Alpengeschmack",
-                  "tagline": "Die Reinheit der Natur auf Ihrem Teller",
-                  "paragraphs": [
-                    "Schmelzkäse ist eine besondere Spezialität und wird aus gereiftem Schnittkäse oder Frischkäse auf Grundlage einer traditionellen Methode weiterverarbeitet und gleichzeitig haltbar gemacht.",
-                    "Schmelzkäse Alpengeschmack ist in der modernen Küche besonders beliebt: Er bindet Soßen und Suppen, verleiht Gerichten eine feinwürzige Note, ist perfekt zum Überbacken geeignet und darf auf keinem Frühstücks- oder Abendbrottisch fehlen."
-                  ],
-                  "offer": [
-                    "Zutaten: 50 % Käse, Süßmolke, Butter, Schmelzsalze, Natriumphosphate, Natriumcitrate, Polyphosphate, Magermilch aus Kuhmilch, Milcheiweiß, Speisesalz",
-                    "Farbstoffe: Paprikaextrakt, Carotin",
-                    "10 Scheiben, einzeln in Folie verpackt",
-                    "Ungeöffnet mindestens 24 Tage haltbar. Nach dem Öffnen gekühlt lagern",
-                    "Artikelnummer: 9977 8855"
-                  ],
-                  "address": [
-                    "Hersteller: Molkerei Alpengeschmack",
-                    "Lindauer Straße 5",
-                    "87437 Kempten",
-                    "Tel. 0831-181921",
-                    "www.molkerei-alpengeschmack.de"
-                  ]
-                },
-                "prompt": "Sie haben dieses Produkt gekauft, es war aber verunreinigt. Der Käse enthielt Fremdkörper. Sie sind nach dem Essen erkrankt. Schreiben Sie einen Brief an den Hersteller, in dem Sie sich beschweren.",
-                "requirements": {
-                  "mode": [
-                    "A) Behandeln Sie mindestens drei der folgenden Punkte.",
-                    "B) Oder behandeln Sie mindestens zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl."
-                  ],
-                  "points": [
-                    "Erläutern Sie, wozu Sie diesen Käse verwenden.",
-                    "Beschreiben Sie, welche gesundheitlichen Beschwerden Sie nach dem Essen hatten.",
-                    "Erklären Sie, warum die Fremdkörper gesundheitsgefährdend sind.",
-                    "Beschreiben Sie, wen Sie außer dem Hersteller noch informiert haben."
-                  ]
-                }
-              },
-              {
-                "id": "freizeitverein-6",
-                "title": "6. Freizeitverein",
-                "ad": {
-                  "header": "Freizeitverein",
-                  "paragraphs": [
-                    "Sie wollen in Ihrer Freizeit mehr erleben? Neue Leute aus Mainz kennenlernen? Am Wochenende nie mehr allein sein? Dann werden Sie Mitglied im Freizeitverein!",
-                    "Wir organisieren verschiedene Aktivitäten in Mainz und Umgebung.",
-                    "Ob Sport oder Kultur: Bei uns kommt jeder auf seine Kosten. Sie können viel Neues ausprobieren und lernen dabei nette Leute kennen.",
-                    "Unsere Mitglieder sind zwischen 26 und 85 Jahre alt. Bei uns ist jeder willkommen, ob Student oder Seniorin."
-                  ],
-                  "offer": [
-                    "Wanderungen",
-                    "Fahrradtouren",
-                    "Museums- und Theaterbesuche",
-                    "Spiele- und Kinoabende",
-                    "Restaurantbesuche und Ausflüge",
-                    "Jede Woche mindestens zwei unterschiedliche Angebote"
-                  ],
-                  "price": "Mitgliedschaft: 20 Euro pro Monat"
-                },
-                "prompt": "Sie sind seit zwei Wochen Mitglied im Freizeitverein. Doch Sie sind nicht zufrieden. Schreiben Sie eine Beschwerde.",
-                "requirements": {
-                  "mode": [
-                    "Behandeln Sie alle vier Punkte."
-                  ],
-                  "points": [
-                    "Erklären Sie, was Sie nach dem Lesen der Anzeige erwartet hatten.",
-                    "Erklären Sie, warum Sie mit dem Angebot des Freizeitvereins nicht zufrieden sind.",
-                    "Machen Sie Verbesserungsvorschläge zum Programm.",
-                    "Erklären Sie, was Sie tun werden, wenn sich nichts ändert."
-                  ]
-                }
-              },
-              {
-                "id": "backstage-musical-7",
-                "title": "7. Backstage Musical",
-                "ad": {
-                  "header": "Backstage-Musical",
-                  "paragraphs": [
-                    "Sie haben Geld bezahlt, um hinter die Kulissen eines Theaterstücks zu gehen.",
-                    "Dabei sollten Sie das Archiv der alten Theatermusik, die Masken und die Kostüme sehen."
-                  ]
-                },
-                "prompt": "Sie haben eine Backstage-Führung hinter die Kulissen eines Theaterstücks besucht. Leider waren Sie nicht zufrieden. Schreiben Sie eine Beschwerde.",
-                "requirements": {
-                  "mode": [
-                    "Behandeln Sie alle drei Punkte."
-                  ],
-                  "points": [
-                    "Erklären Sie, warum Sie unzufrieden waren.",
-                    "Beschreiben Sie, warum Sie sich für diese Vorstellung entschieden haben und was Sie daran interessiert hat.",
-                    "Schreiben Sie, was Sie vom Veranstalter erwarten, um den Service zu verbessern."
-                  ]
-                }
-              },
-              {
-                "id": "kursbeschreibung-8",
-                "title": "8. Kursbeschreibung",
-                "ad": {
-                  "header": "Kursbeschreibung",
-                  "paragraphs": [
-                    "Sie haben an einem zweitägigen Kurs teilgenommen, der 120 Euro kostete.",
-                    "Am ersten Tag gab es eine Schulung, in der Sie lernen sollten, sich professionell vorzustellen und zu kommunizieren sowie Ihre körperliche Leistungsfähigkeit zu verbessern.",
-                    "Am zweiten Tag absolvierten Sie ein Praktikum, um das Gelernte aus der Schulung anzuwenden."
-                  ],
-                  "price": "Teilnahmegebühr: 120 Euro"
-                },
-                "prompt": "Sie haben an einem Kurs teilgenommen, waren aber leider nicht zufrieden. Schreiben Sie eine Beschwerde.",
-                "requirements": {
-                  "mode": [
-                    "Behandeln Sie alle drei Punkte."
-                  ],
-                  "points": [
-                    "Beschreiben Sie, welche Erwartungen Sie an den Kurs hatten und was Sie sich von der Teilnahme erhofft haben.",
-                    "Erklären Sie, warum Sie mit diesem Kurs unzufrieden waren.",
-                    "Schreiben Sie einen weiteren Punkt Ihrer Wahl."
-                  ]
-                }
-              },
-              {
-                "id": "appartementhaus-9",
-                "title": "9. Appartementhaus",
-                "ad": {
-                  "header": "Appartement-Haus",
-                  "tagline": "Komfortable und zentrale Unterkunft",
-                  "paragraphs": [
-                    "Unser Appartementhaus bietet Ihnen modern eingerichtete Apartments in verschiedenen Größen, ideal für Geschäftsreisende, Paare und Familien.",
-                    "Unsere Lage: in der Nähe von Restaurants, Geschäften und Sehenswürdigkeiten sowie mit guter Anbindung an öffentliche Verkehrsmittel."
-                  ],
-                  "offer": [
-                    "Voll ausgestattete Küche",
-                    "Kostenloses WLAN",
-                    "Sat-TV",
-                    "Balkon oder Terrasse",
-                    "Waschmaschine und Trockner (gegen Gebühr)",
-                    "Wöchentliche Reinigung",
-                    "Privatparkplatz (gegen Gebühr)"
-                  ]
-                },
-                "prompt": "Sie haben ein Apartment im Appartementhaus gemietet, jedoch entsprach es nicht Ihren Erwartungen. Schreiben Sie eine Beschwerde.",
-                "requirements": {
-                  "mode": [
-                    "Behandeln Sie alle drei Punkte."
-                  ],
-                  "points": [
-                    "Beschreiben Sie die Probleme, die Sie im Apartment gefunden haben.",
-                    "Berichten Sie von einer früheren Erfahrung, die besser war als diese.",
-                    "Erklären Sie, warum Sie sich für dieses Appartementhaus entschieden haben."
-                  ]
-                }
-              },
-              {
-                "id": "meine-kiste-10",
-                "title": "10. Meine Kiste",
-                "ad": {
-                  "header": "Meine Kiste: Obst und Gemüse bestellbar im Abo",
-                  "paragraphs": [
-                    "Gesunde Ernährung wird direkt an Ihre Haustür oder an Ihren Arbeitsplatz geliefert. Sie wählen wöchentlich eine unserer Kisten aus und bekommen biologisch angebautes Obst und Gemüse.",
-                    "Wir liefern auf Wunsch auch andere heimische Produkte wie Backwaren, Eier, Käse und Getränke."
-                  ],
-                  "offer": [
-                    "Meine Kiste Single: 10 Euro",
-                    "Meine Kiste Familie: 20 Euro",
-                    "Meine Kiste Büro: 40 Euro",
-                    "Meine Kiste Obst und Gemüse: 20 Euro",
-                    "Meine Kiste Obst: 10 Euro",
-                    "Meine Kiste Gemüse: 10 Euro",
-                    "Kurze Transportwege und Produkte von regionalen Erzeugern",
-                    "Kostenlose Rezepte zur Zubereitung von Gemüse",
-                    "Lieferung mit Wunschort"
-                  ],
-                  "address": [
-                    "Bestellung: www.diegesundeobstkiste.de",
-                    "Telefon: 017654xxxxxx"
-                  ]
-                },
-                "prompt": "Sie haben sich Obst und Gemüse liefern lassen, aber Sie sind nicht zufrieden. Schreiben Sie eine Beschwerde.",
-                "requirements": {
-                  "mode": [
-                    "Behandeln Sie alle vier Punkte."
-                  ],
-                  "points": [
-                    "Schreiben Sie, warum Sie sich regelmäßig Obst und Gemüse liefern lassen wollten.",
-                    "Erklären Sie, warum Ihnen biologisch angebautes Obst und Gemüse aus der Region wichtig sind.",
-                    "Erläutern Sie, womit Sie unzufrieden waren.",
-                    "Machen Sie Verbesserungsvorschläge."
-                  ]
-                }
-              },
-              {
-                "id": "museum-11",
-                "title": "11. Museum",
-                "ad": {
-                  "header": "Naturmuseum",
-                  "paragraphs": [
-                    "Sie sind mit Ihren Sprachkurskollegen ins Naturmuseum gegangen.",
-                    "Das Museum hat eine Fläche von etwa 4000 Quadratmetern.",
-                    "Dort werden Naturphänomene und verschiedene Bereiche der Natur präsentiert."
-                  ]
-                },
-                "prompt": "Sie haben mit Ihren Sprachkurskollegen ein Naturmuseum besucht. Leider waren Sie nicht zufrieden. Schreiben Sie eine Beschwerde.",
-                "requirements": {
-                  "mode": [
-                    "Behandeln Sie alle vier Punkte."
-                  ],
-                  "points": [
-                    "Beschreiben Sie Ihre Erfahrungen mit anderen Naturmuseen und was Ihnen im Vergleich dort besser gefallen hat.",
-                    "Erklären Sie, was Ihnen in diesem Museum nicht gefallen hat und welche Erwartungen enttäuscht wurden.",
-                    "Machen Sie Verbesserungsvorschläge für das Museum.",
-                    "Schreiben Sie, was Sie in diesem Fall weiter tun würden und welche Beschwerden Sie äußern."
-                  ]
-                }
-              },
-              {
-                "id": "kultur-kulinarik-12",
-                "title": "12. Kultur und Kulinarik",
-                "ad": {
-                  "header": "KULTUR UND KULINARIK",
-                  "tagline": "Fahren Sie mit uns von Berlin \"ins Blaue\"",
-                  "paragraphs": [
-                    "Verbringen Sie einen Tag in angenehmer Gesellschaft. Genießen Sie die Fahrt und schauen Sie sich die vorbeiziehende Landschaft in Ruhe an.",
-                    "Wir besichtigen unterwegs Kirchen, Klöster, Burgen oder Schlösser und bieten Ihnen zusätzlich verschiedene Waren zum Kauf an."
-                  ],
-                  "offer": [
-                    "Frühstück: Frühstücksbuffet, frisch und reichhaltig",
-                    "Mittagessen: Berliner Spezialitäten, so viel Sie essen können",
-                    "Kaffee: Kuchen und Torten zur freien Auswahl"
-                  ],
-                  "price": "Preis: 18,99 Euro",
-                  "address": [
-                    "Gute-Laune-Reisen",
-                    "Vulkanstraße",
-                    "10315 Berlin-Lichtenberg",
-                    "Telefon: 030-85 95 65",
-                    "gute-laune-reisen@info.de"
-                  ]
-                },
-                "prompt": "Sie haben an dieser Fahrt teilgenommen und waren überhaupt nicht zufrieden. Nur der Reisebus hat Ihnen sehr gut gefallen. Schreiben Sie an den Reiseveranstalter und beschweren Sie sich.",
-                "requirements": {
-                  "mode": [
-                    "A) Behandeln Sie drei der folgenden Punkte.",
-                    "B) Oder behandeln Sie zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl."
-                  ],
-                  "points": [
-                    "Beschreiben Sie, warum Sie sich für den Tagesausflug entschieden haben.",
-                    "Erklären Sie, was Ihnen am Besichtigungsprogramm missfiel.",
-                    "Beschreiben Sie die Reaktionen der anderen Fahrgäste.",
-                    "Erläutern Sie, wie Sie die angebotenen Waren fanden."
-                  ]
-                }
-              },
-              {
-                "id": "kostenlose-apps-13",
-                "title": "13. Kostenlose Apps für Handy",
-                "ad": {
-                  "header": "prima-app.net - Kostenlose Apps für dein Handy!",
-                  "paragraphs": [
-                    "prima-app.net ist die Spaßseite für alle Smartphone-Benutzer: Spiele, Sport-Live-Sendungen, Filme, Schlagzeilen und Social-Media-Angebote.",
-                    "Registrieren Sie sich jetzt und Sie haben sofort unbegrenzten Zugang zu den Angeboten unserer Webseite."
-                  ],
-                  "offer": [
-                    "Apps für Spiele",
-                    "Sport-Live-Sendungen",
-                    "Filme und Schlagzeilen",
-                    "Schneller Zugang zu Social-Media-Angeboten"
-                  ],
-                  "address": [
-                    "prima-app.net",
-                    "info@prima-app.net",
-                    "prima-app GmbH, Sommerweg 34-36, 37269 Eschwege"
-                  ]
-                },
-                "prompt": "Schreiben Sie eine Beschwerde und nehmen Sie Bezug auf die Anzeige.",
-                "requirements": {
-                  "mode": [
-                    "A) Behandeln Sie mindestens drei der folgenden Punkte.",
-                    "B) Oder behandeln Sie mindestens zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl."
-                  ],
-                  "points": [
-                    "Probleme bei der Nutzung",
-                    "Welche Angebote Sie nutzen wollten",
-                    "Preis-Leistungs-Verhältnis",
-                    "Ihre Forderungen"
-                  ]
-                }
-              },
-              {
-                "id": "mehr-bewegen-14",
-                "title": "14. Mehr bewegen",
-                "ad": {
-                  "header": "Mehr bewegen - aber wie?",
-                  "paragraphs": [
-                    "Wir bieten Radtouren mit Trainern am Abend und am Wochenende an.",
-                    "Ein großes Angebot an modernen Rädern steht bereit, falls Sie kein eigenes Fahrrad haben.",
-                    "Treffpunkt ist auf unserem Vereinsgelände auf der Heidewiese. Fünfstündige Touren mit Trainer kosten 5 Euro oder Sie werden Mitglied für 25 Euro pro Monat."
-                  ],
-                  "address": [
-                    "Radel dich munter e. V.",
-                    "Heidewiese 1",
-                    "44777 Heimerstadt",
-                    "info@radeldichmunter.de"
-                  ]
-                },
-                "prompt": "Sie haben an einer Fahrradtour mit Trainer teilgenommen. Leider waren Sie nicht zufrieden. Schreiben Sie an den Verein \"Radel dich munter e. V.\" und beschweren Sie sich.",
-                "requirements": {
-                  "mode": [
-                    "A) Behandeln Sie mindestens drei der folgenden Punkte.",
-                    "B) Oder behandeln Sie mindestens zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl."
-                  ],
-                  "points": [
-                    "Beschreiben Sie, warum Sie das Angebot sehr interessant fanden.",
-                    "Beschreiben Sie detailliert die Probleme.",
-                    "Erklären Sie, was Ihnen an der Fahrradtour gefallen hat.",
-                    "Beschreiben Sie genau die Reaktion des Trainers auf Ihre Fragen."
-                  ]
-                }
-              },
-              {
-                "id": "komfort-matratze-15",
-                "title": "15. Komfort-Matratze",
-                "ad": {
-                  "header": "Nie mehr schlaflos in Deutschland!",
-                  "paragraphs": [
-                    "Gönnen Sie sich ein neues Bett mit einer Komfort-Matratze. Probeliegen in unseren Showrooms in 20 deutschen Innenstädten oder online bestellen.",
-                    "Wir bieten eine große Auswahl an Betten, Lattenrosten und Matratzen zu Sonderpreisen.",
-                    "Beim Kauf einer Matratze entsorgen wir auf Wunsch die alte. Für Mitnahme und Entsorgung fällt eine Kostenpauschale von 15 Euro pro Stück an."
-                  ],
-                  "offer": [
-                    "Bettgestelle aus Holz oder Metall, Einzel- oder Doppelbetten",
-                    "Matratzen in verschiedenen Größen und Materialien",
-                    "Kostenlose Lieferung",
-                    "Mitnahme und Entsorgung alter Teile (gegen Pauschale)"
-                  ],
-                  "address": [
-                    "www.baumeister-betten.de",
-                    "Baumeister Service Hotline: 0800-222333444",
-                    "baumeister-betten@info.de"
-                  ]
-                },
-                "prompt": "Sie haben bei der Firma Baumeister-Betten eingekauft. Sie sind mit der Qualität und dem Service unzufrieden. Schreiben Sie eine Beschwerde.",
-                "requirements": {
-                  "mode": [
-                    "A) Behandeln Sie drei der folgenden Punkte.",
-                    "B) Oder behandeln Sie zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl."
-                  ],
-                  "points": [
-                    "Beschreiben Sie, warum Sie sich für Produkte dieser Firma entschieden haben.",
-                    "Erklären Sie, warum Sie mit der Warenqualität unzufrieden sind.",
-                    "Beschreiben Sie Ihre Erfahrungen mit dem Service und der Service-Hotline.",
-                    "Machen Sie Vorschläge, wie Baumeister-Betten kundenfreundlicher werden kann."
-                  ]
-                }
-              },
-              {
-                "id": "reisebuero-16",
-                "title": "16. Reisebüro",
-                "ad": {
-                  "header": "Reisebüro Sonnenschein",
-                  "tagline": "Ihr Online Reisebüro für Last-Minute-Urlaub",
-                  "paragraphs": [
-                    "Verreisen Sie spontan ohne Monate vorher zu planen. Unsere Last-Minute-Reisen bieten bis zu 50 Prozent Rabatt.",
-                    "Wir bieten Kurzreisen, Kreuzfahrten, All-Inclusive-Urlaub und Pauschalreisen mit Flug, Hotel und Transfer."
-                  ],
-                  "address": [
-                    "Buchung online unter: reisebuero-sonnenschein.net",
-                    "Reisebüro Sonnenschein",
-                    "Käfergasse 5",
-                    "01109 Dresden"
-                  ]
-                },
-                "prompt": "Sie haben bei diesem Reisebüro eine Pauschalreise gebucht. Als Sie abends im Hotel ankamen, gab es kein freies Zimmer für Sie. Schreiben Sie eine Beschwerde an das Reisebüro.",
-                "requirements": {
-                  "mode": [
-                    "Behandeln Sie alle vier Punkte."
-                  ],
-                  "points": [
-                    "Berichten Sie, was Sie an diesem Abend gemacht haben.",
-                    "Beschreiben Sie, wie der Reiseleiter reagiert hat.",
-                    "Erläutern Sie, welche Erwartungen Sie vor dem Urlaub hatten.",
-                    "Berichten Sie, wie der Urlaub insgesamt war."
-                  ]
-                }
-              }
-            ]
-          }
+      "tasks": [
+        {
+          "title": "1. Hotel",
+          "istructions": "# 1. Hotel\n\nSie haben ein Wochenende in diesem Hotel verbracht und die Therme besucht. Leider waren Sie nicht zufrieden. Schreiben Sie eine Beschwerde.",
+          "content": "## Octavian-Therme mit Hotel und Frühstück\n\n**Wasser, Wärme, Wohlfühlen**\n\nEinfach mal raus aus dem Alltag? In den komfortablen Zimmern im Hotel an der Therme finden Sie Ruhe und Entspannung. Von Ihrem Balkon aus genießen Sie einen wunderschönen Blick in die Natur. Unser gut geschulter Service sorgt dafür, dass alle Gäste rundum wohlfühlen.\n\nIn der Octavian-Therme können Sie ein großes Schwimmbecken, ein Dampfbad, eine Saunalandschaft, ein hervorragendes gastronomisches Angebot und vor allem viel Ruhe genießen. Hier können Sie allen Stress vergessen.\n\n### Angebot\n\n- Kururlaub: 2 Übernachtungen im Doppelzimmer\n\n- Tageskarte für die Therme\n\n- Frühstück vom Buffet\n\n- Frisches Obst auf dem Zimmer\n\n- Kostenloser Parkplatz\n\n**150 Euro pro Person**\n\nHotel an der Therme, Thermenallee 5, 61352 Bad Hamburg",
+          "tasks": "A) Behandeln Sie drei der folgenden Punkte.\n\nB) Oder behandeln Sie zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl.\n\n- Schreiben Sie, was Sie von Ihrem Aufenthalt erwartet hätten.\n- Beschreiben Sie, wovon Sie sich erholen wollten.\n- Erläutern Sie, warum Sie unzufrieden sind.\n- Machen Sie Verbesserungsvorschläge."
+        },
+        {
+          "title": "2. Autovermietung",
+          "istructions": "# 2. Autovermietung\n\nSie haben bei der Autovermietung Neustadt ein Auto fürs Wochenende gemietet. Leider waren Sie mit dem Auto und mit dem Service der Firma sehr unzufrieden. Das Auto war weder modern noch sauber und Sie konnten keinen Service-Mitarbeiter erreichen. Schreiben Sie eine E-Mail, in der Sie sich über die Unannehmlichkeiten beschweren.",
+          "content": "## Autovermietung Neustadt\n\n**Wir haben das passende Modell für Sie**\n\nBrauchen Sie ein Auto? Buchen Sie noch heute Ihr Wunschauto ganz bequem online.\n\nWir stellen Ihnen ein modernes, sicheres und sauberes Fahrzeug zur Verfügung.\n\nMieten Sie Ihr Auto für wenige Stunden, ein Wochenende oder mehrere Tage.\n\nBei Fragen und Problemen können Sie sich rund um die Uhr an unseren Service wenden. Unsere kompetenten Mitarbeiter helfen Ihnen gern.\n\n### Angebot\n\n- Preiswerte Kleinwagen\n\n- Geräumige Kleinbusse\n\n- Praktische Kombis\n\n- Chice Cabrios\n\n- Luxuriöse Oberklasse u. v. m.",
+          "tasks": "- Behandeln Sie alle vier Punkte.\n\n- Schreiben Sie, warum Sie sich für die Autovermietung Neustadt entschieden haben.\n- Schreiben Sie, welche Probleme es mit dem Auto gab.\n- Erklären Sie, welche Probleme es mit dem Service der Firma gab.\n- Schreiben Sie, was Sie jetzt von der Autovermietung Neustadt erwarten."
+        },
+        {
+          "title": "3. Kurs Renovierung",
+          "istructions": "# 3. Kurs Renovierung\n\nSie haben an diesem Wochenendkurs teilgenommen. Leider haben Sie nicht viel gelernt und sind unzufrieden. Schreiben Sie eine Beschwerde.",
+          "content": "## Renovierungskurs\n\n**Tapezieren und Streichen für Anfänger (Wochenendkurs im Urbi-Baumarkt)**\n\nSelbermachen will gelernt sein.\n\nIhre Küche kann neue Farbe gebrauchen? Oder Sie möchten Ihr Wohnzimmer neu tapezieren und wissen nicht, wie das geht?\n\nBei uns erfahren Sie alles, was Sie über das Renovieren wissen müssen.\n\nMit vielen praktischen Übungen. Ihr Kursleiter steht Ihnen mit Tipps und Expertenwissen zur Seite.\n\nSamstag und Sonntag von 14 bis 17 Uhr, maximal acht Teilnehmer.\n\n### Angebot\n\n- Die Auswahl der richtigen Tapete\n\n- Welches Werkzeug ist notwendig?\n\n- Welche Arbeiten sind vorher und nachher erforderlich?\n\n- Neue Streichtechniken kennenlernen\n\n- Teilnahmegebühr inklusive Materialien\n\nUrbi-Baumarkt, Industriestraße 12, 56478 Montabaur",
+          "tasks": "- Behandeln Sie alle vier Punkte.\n\n- Beschreiben Sie, warum Sie sich für diesen Kurs entschieden haben.\n- Legen Sie dar, welche Probleme es im Kurs gab.\n- Berichten Sie von Ihren Erfahrungen mit ähnlichen Kursen.\n- Erklären Sie, wie der Kurs verbessert werden kann."
+        },
+        {
+          "title": "4. Engagement Jugendliche",
+          "istructions": "# 4. Engagement Jugendliche\n\nSie wollten sich ehrenamtlich für Jugendliche engagieren, waren aber mit der Organisation unzufrieden. Schreiben Sie eine Beschwerde an den Verein.",
+          "content": "## Engagement für Jugendliche\n\nWie soll es nach dem Schulabschluss weitergehen? Was wäre der ideale Beruf? Wie findet man einen Ausbildungsplatz und wie bewirbt man sich?\n\nWollen Sie Jugendlichen dabei helfen, die richtigen Antworten auf diese Fragen zu finden und so ihre Zukunftsperspektiven zu verbessern? Dann werden Sie Bildungspatin oder Bildungspate.\n\nWir suchen Bildungspatinnen und Bildungspaten, die Schülerinnen und Schüler ab 14 Jahren unterstützen: bei Problemen mit dem Schulabschluss, bei der Suche nach einem Ausbildungsplatz, beim Bewerbungsprozess und beim Berufseinstieg.\n\nIn drei Wochenendseminaren bereiten wir Sie auf diese spannende und anspruchsvolle Aufgabe vor. Sie erhalten außerdem regelmäßig Beratung und Unterstützung durch unser erfahrenes Team.\n\nSetzen Sie Ihre Zeit, Ihr Wissen und Ihr Engagement ein, um das Leben eines Jugendlichen positiv zu beeinflussen.\n\nMehr Informationen: www.bildungspaten-fuer-jugendliche.net\n\nBildungspaten für Jugendliche e. V., Hamburger Str. 112, 60824 Frankfurt am Main",
+          "tasks": "- Behandeln Sie alle vier Punkte.\n\n- Beschreiben Sie, welche Erfahrungen Sie bei Ihrem Engagement in dem Verein gemacht haben.\n- Erklären Sie, warum Sie Jugendlichen helfen wollten.\n- Beschreiben Sie, wie Sie sich die Mitarbeit im Verein vorgestellt haben.\n- Machen Sie Verbesserungsvorschläge."
+        },
+        {
+          "title": "5. Käse",
+          "istructions": "# 5. Käse\n\nSie haben dieses Produkt gekauft, es war aber verunreinigt. Der Käse enthielt Fremdkörper. Sie sind nach dem Essen erkrankt. Schreiben Sie einen Brief an den Hersteller, in dem Sie sich beschweren.",
+          "content": "## Schmelzkäse - Alpengeschmack\n\n**Die Reinheit der Natur auf Ihrem Teller**\n\nSchmelzkäse ist eine besondere Spezialität und wird aus gereiftem Schnittkäse oder Frischkäse auf Grundlage einer traditionellen Methode weiterverarbeitet und gleichzeitig haltbar gemacht.\n\nSchmelzkäse Alpengeschmack ist in der modernen Küche besonders beliebt: Er bindet Soßen und Suppen, verleiht Gerichten eine feinwürzige Note, ist perfekt zum Überbacken geeignet und darf auf keinem Frühstücks- oder Abendbrottisch fehlen.\n\n### Angebot\n\n- Zutaten: 50 % Käse, Süßmolke, Butter, Schmelzsalze, Natriumphosphate, Natriumcitrate, Polyphosphate, Magermilch aus Kuhmilch, Milcheiweiß, Speisesalz\n\n- Farbstoffe: Paprikaextrakt, Carotin\n\n- 10 Scheiben, einzeln in Folie verpackt\n\n- Ungeöffnet mindestens 24 Tage haltbar. Nach dem Öffnen gekühlt lagern\n\n- Artikelnummer: 9977 8855\n\nHersteller: Molkerei Alpengeschmack, Lindauer Straße 5, 87437 Kempten, Tel. 0831-181921, www.molkerei-alpengeschmack.de",
+          "tasks": "A) Behandeln Sie mindestens drei der folgenden Punkte.\n\nB) Oder behandeln Sie mindestens zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl.\n\n- Erläutern Sie, wozu Sie diesen Käse verwenden.\n- Beschreiben Sie, welche gesundheitlichen Beschwerden Sie nach dem Essen hatten.\n- Erklären Sie, warum die Fremdkörper gesundheitsgefährdend sind.\n- Beschreiben Sie, wen Sie außer dem Hersteller noch informiert haben."
+        },
+        {
+          "title": "6. Freizeitverein",
+          "istructions": "# 6. Freizeitverein\n\nSie sind seit zwei Wochen Mitglied im Freizeitverein. Doch Sie sind nicht zufrieden. Schreiben Sie eine Beschwerde.",
+          "content": "## Freizeitverein\n\nSie wollen in Ihrer Freizeit mehr erleben? Neue Leute aus Mainz kennenlernen? Am Wochenende nie mehr allein sein? Dann werden Sie Mitglied im Freizeitverein!\n\nWir organisieren verschiedene Aktivitäten in Mainz und Umgebung.\n\nOb Sport oder Kultur: Bei uns kommt jeder auf seine Kosten. Sie können viel Neues ausprobieren und lernen dabei nette Leute kennen.\n\nUnsere Mitglieder sind zwischen 26 und 85 Jahre alt. Bei uns ist jeder willkommen, ob Student oder Seniorin.\n\n### Angebot\n\n- Wanderungen\n\n- Fahrradtouren\n\n- Museums- und Theaterbesuche\n\n- Spiele- und Kinoabende\n\n- Restaurantbesuche und Ausflüge\n\n- Jede Woche mindestens zwei unterschiedliche Angebote\n\n**Mitgliedschaft: 20 Euro pro Monat**",
+          "tasks": "- Behandeln Sie alle vier Punkte.\n\n- Erklären Sie, was Sie nach dem Lesen der Anzeige erwartet hatten.\n- Erklären Sie, warum Sie mit dem Angebot des Freizeitvereins nicht zufrieden sind.\n- Machen Sie Verbesserungsvorschläge zum Programm.\n- Erklären Sie, was Sie tun werden, wenn sich nichts ändert."
+        },
+        {
+          "title": "7. Backstage Musical",
+          "istructions": "# 7. Backstage Musical\n\nSie haben eine Backstage-Führung hinter die Kulissen eines Theaterstücks besucht. Leider waren Sie nicht zufrieden. Schreiben Sie eine Beschwerde.",
+          "content": "## Backstage-Musical\n\nSie haben Geld bezahlt, um hinter die Kulissen eines Theaterstücks zu gehen.\n\nDabei sollten Sie das Archiv der alten Theatermusik, die Masken und die Kostüme sehen.",
+          "tasks": "- Behandeln Sie alle drei Punkte.\n\n- Erklären Sie, warum Sie unzufrieden waren.\n- Beschreiben Sie, warum Sie sich für diese Vorstellung entschieden haben und was Sie daran interessiert hat.\n- Schreiben Sie, was Sie vom Veranstalter erwarten, um den Service zu verbessern."
+        },
+        {
+          "title": "8. Kursbeschreibung",
+          "istructions": "# 8. Kursbeschreibung\n\nSie haben an einem Kurs teilgenommen, waren aber leider nicht zufrieden. Schreiben Sie eine Beschwerde.",
+          "content": "## Kursbeschreibung\n\nSie haben an einem zweitägigen Kurs teilgenommen, der 120 Euro kostete.\n\nAm ersten Tag gab es eine Schulung, in der Sie lernen sollten, sich professionell vorzustellen und zu kommunizieren sowie Ihre körperliche Leistungsfähigkeit zu verbessern.\n\nAm zweiten Tag absolvierten Sie ein Praktikum, um das Gelernte aus der Schulung anzuwenden.\n\n**Teilnahmegebühr: 120 Euro**",
+          "tasks": "- Behandeln Sie alle drei Punkte.\n\n- Beschreiben Sie, welche Erwartungen Sie an den Kurs hatten und was Sie sich von der Teilnahme erhofft haben.\n- Erklären Sie, warum Sie mit diesem Kurs unzufrieden waren.\n- Schreiben Sie einen weiteren Punkt Ihrer Wahl."
+        },
+        {
+          "title": "9. Appartementhaus",
+          "istructions": "# 9. Appartementhaus\n\nSie haben ein Apartment im Appartementhaus gemietet, jedoch entsprach es nicht Ihren Erwartungen. Schreiben Sie eine Beschwerde.",
+          "content": "## Appartement-Haus\n\n**Komfortable und zentrale Unterkunft**\n\nUnser Appartementhaus bietet Ihnen modern eingerichtete Apartments in verschiedenen Größen, ideal für Geschäftsreisende, Paare und Familien.\n\nUnsere Lage: in der Nähe von Restaurants, Geschäften und Sehenswürdigkeiten sowie mit guter Anbindung an öffentliche Verkehrsmittel.\n\n### Angebot\n\n- Voll ausgestattete Küche\n\n- Kostenloses WLAN\n\n- Sat-TV\n\n- Balkon oder Terrasse\n\n- Waschmaschine und Trockner (gegen Gebühr)\n\n- Wöchentliche Reinigung\n\n- Privatparkplatz (gegen Gebühr)",
+          "tasks": "- Behandeln Sie alle drei Punkte.\n\n- Beschreiben Sie die Probleme, die Sie im Apartment gefunden haben.\n- Berichten Sie von einer früheren Erfahrung, die besser war als diese.\n- Erklären Sie, warum Sie sich für dieses Appartementhaus entschieden haben."
+        },
+        {
+          "title": "10. Meine Kiste",
+          "istructions": "# 10. Meine Kiste\n\nSie haben sich Obst und Gemüse liefern lassen, aber Sie sind nicht zufrieden. Schreiben Sie eine Beschwerde.",
+          "content": "## Meine Kiste: Obst und Gemüse bestellbar im Abo\n\nGesunde Ernährung wird direkt an Ihre Haustür oder an Ihren Arbeitsplatz geliefert. Sie wählen wöchentlich eine unserer Kisten aus und bekommen biologisch angebautes Obst und Gemüse.\n\nWir liefern auf Wunsch auch andere heimische Produkte wie Backwaren, Eier, Käse und Getränke.\n\n### Angebot\n\n- Meine Kiste Single: 10 Euro\n\n- Meine Kiste Familie: 20 Euro\n\n- Meine Kiste Büro: 40 Euro\n\n- Meine Kiste Obst und Gemüse: 20 Euro\n\n- Meine Kiste Obst: 10 Euro\n\n- Meine Kiste Gemüse: 10 Euro\n\n- Kurze Transportwege und Produkte von regionalen Erzeugern\n\n- Kostenlose Rezepte zur Zubereitung von Gemüse\n\n- Lieferung mit Wunschort\n\nBestellung: www.diegesundeobstkiste.de, Telefon: 017654xxxxxx",
+          "tasks": "- Behandeln Sie alle vier Punkte.\n\n- Schreiben Sie, warum Sie sich regelmäßig Obst und Gemüse liefern lassen wollten.\n- Erklären Sie, warum Ihnen biologisch angebautes Obst und Gemüse aus der Region wichtig sind.\n- Erläutern Sie, womit Sie unzufrieden waren.\n- Machen Sie Verbesserungsvorschläge."
+        },
+        {
+          "title": "11. Museum",
+          "istructions": "# 11. Museum\n\nSie haben mit Ihren Sprachkurskollegen ein Naturmuseum besucht. Leider waren Sie nicht zufrieden. Schreiben Sie eine Beschwerde.",
+          "content": "## Naturmuseum\n\nSie sind mit Ihren Sprachkurskollegen ins Naturmuseum gegangen.\n\nDas Museum hat eine Fläche von etwa 4000 Quadratmetern.\n\nDort werden Naturphänomene und verschiedene Bereiche der Natur präsentiert.",
+          "tasks": "- Behandeln Sie alle vier Punkte.\n\n- Beschreiben Sie Ihre Erfahrungen mit anderen Naturmuseen und was Ihnen im Vergleich dort besser gefallen hat.\n- Erklären Sie, was Ihnen in diesem Museum nicht gefallen hat und welche Erwartungen enttäuscht wurden.\n- Machen Sie Verbesserungsvorschläge für das Museum.\n- Schreiben Sie, was Sie in diesem Fall weiter tun würden und welche Beschwerden Sie äußern."
+        },
+        {
+          "title": "12. Kultur und Kulinarik",
+          "istructions": "# 12. Kultur und Kulinarik\n\nSie haben an dieser Fahrt teilgenommen und waren überhaupt nicht zufrieden. Nur der Reisebus hat Ihnen sehr gut gefallen. Schreiben Sie an den Reiseveranstalter und beschweren Sie sich.",
+          "content": "## KULTUR UND KULINARIK\n\n**Fahren Sie mit uns von Berlin \"ins Blaue\"**\n\nVerbringen Sie einen Tag in angenehmer Gesellschaft. Genießen Sie die Fahrt und schauen Sie sich die vorbeiziehende Landschaft in Ruhe an.\n\nWir besichtigen unterwegs Kirchen, Klöster, Burgen oder Schlösser und bieten Ihnen zusätzlich verschiedene Waren zum Kauf an.\n\n### Angebot\n\n- Frühstück: Frühstücksbuffet, frisch und reichhaltig\n\n- Mittagessen: Berliner Spezialitäten, so viel Sie essen können\n\n- Kaffee: Kuchen und Torten zur freien Auswahl\n\n**Preis: 18,99 Euro**\n\nGute-Laune-Reisen, Vulkanstraße, 10315 Berlin-Lichtenberg, Telefon: 030-85 95 65, gute-laune-reisen@info.de",
+          "tasks": "A) Behandeln Sie drei der folgenden Punkte.\n\nB) Oder behandeln Sie zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl.\n\n- Beschreiben Sie, warum Sie sich für den Tagesausflug entschieden haben.\n- Erklären Sie, was Ihnen am Besichtigungsprogramm missfiel.\n- Beschreiben Sie die Reaktionen der anderen Fahrgäste.\n- Erläutern Sie, wie Sie die angebotenen Waren fanden."
+        },
+        {
+          "title": "13. Kostenlose Apps für Handy",
+          "istructions": "# 13. Kostenlose Apps für Handy\n\nSchreiben Sie eine Beschwerde und nehmen Sie Bezug auf die Anzeige.",
+          "content": "## prima-app.net - Kostenlose Apps für dein Handy!\n\nprima-app.net ist die Spaßseite für alle Smartphone-Benutzer: Spiele, Sport-Live-Sendungen, Filme, Schlagzeilen und Social-Media-Angebote.\n\nRegistrieren Sie sich jetzt und Sie haben sofort unbegrenzten Zugang zu den Angeboten unserer Webseite.\n\n### Angebot\n\n- Apps für Spiele\n\n- Sport-Live-Sendungen\n\n- Filme und Schlagzeilen\n\n- Schneller Zugang zu Social-Media-Angeboten\n\nprima-app.net, info@prima-app.net, prima-app GmbH, Sommerweg 34-36, 37269 Eschwege",
+          "tasks": "A) Behandeln Sie mindestens drei der folgenden Punkte.\n\nB) Oder behandeln Sie mindestens zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl.\n\n- Probleme bei der Nutzung\n- Welche Angebote Sie nutzen wollten\n- Preis-Leistungs-Verhältnis\n- Ihre Forderungen"
+        },
+        {
+          "title": "14. Mehr bewegen",
+          "istructions": "# 14. Mehr bewegen\n\nSie haben an einer Fahrradtour mit Trainer teilgenommen. Leider waren Sie nicht zufrieden. Schreiben Sie an den Verein \"Radel dich munter e. V.\" und beschweren Sie sich.",
+          "content": "## Mehr bewegen - aber wie?\n\nWir bieten Radtouren mit Trainern am Abend und am Wochenende an.\n\nEin großes Angebot an modernen Rädern steht bereit, falls Sie kein eigenes Fahrrad haben.\n\nTreffpunkt ist auf unserem Vereinsgelände auf der Heidewiese. Fünfstündige Touren mit Trainer kosten 5 Euro oder Sie werden Mitglied für 25 Euro pro Monat.\n\nRadel dich munter e. V., Heidewiese 1, 44777 Heimerstadt, info@radeldichmunter.de",
+          "tasks": "A) Behandeln Sie mindestens drei der folgenden Punkte.\n\nB) Oder behandeln Sie mindestens zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl.\n\n- Beschreiben Sie, warum Sie das Angebot sehr interessant fanden.\n- Beschreiben Sie detailliert die Probleme.\n- Erklären Sie, was Ihnen an der Fahrradtour gefallen hat.\n- Beschreiben Sie genau die Reaktion des Trainers auf Ihre Fragen."
+        },
+        {
+          "title": "15. Komfort-Matratze",
+          "istructions": "# 15. Komfort-Matratze\n\nSie haben bei der Firma Baumeister-Betten eingekauft. Sie sind mit der Qualität und dem Service unzufrieden. Schreiben Sie eine Beschwerde.",
+          "content": "## Nie mehr schlaflos in Deutschland!\n\nGönnen Sie sich ein neues Bett mit einer Komfort-Matratze. Probeliegen in unseren Showrooms in 20 deutschen Innenstädten oder online bestellen.\n\nWir bieten eine große Auswahl an Betten, Lattenrosten und Matratzen zu Sonderpreisen.\n\nBeim Kauf einer Matratze entsorgen wir auf Wunsch die alte. Für Mitnahme und Entsorgung fällt eine Kostenpauschale von 15 Euro pro Stück an.\n\n### Angebot\n\n- Bettgestelle aus Holz oder Metall, Einzel- oder Doppelbetten\n\n- Matratzen in verschiedenen Größen und Materialien\n\n- Kostenlose Lieferung\n\n- Mitnahme und Entsorgung alter Teile (gegen Pauschale)\n\nwww.baumeister-betten.de, Baumeister Service Hotline: 0800-222333444, baumeister-betten@info.de",
+          "tasks": "A) Behandeln Sie drei der folgenden Punkte.\n\nB) Oder behandeln Sie zwei der folgenden Punkte und einen weiteren Aspekt Ihrer Wahl.\n\n- Beschreiben Sie, warum Sie sich für Produkte dieser Firma entschieden haben.\n- Erklären Sie, warum Sie mit der Warenqualität unzufrieden sind.\n- Beschreiben Sie Ihre Erfahrungen mit dem Service und der Service-Hotline.\n- Machen Sie Vorschläge, wie Baumeister-Betten kundenfreundlicher werden kann."
+        },
+        {
+          "title": "16. Reisebüro",
+          "istructions": "# 16. Reisebüro\n\nSie haben bei diesem Reisebüro eine Pauschalreise gebucht. Als Sie abends im Hotel ankamen, gab es kein freies Zimmer für Sie. Schreiben Sie eine Beschwerde an das Reisebüro.",
+          "content": "## Reisebüro Sonnenschein\n\n**Ihr Online Reisebüro für Last-Minute-Urlaub**\n\nVerreisen Sie spontan ohne Monate vorher zu planen. Unsere Last-Minute-Reisen bieten bis zu 50 Prozent Rabatt.\n\nWir bieten Kurzreisen, Kreuzfahrten, All-Inclusive-Urlaub und Pauschalreisen mit Flug, Hotel und Transfer.\n\nBuchung online unter: reisebuero-sonnenschein.net, Reisebüro Sonnenschein, Käfergasse 5, 01109 Dresden",
+          "tasks": "- Behandeln Sie alle vier Punkte.\n\n- Berichten Sie, was Sie an diesem Abend gemacht haben.\n- Beschreiben Sie, wie der Reiseleiter reagiert hat.\n- Erläutern Sie, welche Erwartungen Sie vor dem Urlaub hatten.\n- Berichten Sie, wie der Urlaub insgesamt war."
         }
-      }
+      ]
+    },
+    "b1": {
+      "tasks": [
+        {
+          "title": "Petra",
+          "istructions": "## Aufgabe\n\nAntworten Sie auf den Brief. Schreiben Sie etwas zu den folgenden Punkten:",
+          "content": "## Brief\n\nLiebe(r).......\n\nIch habe eine tolle Überraschung. stelle dir vor, was mir mein Onkel angeboten hat. Er rief mich am Samstag an. Er hat ein großes Ferienhaus im Schwarzwald. Das Haus kann ich für die Ferien kostenlos haben. Ich kann auch Freunde mitbringen! Wäre das nichts für uns? Wir könnten uns alle dort treffen. Du, deine Eltern und Freunde, und ich mit meiner Familie und meinen Freunden. Ich würde mich wahnsinnig freuen, wenn das klappen würde. Bitte schreibe mir so schnell du kannst, damit wir alles planen können. Urlaub im Schwarzwald - das wird traumhaft schön!\n\nHerzliche Grüße\nPetra",
+          "tasks": "- Warum Sie gern nach Deutschland kommen möchten\n- Wie Sie anreisen wollen\n- Was Sie gemeinsam machen könnten\n- Wen Sie mitbringen möchten"
+        },
+        {
+          "title": "Eva",
+          "istructions": "## Aufgabe\n\nSchreiben Sie Ihrer Bekannten nun einen Antwortbrief, der die folgenden Punkte enthält:",
+          "content": "## Brief\n\nLiebe(r).......\n\nwie geht es denn so mit dem Deutsch lernen? Kommst du gut voran, und was machst du im Moment so? Stell dir vor, ich habe die neue Stelle bei der Zeitschrift VIA bekommen! ich arbeite jetzt als Journalistin, und das war ja immer mein Traumberuf!\n\nVIA wird vor allem von jüngeren Leuten gelesen. Deshalb schreiben wir viel über Berufe und Ausbildungen und auch über Freizeit und Sport. Für die nächsten Hefte von VIA planen wir jetzt eine neue Serie über Berufs wünsche. Was ist eigentlich dein Traumberuf? Wenn du möchtest, schicke ich dir gerne einmal ein Grätschet von VIA, damit du siehst, was ich so mache.\n\nIch freue mich schon auf deine Antwort.\n\nHerzliche Grüße\n\nEva",
+          "tasks": "- Fortschritte beim Deutsch Lernen\n- Auf Evas neue Stelle reagieren\n- Was es Neues bei Ihnen gibt\n- Ihr Traumberuf"
+        },
+        {
+          "title": "Sophie",
+          "istructions": "## Aufgabe\n\nSchreiben Sie etwas zu allen vier Punkten:",
+          "content": "## Brief\n\nLiebe(r)……..  wir haben lange nichts mehr voreinander gehört. Ich hoffe, es geht dir gut. Gibt es bei dir Neuigkeiten? Ich bin nun schon seit zwei Monaten in Würzburg, und mein neuer Job gefällt mir sehr gut. In der Firma fühle ich mich wohl, mit meinen Kollegen verstehe ich mich prima und die Arbeit macht mir großen Spaß.\n\nAllerdings habe ich ein Problem: Außer meinen Kollegen kenne ich hier in der Stadt noch niemanden. In meiner Freizeit bin ich oft allein und weiß nicht, was ich machen soll. Wie könnte ich neue Leute kennenlernen? Hast du vielleicht einen Tipp für mich? Würzburg ist wirklich eine schöne Stadt mit vielen Sehenswürdigkeiten. Hast du Lust, mich mal an einem Wochenende zu besuchen? Ich würde mich sehr freuen.\n\nViele Grüße\nSophie",
+          "tasks": "- Was es Neues bei Ihnen gibt\n- Was Sie selbst gerne in Ihrer Freizeit machen\n- Tipps für Sophie\n- Reaktion auf den Vorschlag"
+        },
+        {
+          "title": "Nadia",
+          "istructions": "## Aufgabe\n\nAntworten Sie auf den Brief. Schreiben Sie etwas zu den folgenden vier Punkten:",
+          "content": "## Brief\n\nLiebe(r).......\n\nich hoffe, dir geht’s gut. stell dir vor, bei mir gibt es Neuigkeiten Du weißt doch, dass wir schon lange von einem Garten geträumt haben. Jetzt haben wir endlich einen am Stadtrand gefunden. Da er sehr groß ist. Wollte ich dich fragen, ob du nicht Lust hast den Garten mit uns zu teilen.\n\nDie Miete ist gar nicht so hoch . Du könntest dort Salat und Gemüse anpflanzen, natürlich auch Blumen ganz wie du willst. Es gibt auch Obstbäume und eine große Wiese, auf der man sich einfach hinlegen, und wir könnten im Garten auch grillen. Was denkst du? Wäre das nicht toll.\nAntwort mir bald.\n\nAlles Liebe\n\nDeine Nadja",
+          "tasks": "- Reaktion auf den Vorschlag\n- Fragen zum Garten\n- Weg zum Garten\n- Was es bei Ihnen Neues gibt"
+        },
+        {
+          "title": "Nicole",
+          "istructions": "## Aufgabe\n\nSchreiben Sie Ihrer Bekannten einen Antwortbrief, der die folgenden Punkte enthält:",
+          "content": "## Brief\n\nLiebe(r)........\n\nentschuldige, dass ich dir so lange nicht mehr geschrieben habe. Aber weißt du mein älterer Bruder, der schon lange im Ausland lebt, ist jetzt für zwei Monate bei uns. Wir unternehmen einiges zusammen, Z.B. gehen wir nachmittags ins Schwimmbad oder abends ins Kino.\n\nWir verstehen uns eigentlich ganz gut, aber dennoch habe ich ein Problem mit ihm: Wenn es im Fernsehen Sportsendungen gibt, dann bekomme ich ihn nicht mehr weg vom Fernseher! Er sitzt dann stundenlang nur da und sieht fern, ganz egal wie schön das Wetter draußen ist! Was soll ich bloß tun? Überhaupt nichts sagen oder soll ich mit ihm deswegen streiten? Er fährt bald wieder weg und ich möchte doch mit ihm zusammen sein. Was würdest du machen?\n\nHast du vielleicht ein paar Tipps oder Ratschläge für mich?\n\nHerzliche Grüße\nNicole",
+          "tasks": "- Eigene Erfahrungen mit Geschwistern\n- Freunden....\n- Tipps für Nicole.\n- Was Sie über den Bruder denken.\n- Was Sie selbst gern gemeinsam mit anderen machen."
+        },
+        {
+          "title": "Andreas",
+          "istructions": "## Aufgabe\n\nSchreiben Sie etwas zu allen vier Punkten:",
+          "content": "## Brief\n\nLiebe(r)........\n\nHeute habe ich Zeit, dir ein paar Zeilen zu schreiben. Der Urlaub war so schön, aber seit ich zurück bin, habe ich im Büro sehr viel Arbeit. Bestimmt brauche ich schon bald wieder Urlaub! Während ich weg war, hat sich hier übrigens einiges geändert: Es gibt einen neuen Kollegen, er heißt Roberto. Was aber die größte Veränderung ist: Er arbeitet mit mir in meinem Büro, das heißt, ich habe endlich jemanden, mit dem ich mich zwischendurch auch ein bisschen unterhalten kann! Roberto ist aus Spanien hierher gezogen. Er kennt noch niemanden hier, außer mir natürlich, und ist meistens allein. Denkst du, dass ich ihn und ein paar andere Arbeitskollegen einmal einladen sollte? Was würdest du tun? Na gut, für heute muss ich Schluss machen. Melde dich doch bald einmal bei mir!\n\nViele Grüße\nAndreas",
+          "tasks": "- Wie Sie am liebsten arbeiten (alleine oder mit Kollegen).\n- Was Sie nach dem Urlaub gemacht haben.\n- Was es bei Ihnen Neues gibt.\n- Überlegen Sie sich vor dem Schreiben eine passende Reihenfolge der Punkte\n- eine passende Betreff\n- eine passende Anrede\n- Einleitung und einen passenden Schluss."
+        },
+        {
+          "title": "Annika",
+          "istructions": "## Aufgabe\n\nSchreiben Sie etwas zu allen vier Punkten:",
+          "content": "## Brief\n\nLiebe(r).......\n\nWie geht’s dir? Hattest du ein schönes Wochenende? Hier hat es die ganze Zeit geregnet, deshalb bin ich zuhause geblieben.\n\nDu hattest vorgeschlagen, dass wir im Sommer zusammen verreisen könnten. Die Idee finde ich super! An welches Reiseziel denkst du? Ich bin gerne am Meer, mag aber auch Städtereisen. Wichtig ist für mich nur, dass ich auch ein bisschen Sport machen kann. Die Reise sollte aber nicht zu viel kosten, denn ich habe vor Kurzem schon viel für eine Autoreparatur bezahlen müssen. Was meinst du: wie können wir günstig Urlaub machen? Es muss ja kein Luxushotel sein.\n\nSchreib mir bald, dann können wir anfangen zu planen.\n\nViele Grüße\nAnnika",
+          "tasks": "- Was Sie am Wochenende unternommen haben\n- Wohin Sie gerne reisen würden\n- Was Sie im Urlaub gerne machen\n- Wie man beim Reisen Geld sparen kann"
+        },
+        {
+          "title": "Iris",
+          "istructions": "## Aufgabe\n\nAntworten Sie Ihrer Bekannten. Schreiben Sie etwas zu allen vier Punkten:",
+          "content": "## Brief\n\nLiebe(r).......\n\nendlich habe ich die Deutschprüfung hinter mir. Ich glaube, es ist gut gelaufen. Jetzt soll für unseren Kurs eine Party organisieren. Du hast doch kürzlich erzählt, dass Du für Euren Kurs auch ein Abschlussfest organisiert hast. Sicher kannst du mir ein paar Tipps geben. Ich habe mir gedacht, wir könnten vielleicht in einem Restaurant feiern. Da kann jeder essen und trinken, was er will. Was meinst Du? Essen zu kochen ist doch ziemlich viel Arbeit. und natürlich brauchen wir Musik. Welche Musik ist am besten geeignet? Was schlägst Du vor?\n\nMelde Dich bald.\nIch freue mich schon auf deine Antwort.\n\nLiebe Grüße\nIris",
+          "tasks": "- Reaktion auf die Prüfung\n- Wo feiern? Restaurant- Ihre Meinung\n- Welche Musik\n- Urlaubspläne\n- Überlegen Sie sich vor dem Schreiben eine passende Reihenfolge der Punkte\n- eine passende Betreff\n- eine passende Anrede\n- Einleitung und einen passenden Schluss."
+        },
+        {
+          "title": "Caroline",
+          "istructions": "## Aufgabe\n\nAntworten Sie Caroline. Schreiben Sie etwas zu den folgenden vier Punkten:",
+          "content": "## Brief\n\nDu hast schon so lange nicht mehr geschrieben. Wie geht es dir? Heute habe ich eine Bitte. Vielleicht kannst du uns helfen?\n\nEine 16-jährige Schülerin aus deinem Land wird uns besuchen und zwei Wochen bei uns in Goldbach bleiben. Natürlich möchten wir, dass sie sich wohl fühlt. Dein Land kennen wir nur von deinen Erzählungen, denn wir waren selbst noch nicht da. Bitte gib uns ein paar Informationen z.B. über typische Gewohnheiten oder typisches Essen. Was können wir tun und wie können wir uns vorbereiten?\n\nWir freuen uns schon auf deine Antwort.\n\nSchon einmal viele Dank und liebe Grüße\n\nCaroline",
+          "tasks": "- Reaktion auf den Besuch der Schülerin\n- Vorschlag zu Essen und Trinken\n- Warum Sie so lange nicht geschrieben haben\n- Unternehmungen/Programm mit der Schülerin"
+        },
+        {
+          "title": "Vera",
+          "istructions": "## Aufgabe\n\nAntworten Sie Vera. Schreiben Sie etwas zu allen vier Punkte:",
+          "content": "## Brief\n\nEine Freundin hat Ihnen den folgenden Brief geschrieben:\n\nLiebe(r)........\n\nWie geht es dir und deiner Familie?\n\nBei mir läuft alles prima. Endlich habe ich eine neue Arbeitsstelle. Ich habe nur ein kleines Problem: Es ist ein bisschen zu weit, um zu Fuß zu gehen.\n\nUnd der Bus fährt nur alle 30 Minuten. Früher bin ich meist mit dem Fahrrad gefahren, aber hier gibt es keine Fahrradwege. Und da ist ja auch noch mein Daniel, den ich morgens in den Kindergarten bringen muss.\n\nDer liegt zum Glück gleich neben meiner neuen Firma. – Wie kommst du denn zur Arbeit oder zum Deutschkurs?\n\nWollen wir uns nicht mal wieder treffen und alle zusammen was unternehmen? Ich würde mich freuen.\n\nLiebe Grüße\nVera",
+          "tasks": "- Was es bei Ihnen Neues gibt.\n- Was Sie zur Arbeit kommen.\n- Was Sie über Veras neue Stelle wissen wollen.\n- Vorschlag für gemeinsame Unternehmung?"
+        },
+        {
+          "title": "Jennifer",
+          "istructions": "## Aufgabe\n\nSchreiben Sie etwas zu den folgenden vier Punkten:",
+          "content": "## Brief\n\nLiebe(r).......\n\nEntschuldige, dass ich mich jetzt wieder melde. Ich weiß, wir hatten ausgemacht, uns öfter mal zu schreiben. Aber es war so viel los in letzter Zeit. Ich habe eine Neuigkeit für dich: Meine kleine Schwester Janine heiratet im Oktober, und ich habe ihr versprochen, schon mal allen Freunden zu schreiben und Bescheid zu sagen. Die offizielle Einladung bekommst du natürlich noch von ihr direkt. Eddi, ihr zukünftiger Mann, ist echt nett, und wir mögen ihn alle sehr. Er ist Koch und arbeitet hier in einem Hotel.\n\nWir planen jetzt alles. Gib mir deshalb möglichst bald Bescheid, ob du kommst und mit wem.\n\nHerzliche Grüße\n\nJennifer",
+          "tasks": "- Reaktion auf Neuigkeit\n- Übernachtungsmöglichkeit\n- Sie möchten zur Hochzeit kommen\n- Hochzeitsgeschenk"
+        },
+        {
+          "title": "Andreas 2",
+          "istructions": "## Aufgabe\n\nSchreiben Sie etwas zu den folgenden vier Punkten:",
+          "content": "## Brief\n\nLieber Andreas,\nes tut mir wirklich leid, dass ich dir schon so lange nicht geschrieben habe. Bei mir ist im letzten Monat ziemlich viel gewesen.\n\nVor drei Wochen bin ich nämlich in eine neue Wohnung gezogen, weil die alte für mich zu klein war. Mittlerweile habe ich mich schon sehr schön eingerichtet, mit ein paar neuen Möbeln usw. Ich fühle mich wirklich wohl! Hast du nicht Lust, im Sommer zu mir zu Besuch zu kommen?\n\nIn meiner neuen Wohnung habe ich jetzt auch ein kleines Arbeitszimmer für meine ganzen Bücher und den Schreibtisch mit dem Computer. Wie ist das bei dir? Machst du eigentlich viel am Computer? Lass doch mal wieder was von dir hören!\n\nLiebe Grüße und bis bald,\nAndreas",
+          "tasks": "- Ihre Erfahrungen mit dem Computer\n- Etwas über Ihre Wohnung\n- Ob Sie Andreas besuchen möchten.\n- Was es bei Ihnen Neues gibt."
+        },
+        {
+          "title": "Thomas",
+          "istructions": "## Aufgabe\n\nSchreiben Sie etwas zu allen vier Punkten:",
+          "content": "## Brief\n\nLiebe(r).......\n\nnach unserm schönen, gemeinsamen Erlebnis letztes Jahr möchte ich auch dieses Jahr wieder einen Ausflug für uns alle organisieren. Ich hoffe sehr, dass ihr Zeit habt und mitkommen könnt - ich freue mich schon jetzt, euch alle bald wieder zu sehen! Das Dumme ist nur, dass ich mir vor drei Wochen beim Basketball das Bein gebrochen habe und noch nicht so gut zu Fuß bin. Deshalb habe ich einen gemütlichen Ausflug mit Bus und Schiff geplant - hoffentlich ist dann auch das Wetter gut für die Schifffahrt! Wohin es geht, möchte ich euch aber noch nicht verraten - das soll eine Überraschung werden.\n\nTermin: übernächster Samstag.\n\nZeit und Treffpunkt: 9:30 Uhr bei mir.\n\nBitte schreibt mir doch, ob ihr beim Ausflug dabei sein könnt!\n\nHoffentlich bis bald.\n\nThomas",
+          "tasks": "- Alternativvorschlag für Schlechtes Wetter\n- Einladung annehmen\n- Was Sie noch über den Ausflug wissen wollen\n- Auf Sportunfall reagieren"
+        },
+        {
+          "title": "Tamara",
+          "istructions": "## Aufgabe\n\nSchreiben Sie etwas zu allen vier Punkten:",
+          "content": "## Brief\n\nLiebe(r).......\n\nwie geht es Dir? Du hast mir schon so lange nicht mehr geschrieben, dass ich mir Sorgen mache. Hoffentlich ist bei Euch alles in Ordnung. Es wird wirklich Zeit, dass wir uns wiedersehen.\n\nAnfang des Jahres habe ich meinen Arbeitsplatz gewechselt. Meine neue Stelle ist sehr interessant, aber auch anstrengend.\n\nIch bin nun beruflich sehr viel unterwegs. Demnächst muss ich auch in Eure Gegend reisen. Dann könnten wir uns doch einmal am Abend treffen und gemeinsam etwas unternehmen. Wie findest Du meine Idee? Ich würde auch sehr gerne Deine Familie kennenlernen.\n\nBitte antworte mir bald!\n\nHerzliche Grüße\n\nDeine Tamara",
+          "tasks": "- Vorschlag zum Treffen\n- Jemanden mitbringen\n- Frage zur neuen Arbeitsstelle\n- Warum Sie nicht geschrieben haben"
+        },
+        {
+          "title": "Jan",
+          "istructions": "## Aufgabe\n\nSchreiben Sie Jan. Schreiben Sie etwas zu allen vier Punkte:",
+          "content": "## Brief\n\nLiebe(r).......\n\nIch sende Dir ganz viele Grüße aus Rom! Du weißt ja, wie sehr mir diese Stadt gefällt. Ich bin hier von morgens bis abends nur unterwegs. Diese Museen, Parks Plätze und natürlich das Essen – wunderbar! Gestern Abend war ich übrigens in einem Rockkonzert. Ich fand die Musik ganz toll und die Stimmung war super.\n\nDoch Leider ist mein Urlaub schon fast vorbei und in drei Tagen muss ich wieder zurück nach Deutschland. Welche Stadt ist eigentlich Deine Lieblingsstadt? Hast du schon Pläne für Deinen nächsten Urlaub? Vielleicht können wir uns ja mal wieder treffen.\n\nHerzliche Grüße\nJan",
+          "tasks": "- Ihre Lieblingsstadt\n- Welche Musik Sie mögen\n- Ihre Pläne für den nächsten Urlaub\n- Treffen mit Jan"
+        },
+        {
+          "title": "Viktor",
+          "istructions": "## Aufgabe\n\nSchreiben Sie in Ihrem Brief etwas zu den folgenden vier Punkten:",
+          "content": "## Brief\n\nIhr Freund hat Ihnen folgenden Brief geschrieben:\n\nLiebe(r)......\n\nich sende dir sonnige Grüße von der wunderschönen Insel Malta Katja, die Kinder und ich sind ganz glücklich! Strand, Kultur. Sport- all das ist hier möglich! Gestern haben wir uns sogar ein Auto gemietet und einen Ausflug gemacht. Und auch für mein Hobby. Das Fotografieren, habe ich sehr viel Zeit, ich habe schon ganz viele Fotos gemacht. Ich schicke dir mit diesem Brief auch ein Buch über Malta, damit du siehst wie interessant dieses Land ist. Hoffentlich gefällt dir das Buch.\n\nLeider ist unser Urlaub auch schon in wenigen Tagen vorbei. Wie wäre das - vielleicht können wir uns ja wieder einmal treffen?\n\nBis hoffentlich bald\nViktor",
+          "tasks": "- Ihre Hobbys\n- Reaktion auf das Buch\n- Ihre Pläne für den nächsten Urlaub\n- Treffen mit Viktor"
+        },
+        {
+          "title": "Nora",
+          "istructions": "## Aufgabe\n\nAntworten Sie Nora. Schreiben Sie etwas zu allen vier Punkten:",
+          "content": "## Brief\n\nLiebe/r.\n\nWie geht es dir? Ich schreibe dir erst jetzt, weil ich in den letzten Wochen viel zu tun hatte. Wie du weißt, bin ich umgezogen.\n\nIn meiner neuen Wohnung fühle ich mich wohl: Sie ist groß und hell, und ich habe sogar einen kleinen Garten. Meine Nachbarn sind sehr nett. Leider habe ich hier noch keine neuen Leute gefunden. Ich weiß nicht, wo ich neue Leute kennenlernen könnte. Hast du vielleicht ein paar Tipps für mich? Hoffentlich ist bei dir alles in Ordnung.\n\nWir sollten uns bald wiedersehen.\n\nSchreib mir doch mal, ich freue mich!\n\nNora",
+          "tasks": "- Fragen über ihre Wohnung\n- Tipps für Nachbarn\n- Vorschlag zum Treffen\n- Neues bei Ihnen"
+        },
+        {
+          "title": "Anna",
+          "istructions": "## Aufgabe\n\nAntworten Sie Anna. Schreiben Sie etwas zu allen vier Punkten:",
+          "content": "## Brief\n\nLiebe\n\nIch hoffe, es geht dir gut. Du hast dich schon lange nicht gemeldet. Ist alles in Ordnung bei dir? Ich bin so froh, dass es nun Sommer ist und ich oft draußen sein kann.\n\nIch schreibe dir auch, weil ich eine Bitte habe. Im Juli muss ich für eine Woche nach Dänemark reisen. In dieser Zeit brauche ich jemanden, der sich um meine Katze und meine Blumen kümmert. Könntest du das bitte machen oder möchtest du im Juli selbst verreisen? Sag mir doch kurz Bescheid, ob es klappt. Ich lade dich danach auch zum Abendessen bei unserem Lieblingsitaliener ein.\n\nAnna",
+          "tasks": "- Reaktion auf Annas Bitte\n- Ihre Pläne für den Sommer\n- Warum Sie sich nicht gemeldet haben\n- Frage zur Katze"
+        },
+        {
+          "title": "Claudia",
+          "istructions": "## Aufgabe\n\nAntworten Sie Claudia. Schreiben Sie etwas zu allen vier Punkten:",
+          "content": "## Brief\n\nLiebe ...\n\nLeider haben wir uns schon länger nicht mehr geschrieben. Gibt es etwas Neues bei dir?\n\nStell dir vor: Mein Sohn Jonas wird nächste Woche schon fünf Jahre alt! Die Zeit vergeht so schnell. An seinem Geburtstag wollen wir mit vier seiner Freunde in den Zoo gehen. Mein Sohn liebt Tiere, besonders die Affen. Er kann ihnen stundenlang zusehen und über sie lachen. Gehst du auch gerne in den Zoo und welche Tiere magst du gerne?\n\nGibt es in deinem Heimatland eigentlich auch Zoos wie hier in Deutschland? Vielleicht können wir uns bald mal wieder treffen. Wenn du Lust hast, könnten wir ja auch einmal einen Zoo zusammen besuchen.\n\nGanz liebe Grüße\n\nClaudia",
+          "tasks": "- Reaktion auf den Vorschlag\n- Zoos im Heimatland\n- Lieblingstier im Zoo\n- Was es Neues bei Ihnen gibt"
+        },
+        {
+          "title": "Karla",
+          "istructions": "## Aufgabe\n\nAntworten Sie Karla. Schreiben Sie etwas zu allen vier Punkten:",
+          "content": "## Brief\n\nLiebe(r)\n\nWie geht es dir? In der Zwischenzeit habe ich mich schon gut in Bamberg eingelebt. Ich wohne in der Altstadt und fühle mich sehr wohl. Hier brauche ich kein Auto und kann alles zu Fuß oder mit dem Fahrrad erreichen, sogar meinen Arbeitsplatz.\n\nIch arbeite jetzt als Rezeptionistin im Hotel „Zur Residenz“. Ich habe sehr viel zu tun und jeden Tag gibt es neue Überraschungen. Aber gerade das liebe ich ja an meinem Job. Komm mich doch besuchen! Dann zeige ich dir meine neue Wohnung und wir können endlich mal wieder lange reden.\n\nViele Grüße\n\nKarla",
+          "tasks": "- Etwas über Ihren Wohnort\n- Etwas über Ihre Wohnung\n- Karla besuchen\n- Frage zu Karlas Arbeit"
+        },
+        {
+          "title": "Mara",
+          "istructions": "## Aufgabe\n\nAntworten Sie auf den Brief. Schreiben Sie etwas zu den folgenden Punkten:",
+          "content": "## Brief\n\nLiebe(r) ..., den ...\n\nWie geht es dir? Warum hast du in den letzten Wochen nicht mehr geschrieben? Leider haben wir uns ja auch schon sehr lange nicht mehr gesehen. Doch das kann sich bald ändern.\n\nMein neuer Freund und ich haben in zwei Wochen Urlaub und möchten eine Reise mit dem Auto machen. Dabei möchten wir dich auch gerne treffen. Schließlich möchte ich dir ja auch meinen Freund vorstellen. Vielleicht hast du eine Idee, wo wir uns treffen könnten. Kannst du uns auch ein schönes Hotel bei euch in der Nähe empfehlen? Antworte mir bald!\n\nHerzliche Grüße\n\nMara",
+          "tasks": "- Hotel / Übernachtungsmöglichkeit\n- Vorschlag zum Treffen\n- Reaktion auf Maras neuen Freund\n- Warum Sie lange nicht geschrieben haben\n- Bevor Sie den Brief schreiben, überlegen Sie sich eine passende Reihenfolge der Punkte, eine passende Einleitung und einen passenden Schluss. Vergessen Sie nicht Datum und Anrede.\n- Schreiben Sie mindestens 100 Wörter."
+        },
+        {
+          "title": "Annika 2",
+          "istructions": "## Aufgabe\n\nAntworten Sie Annika. Schreiben Sie etwas zu allen vier Punkten:",
+          "content": "## Brief\n\nLiebe(r).......\n\nWie geht’s dir? Hattest du ein schönes Wochenende? Hier hat es die ganze Zeit geregnet, deshalb bin ich zuhause geblieben.\n\nDu hattest vorgeschlagen, dass wir im Sommer zusammen verreisen könnten. Die Idee finde ich super! An welches Reiseziel denkst du? Ich bin gerne am Meer, mag aber auch Städtereisen. Wichtig ist für mich nur, dass ich auch ein bisschen Sport machen kann. Die Reise sollte aber nicht zu viel kosten, denn ich habe vor Kurzem schon viel für eine Autoreparatur bezahlen müssen. Was meinst du: Wie können wir günstig Urlaub machen? Es muss ja kein Luxushotel sein.\n\nSchreib mir bald, dann können wir anfangen zu planen.\n\nViele Grüße\n\nAnnika",
+          "tasks": "- Was Sie am Wochenende unternommen haben\n- Wohin Sie gerne reisen würden\n- Was Sie im Urlaub gerne machen\n- Wie man beim Reisen Geld sparen kann\n- Überlegen Sie sich vor dem Schreiben eine passende Reihenfolge der Punkte, eine passende Betreffzeile, eine passende Anrede, Einleitung und einen passenden Schluss."
+        },
+        {
+          "title": "Sonja",
+          "istructions": "## Aufgabe\n\nAntworten Sie Sonja. Schreiben Sie in Ihrem Brief etwas zu allen vier Punkten:",
+          "content": "## Brief\n\nLiebe(r).......\n\nDie Sommerferien kommen rasch näher und ich freue mich sehr, dass du mich besuchen kommst. Ich habe eine tolle Idee:\n\nIch möchte dich gerne zu einem Musikfestival einladen, und zwar nach Rüdesheim (ca. 50 km von Mainz). Dort spielen in diesem Sommer die besten internationalen Musikgruppen.\n\nIch finde Open-Air-Konzerte einfach toll: die friedliche Stimmung unter den Besuchern, die gute Musik und einfach viele schöne Momente, die man nie mehr vergisst. Vor allem, wenn das Wetter gut ist, kann man das so richtig genießen.\n\nWir könnten mit dem Zug nach Rüdesheim fahren oder auch mein Auto nehmen. Was wäre dir lieber? Übernachten würde ich gern auf dem Festplatz. Was meinst du? Und willst du vielleicht noch jemanden mitbringen? Vielleicht hast du noch einen Wunsch, was du sonst noch hier machen möchtest? Schreibe mir bitte möglichst bald.\n\nIch freue mich schon auf deine Antwort.\n\nHerzliche Grüße\nSonja",
+          "tasks": "- Was Sie sonst noch machen möchten\n- Wie Sie zum Festival reisen möchten\n- Ob Sie jemanden mitbringen\n- Übernachten: Reaktion auf Sonjas Vorschlag"
+        },
+        {
+          "title": "Rita",
+          "istructions": "## Aufgabe\n\nAntworten Sie Ihrer Bekannten. Schreiben Sie etwas zu den folgenden vier Punkten:",
+          "content": "## Brief\n\nLiebe(r).......\n\nEndlich habe ich Zeit, dir wieder mal zu schreiben. Schade, dass du bei unserer Hochzeit nicht dabei sein konntest! Wir waren mit Freunden und Verwandten über 50 Personen. Ich habe ein langes, weißes Kleid getragen, und Karl hat sich für diesen Tag einen teuren, schwarzen Anzug gekauft, obwohl er sonst immer nur Jeans trägt. Natürlich gab es ein wunderbares Festessen und danach wurde getanzt. Karl und ich haben viele Geschenke bekommen, vor allem auch Geld für unsere Hochzeitsreise. Wir wissen aber noch gar nicht, wohin wir fahren wollen.\n\nWie läuft es eigentlich bei dir, du hast doch eine neue Stelle? Wie gefällt dir die Arbeit? Karl und ich würden uns sehr freuen, wenn du uns wieder mal besuchen würdest!\n\nLiebe Grüße\nRita",
+          "tasks": "- Ihre neue Arbeitsstelle\n- Wie man in Ihrem Land heiratet\n- Vorschlag für Ritas Hochzeitsreise\n- Rita und Karl besuchen"
+        },
+        {
+          "title": "Anne",
+          "istructions": "## Aufgabe\n\nAntworten Sie Anne. Schreiben Sie etwas zu allen vier Punkten:",
+          "content": "## E-Mail\n\nLiebe(r),\n\nIch hoffe, es geht dir gut. Was hast du in letzter Zeit so erlebt? Erzähl doch mal.\n\nDu bist ja auch zu Laras 30. Geburtstag eingeladen. Wollen wir zusammen dorthin fahren? Würdest du lieber mit dem Zug oder dem Auto fahren? Lara lebt ja jetzt in Garmisch-Partenkirchen und das ist von uns aus ziemlich weit weg.\n\nIch denke auch darüber nach, nach der Feier noch ein paar Tage dort zu bleiben und Urlaub zu machen. Hättest du darauf auch Lust? Das wäre super! Und was könnten wir Lara schenken? Zum 30. sollte es schon etwas Besonderes sein.\n\nLiebe Grüße\nAnne",
+          "tasks": "- Geschenk für Lara\n- Gemeinsam länger bleiben\n- Zug oder Auto\n- Was Sie in letzter Zeit erlebt haben"
+        },
+        {
+          "title": "Paul",
+          "istructions": "## Aufgabe\n\nAntworten Sie Paul. Schreiben Sie etwas zu allen vier Punkten:",
+          "content": "## E-Mail\n\nLiebe/r....,\n\nIch freue mich sehr über dein Interesse an einem gemeinsamen Ausflug in die Berge.\n\nAuch mir würde es gefallen, mehrere Tage zu wandern. Ich möchte dir vorschlagen, dass wir nach Südtirol fahren, denn die Berge dort sollen wirklich wunderschön sein.\n\nWas hältst du davon? Mir wäre Anfang Juni am liebsten, weil es da noch nicht so heiß ist. Vielleicht möchtest du noch jemanden mitbringen?\n\nBitte schreibe mir bald, was du von meinem Vorschlag hältst.\n\nViele liebe Grüße\nPaul",
+          "tasks": "- Termin in Ordnung?\n- Reaktion auf Pauls Vorschlag\n- Jemanden mitbringen?\n- Was Sie noch von Paul wissen wollen"
+        },
+        {
+          "title": "Jakob",
+          "istructions": "## Aufgabe\n\nAntworten Sie Jakob. Schreiben Sie etwas zu allen vier Punkten:",
+          "content": "## E-Mail\n\nLiebe(r)...\n\nWie geht es dir? Ich wollte dir schon lange schreiben, aber ich hatte nach meinem Urlaub noch so viel zu tun.\n\nIm Moment habe ich leider ein Problem mit meinem Nachbarn. Er hört oft sehr laut Musik, auch abends. Das stört mich sehr. Ich weiß nicht, was ich machen soll. Hast du einen Tipp?\n\nHattest du auch schon mal solche Schwierigkeiten? Wie sind denn deine Nachbarn? Ich habe dich übrigens noch nie in deiner Wohnung besucht. Wie ist sie? Erzähl doch mal ein bisschen. Hast du bald mal Zeit? Dann könnten wir was unternehmen. Worauf hast du Lust? Meld dich doch mal.\n\nViele Grüße\nJakob",
+          "tasks": "- Problem mit dem Nachbarn: Tipp\n- Ihre Wohnung\n- Vorschlag für ein Treffen\n- Wie Ihre Nachbarn sind"
+        }
+      ]
     }
   }
 }

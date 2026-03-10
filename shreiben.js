@@ -10,6 +10,7 @@ const fontSizeValue = document.getElementById("font-size-value");
 
 const EDITOR_FONT_SIZE_KEY = "zdeutsch.shreiben.editorFontSize";
 const DEFAULT_EDITOR_FONT_SIZE = 16;
+const DEFAULT_PART_KEY = "teil-1";
 const GERMAN_SPECIAL_CHARS = ["ä", "ö", "ü", "ß", "Ä", "Ö", "Ü", "ẞ"];
 const CHATGPT_CORRECTION_PROMPT = `You are a certified TELC Deutsch B2 examiner.
 
@@ -205,7 +206,7 @@ Important rules:
 const state = {
   data: null,
   levelKey: "b2",
-  partKey: "teil-1",
+  partKey: DEFAULT_PART_KEY,
   taskId: null,
   drafts: {},
   editorFontSize: DEFAULT_EDITOR_FONT_SIZE
@@ -236,8 +237,193 @@ function getLevelEntry() {
   return state.data?.levels?.[state.levelKey] || null;
 }
 
+function normalizeLines(value) {
+  if (Array.isArray(value)) {
+    return value.map((entry) => String(entry || "").trim()).filter(Boolean);
+  }
+  return String(value || "")
+    .split(/\r?\n/)
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+}
+
+function legacyTaskToIstructions(task, index) {
+  const title = String(task?.title || "").trim();
+  const prompt = String(task?.prompt || "").trim();
+  const lines = [];
+  lines.push(`# ${title || `Task ${index + 1}`}`);
+  if (prompt) {
+    lines.push("", prompt);
+  }
+  return lines.join("\n").trim();
+}
+
+function legacyTaskToContent(task) {
+  const ad = task?.ad && typeof task.ad === "object" ? task.ad : {};
+  const lines = [];
+
+  if (ad.header) {
+    lines.push(`## ${String(ad.header).trim()}`);
+  }
+  if (ad.tagline) {
+    lines.push(`**${String(ad.tagline).trim()}**`);
+  }
+
+  normalizeLines(ad.paragraphs).forEach((paragraph) => {
+    lines.push(paragraph);
+  });
+
+  const offers = normalizeLines(ad.offer);
+  if (offers.length) {
+    lines.push("### Angebot");
+    offers.forEach((item) => {
+      lines.push(`- ${item}`);
+    });
+  }
+
+  if (ad.price) {
+    lines.push(`**${String(ad.price).trim()}**`);
+  }
+
+  const address = normalizeLines(ad.address);
+  if (address.length) {
+    lines.push(address.join(", "));
+  }
+
+  return lines.join("\n\n").trim();
+}
+
+function legacyTaskToTasks(task) {
+  const requirements = task?.requirements && typeof task.requirements === "object"
+    ? task.requirements
+    : {};
+  const lines = [];
+  normalizeLines(requirements.mode).forEach((item) => {
+    lines.push(`- ${item}`);
+  });
+  if (lines.length && normalizeLines(requirements.points).length) {
+    lines.push("");
+  }
+  normalizeLines(requirements.points).forEach((item) => {
+    lines.push(`- ${item}`);
+  });
+  return lines.join("\n").trim();
+}
+
+function cleanMarkdownLine(value) {
+  return String(value || "")
+    .replace(/^#{1,6}\s+/, "")
+    .replace(/^[\-*+]\s+/, "")
+    .replace(/\*\*/g, "")
+    .replace(/`/g, "")
+    .trim();
+}
+
+function extractTaskTitle(task, index) {
+  const lines = String(task?.istructions || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const headingLine = lines.find((line) => /^#{1,6}\s+/.test(line));
+  if (headingLine) {
+    const heading = cleanMarkdownLine(headingLine);
+    if (heading) {
+      return heading;
+    }
+  }
+  const firstLine = lines.find(Boolean);
+  if (firstLine) {
+    const cleaned = cleanMarkdownLine(firstLine);
+    if (cleaned) {
+      return cleaned;
+    }
+  }
+  return `Task ${index + 1}`;
+}
+
+function normalizeTask(task, index) {
+  const source = task && typeof task === "object" ? task : {};
+  const hasMarkdownShape = ["title", "istructions", "instructions", "content", "tasks"].some((key) => {
+    return Object.prototype.hasOwnProperty.call(source, key);
+  });
+
+  const explicitTitle = String(source.title ?? "").trim();
+  const istructions = hasMarkdownShape
+    ? String(source.istructions ?? source.instructions ?? "").trim()
+    : legacyTaskToIstructions(source, index);
+  const content = hasMarkdownShape
+    ? String(source.content ?? "").trim()
+    : legacyTaskToContent(source);
+  const tasks = hasMarkdownShape
+    ? String(source.tasks ?? "").trim()
+    : legacyTaskToTasks(source);
+  const id = String(source.id || `task-${index + 1}`).trim() || `task-${index + 1}`;
+
+  return {
+    id,
+    title: explicitTitle || extractTaskTitle({ istructions }, index),
+    istructions,
+    content,
+    tasks
+  };
+}
+
+function normalizeTaskList(value) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.map((task, index) => normalizeTask(task, index));
+}
+
 function getPart(partKey) {
-  return getLevelEntry()?.parts?.[partKey] || null;
+  const levelEntry = getLevelEntry();
+  if (!levelEntry) {
+    return null;
+  }
+
+  if (Array.isArray(levelEntry.tasks)) {
+    return {
+      meta: {
+        partLabel: "Schreiben"
+      },
+      content: {
+        instruction: "",
+        tasks: normalizeTaskList(levelEntry.tasks)
+      }
+    };
+  }
+
+  const normalizeLegacyPart = (part) => {
+    const instruction = String(part?.content?.instruction || "");
+    const tasks = normalizeTaskList(part?.content?.tasks || []);
+    return {
+      ...part,
+      content: {
+        ...(part?.content || {}),
+        instruction,
+        tasks
+      }
+    };
+  };
+
+  const requestedPart = String(partKey || "").trim();
+  if (requestedPart && levelEntry?.parts?.[requestedPart]) {
+    return normalizeLegacyPart(levelEntry.parts[requestedPart]);
+  }
+
+  if (Array.isArray(levelEntry?.partOrder) && levelEntry.partOrder.length) {
+    const orderedPart = levelEntry.partOrder.find((key) => levelEntry?.parts?.[key]);
+    if (orderedPart) {
+      return normalizeLegacyPart(levelEntry.parts[orderedPart]);
+    }
+  }
+
+  const firstPartKey = Object.keys(levelEntry?.parts || {})[0];
+  if (!firstPartKey) {
+    return null;
+  }
+
+  return normalizeLegacyPart(levelEntry.parts[firstPartKey]);
 }
 
 function partHasTask(partKey, taskId) {
@@ -249,12 +435,20 @@ function partHasTask(partKey, taskId) {
   return tasks.some((task) => String(task?.id || "").trim() === selectedTaskId);
 }
 
-function buildDraftStorageKey(levelKey, partKey, taskId) {
-  return `zdeutsch.shreiben.${levelKey}.${partKey}.${taskId}`;
+function buildDraftStorageKey(levelKey, taskId) {
+  return `zdeutsch.shreiben.${levelKey}.${taskId}`;
+}
+
+function buildLegacyDraftStorageKey(levelKey, partKey, taskId) {
+  return `zdeutsch.shreiben.${levelKey}.${partKey || DEFAULT_PART_KEY}.${taskId}`;
 }
 
 function getDraftStorageKey(taskId) {
-  return buildDraftStorageKey(state.levelKey, state.partKey, taskId);
+  return buildDraftStorageKey(state.levelKey, taskId);
+}
+
+function getLegacyDraftStorageKey(taskId) {
+  return buildLegacyDraftStorageKey(state.levelKey, state.partKey, taskId);
 }
 
 function getDraftSavedAtStorageKey(taskId) {
@@ -264,7 +458,13 @@ function getDraftSavedAtStorageKey(taskId) {
 function getDraft(taskId) {
   const key = getDraftStorageKey(taskId);
   if (!Object.prototype.hasOwnProperty.call(state.drafts, key)) {
-    state.drafts[key] = window.localStorage.getItem(key) || "";
+    const current = window.localStorage.getItem(key);
+    if (current) {
+      state.drafts[key] = current;
+    } else {
+      const legacy = window.localStorage.getItem(getLegacyDraftStorageKey(taskId)) || "";
+      state.drafts[key] = legacy;
+    }
   }
   return state.drafts[key];
 }
@@ -280,7 +480,8 @@ function setDraft(taskId, value) {
 }
 
 function getDraftSavedAt(taskId) {
-  const raw = window.localStorage.getItem(getDraftSavedAtStorageKey(taskId));
+  const raw = window.localStorage.getItem(getDraftSavedAtStorageKey(taskId))
+    || window.localStorage.getItem(`${getLegacyDraftStorageKey(taskId)}.savedAt`);
   const numeric = Number.parseInt(raw || "", 10);
   return Number.isFinite(numeric) ? numeric : null;
 }
@@ -309,7 +510,14 @@ function renderPartList() {
   }
   partCards.innerHTML = "";
   const levelEntry = getLevelEntry();
-  const order = levelEntry?.partOrder || [];
+  if (Array.isArray(levelEntry?.tasks)) {
+    partCards.classList.add("hidden");
+    return;
+  }
+  partCards.classList.remove("hidden");
+  const order = Array.isArray(levelEntry?.partOrder) && levelEntry.partOrder.length
+    ? levelEntry.partOrder
+    : Object.keys(levelEntry?.parts || {});
   order.forEach((partKey) => {
     const part = getPart(partKey);
     const button = createEl(
@@ -446,6 +654,111 @@ function renderInfoBlock(title, children) {
   return block;
 }
 
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function parseInlineMarkdown(value) {
+  let text = escapeHtml(value);
+  text = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/\*(.+?)\*/g, "<em>$1</em>");
+  text = text.replace(/`([^`]+)`/g, "<code>$1</code>");
+  text = text.replace(/\[(.+?)\]\((https?:\/\/[^)]+)\)/g, "<a href=\"$2\" target=\"_blank\" rel=\"noopener noreferrer\">$1</a>");
+  return text;
+}
+
+function markdownToHtml(markdown) {
+  const lines = String(markdown || "").split(/\r?\n/);
+  const html = [];
+  const paragraph = [];
+  let listType = null;
+
+  const closeList = () => {
+    if (listType) {
+      html.push(listType === "ul" ? "</ul>" : "</ol>");
+      listType = null;
+    }
+  };
+
+  const flushParagraph = () => {
+    if (!paragraph.length) {
+      return;
+    }
+    const text = parseInlineMarkdown(paragraph.join(" "));
+    html.push(`<p class=\"mt-3 text-sm text-ink leading-relaxed\">${text}</p>`);
+    paragraph.length = 0;
+  };
+
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      flushParagraph();
+      // Keep the current list open across empty lines to support relaxed markdown spacing.
+      return;
+    }
+
+    const headingMatch = trimmed.match(/^(#{1,6})\s+(.+)$/);
+    if (headingMatch) {
+      flushParagraph();
+      closeList();
+      const level = Math.min(6, headingMatch[1].length);
+      const headingText = parseInlineMarkdown(headingMatch[2]);
+      const headingClass = level <= 2
+        ? "mt-3 text-base font-display text-ink"
+        : "mt-3 text-sm font-display uppercase tracking-[0.15em] text-slate";
+      html.push(`<h${level} class=\"${headingClass}\">${headingText}</h${level}>`);
+      return;
+    }
+
+    const unorderedMatch = trimmed.match(/^[-*+]\s+(.+)$/);
+    if (unorderedMatch) {
+      flushParagraph();
+      if (listType !== "ul") {
+        closeList();
+        html.push("<ul class=\"mt-3 list-disc pl-5 text-sm text-ink space-y-1\">");
+        listType = "ul";
+      }
+      html.push(`<li>${parseInlineMarkdown(unorderedMatch[1])}</li>`);
+      return;
+    }
+
+    const orderedMatch = trimmed.match(/^\d+[.)]\s+(.+)$/);
+    if (orderedMatch) {
+      flushParagraph();
+      if (listType !== "ol") {
+        closeList();
+        html.push("<ol class=\"mt-3 list-decimal pl-5 text-sm text-ink space-y-1\">");
+        listType = "ol";
+      }
+      html.push(`<li>${parseInlineMarkdown(orderedMatch[1])}</li>`);
+      return;
+    }
+
+    closeList();
+    paragraph.push(trimmed);
+  });
+
+  flushParagraph();
+  closeList();
+
+  if (!html.length) {
+    return "<p class=\"mt-3 text-sm text-slate\">-</p>";
+  }
+
+  return html.join("\n");
+}
+
+function renderMarkdownBlock(markdown) {
+  const host = createEl("div", "shreiben-markdown");
+  host.innerHTML = markdownToHtml(markdown);
+  return host;
+}
+
 function renderTask(task) {
   const card = createEl("article", "rounded-3xl border border-stone-300 bg-white p-5 shadow-sm space-y-5");
   const titleRow = createEl("div", "flex flex-wrap items-center justify-between gap-3");
@@ -455,53 +768,11 @@ function renderTask(task) {
   );
   card.append(titleRow);
 
-  const adNodes = [];
-  if (task.ad?.header) {
-    adNodes.push(createEl("p", "mt-3 text-sm font-display text-ink", task.ad.header));
-  }
-  if (task.ad?.tagline) {
-    adNodes.push(createEl("p", "mt-1 text-sm font-semibold text-slate", task.ad.tagline));
-  }
-  (task.ad?.paragraphs || []).forEach((paragraph) => {
-    adNodes.push(createEl("p", "mt-3 text-sm text-ink leading-relaxed", paragraph));
-  });
-  if ((task.ad?.offer || []).length) {
-    const offerList = createEl("ul", "mt-3 list-disc pl-5 text-sm text-ink space-y-1");
-    task.ad.offer.forEach((item) => {
-      offerList.append(createEl("li", "", item));
-    });
-    adNodes.push(offerList);
-  }
-  if (task.ad?.price) {
-    adNodes.push(createEl("p", "mt-3 text-sm font-display text-ink", task.ad.price));
-  }
-  if ((task.ad?.address || []).length) {
-    const address = createEl("p", "mt-3 text-sm text-slate leading-relaxed", task.ad.address.join(", "));
-    adNodes.push(address);
-  }
-
-  const promptNodes = [createEl("p", "mt-3 text-sm text-ink leading-relaxed", task.prompt || "")];
-  if ((task.requirements?.mode || []).length) {
-    const modeList = createEl("ul", "mt-3 list-disc pl-5 text-sm text-ink space-y-1");
-    task.requirements.mode.forEach((item) => {
-      modeList.append(createEl("li", "", item));
-    });
-    promptNodes.push(modeList);
-  }
-  if ((task.requirements?.points || []).length) {
-    const pointsList = createEl("ul", "mt-3 list-disc pl-5 text-sm text-ink space-y-1");
-    task.requirements.points.forEach((item) => {
-      pointsList.append(createEl("li", "", item));
-    });
-    promptNodes.push(pointsList);
-  }
-
   const layout = createEl("div", "space-y-4 lg:grid lg:grid-cols-2 lg:gap-5 lg:space-y-0");
   const leftColumn = createEl("div", "space-y-4 lg:h-[calc(100vh-15rem)] lg:overflow-y-auto lg:pr-1");
-  leftColumn.append(
-    renderInfoBlock("Anzeige", adNodes),
-    renderInfoBlock("Aufgabe", promptNodes)
-  );
+  leftColumn.append(renderInfoBlock("istructions", [renderMarkdownBlock(task.istructions)]));
+  leftColumn.append(renderInfoBlock("content", [renderMarkdownBlock(task.content)]));
+  leftColumn.append(renderInfoBlock("tasks", [renderMarkdownBlock(task.tasks)]));
 
   const rightColumn = createEl("div", "lg:h-[calc(100vh-15rem)] lg:pl-1");
   const writingBlock = createEl("section", "rounded-2xl border border-azure/30 bg-azure/10 p-4 flex flex-col gap-3 h-full");
@@ -685,11 +956,14 @@ async function init() {
   }
 
   const levelEntry = getLevelEntry();
+  const partKeys = Array.isArray(levelEntry?.partOrder) && levelEntry.partOrder.length
+    ? levelEntry.partOrder
+    : Object.keys(levelEntry?.parts || {});
   const requestedPart = params.get("part");
-  if (requestedPart && levelEntry?.partOrder?.includes(requestedPart)) {
+  if (requestedPart && partKeys.includes(requestedPart)) {
     state.partKey = requestedPart;
-  } else if (levelEntry?.partOrder?.length) {
-    state.partKey = levelEntry.partOrder[0];
+  } else if (partKeys.length) {
+    state.partKey = partKeys[0];
   }
 
   const requestedTask = String(params.get("task") || "").trim();

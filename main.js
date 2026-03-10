@@ -236,15 +236,64 @@ function getShreibenTasks(levelKey) {
   if (!levelEntry) {
     return [];
   }
+
+  const normalizeTitle = (value) => {
+    return String(value || "")
+      .replace(/^#{1,6}\s+/, "")
+      .replace(/^[\-*+]\s+/, "")
+      .replace(/\*\*/g, "")
+      .replace(/`/g, "")
+      .trim();
+  };
+
+  const markdownTitle = (markdown, index) => {
+    const lines = String(markdown || "")
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+    const heading = lines.find((line) => /^#{1,6}\s+/.test(line));
+    if (heading) {
+      const value = normalizeTitle(heading);
+      if (value) {
+        return value;
+      }
+    }
+    if (lines.length) {
+      const value = normalizeTitle(lines[0]);
+      if (value) {
+        return value;
+      }
+    }
+    return `Task ${index + 1}`;
+  };
+
+  if (Array.isArray(levelEntry.tasks)) {
+    return levelEntry.tasks.map((task, index) => {
+      const id = String(task?.id || `task-${index + 1}`).trim() || `task-${index + 1}`;
+      const istructions = String(task?.istructions ?? task?.instructions ?? "").trim();
+      const fallbackTitle = String(task?.title || "").trim();
+      const title = fallbackTitle || markdownTitle(istructions, index);
+      return {
+        id,
+        title,
+        prompt: String(task?.content || "").trim(),
+        partKey: "teil-1",
+        partLabel: "Schreiben"
+      };
+    });
+  }
+
   const order = levelEntry.partOrder || Object.keys(levelEntry.parts || {});
   const tasks = [];
   order.forEach((partKey) => {
     const partEntry = levelEntry.parts?.[partKey];
     const partTasks = partEntry?.content?.tasks || [];
     partTasks.forEach((task, index) => {
-      const id = String(task?.id || `${partKey}-task-${index + 1}`).trim();
-      const title = String(task?.title || `Aufgabe ${index + 1}`).trim();
-      const prompt = String(task?.prompt || "").trim();
+      const id = String(task?.id || `task-${index + 1}`).trim() || `task-${index + 1}`;
+      const istructions = String(task?.istructions ?? task?.instructions ?? "").trim();
+      const fallbackTitle = String(task?.title || "").trim();
+      const title = fallbackTitle || markdownTitle(istructions, index);
+      const prompt = String(task?.content || task?.prompt || "").trim();
       tasks.push({
         id,
         title,
@@ -264,13 +313,19 @@ function countWords(text) {
     .filter(Boolean).length;
 }
 
-function getShreibenWordCount(levelKey, partKey, taskId) {
-  if (!levelKey || !partKey || !taskId) {
+function getShreibenWordCount(levelKey, taskId, partKey = "teil-1") {
+  if (!levelKey || !taskId) {
     return 0;
   }
-  const storageKey = `zdeutsch.shreiben.${levelKey}.${partKey}.${taskId}`;
-  const text = window.localStorage.getItem(storageKey) || "";
-  return countWords(text);
+  const storageKey = `zdeutsch.shreiben.${levelKey}.${taskId}`;
+  const current = window.localStorage.getItem(storageKey);
+  if (current) {
+    return countWords(current);
+  }
+
+  const legacyStorageKey = `zdeutsch.shreiben.${levelKey}.${partKey}.${taskId}`;
+  const legacyText = window.localStorage.getItem(legacyStorageKey) || "";
+  return countWords(legacyText);
 }
 
 const PDF_STYLES = `
@@ -1528,11 +1583,11 @@ function buildHorenCard(levelKey, partConfig) {
 
 function buildShreibenCard(levelKey, task) {
   const title = task?.title || "Schreiben";
-  const wordCount = getShreibenWordCount(levelKey, task?.partKey, task?.id);
+  const wordCount = getShreibenWordCount(levelKey, task?.id, task?.partKey);
   const progressTarget = 150;
   const progressPercent = Math.max(0, Math.min(100, Math.round((wordCount / progressTarget) * 100)));
   const statusLabel = wordCount > 0 ? "In progress" : "Not started";
-  const href = `shreiben.html?level=${encodeURIComponent(levelKey)}&part=${encodeURIComponent(task?.partKey || "teil-1")}&task=${encodeURIComponent(task?.id || "")}`;
+  const href = `shreiben.html?level=${encodeURIComponent(levelKey)}&task=${encodeURIComponent(task?.id || "")}`;
   const card = createEl("a", "theme-card");
   card.href = href;
 
