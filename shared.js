@@ -20,7 +20,21 @@ const DEFAULT_MODULE = {
 const DEFAULT_CONFIG = {
   fontScale: 1,
   asideWidth: "40%",
-  showMeinLangAd: true,
+  ads: {
+    top: {
+      enabled: false,
+      desktopImage: "",
+      mobileImage: "",
+      clickUrl: ""
+    },
+    bottom: {
+      enabled: false,
+      desktopImage: "",
+      mobileImage: "",
+      clickUrl: "",
+      displayIntervalHours: 3
+    }
+  },
   modules: [DEFAULT_MODULE],
   defaultModule: DEFAULT_MODULE.name,
   timer: DEFAULT_MODULE.timer,
@@ -31,7 +45,8 @@ const DEFAULT_CONFIG = {
 const COMMUNITY_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/CwFPqDeRbmqL5Rtx02NOCP?mode=hq1tswi";
 const COMMUNITY_WHATSAPP_COMPOSE_URL = "https://wa.me/?text=";
 const LESEN_PROGRESS_STORAGE_KEY = "zdeutsch.lesen.progress.v1";
-const MEINLANG_AD_PREF_KEY = "zdeutsch.meinlang.showAd.override";
+const BOTTOM_BANNER_DISMISS_KEY = "zdeutsch.ads.bottom.dismissed.v1";
+const DEFAULT_BOTTOM_BANNER_INTERVAL_HOURS = 3;
 
 function classNames(...items) {
   return items.filter(Boolean).join(" ");
@@ -71,11 +86,44 @@ function buildModuleConfig(entry) {
   };
 }
 
+function normalizeIntervalHours(value, fallback = DEFAULT_BOTTOM_BANNER_INTERVAL_HOURS) {
+  const raw = String(value ?? "").trim();
+  const candidate = raw === "" ? Number.NaN : Number(raw);
+  if (Number.isFinite(candidate) && candidate >= 0) {
+    return candidate;
+  }
+  const base = Number(fallback);
+  if (Number.isFinite(base) && base >= 0) {
+    return base;
+  }
+  return DEFAULT_BOTTOM_BANNER_INTERVAL_HOURS;
+}
+
+function normalizeBannerSlot(slotKey, slot, fallback = {}) {
+  const source = slot && typeof slot === "object" && !Array.isArray(slot) ? slot : {};
+  const base = fallback && typeof fallback === "object" && !Array.isArray(fallback) ? fallback : {};
+  const normalized = {
+    enabled: typeof source.enabled === "boolean" ? source.enabled : Boolean(base.enabled),
+    desktopImage: typeof source.desktopImage === "string" ? source.desktopImage.trim() : String(base.desktopImage || "").trim(),
+    mobileImage: typeof source.mobileImage === "string" ? source.mobileImage.trim() : String(base.mobileImage || "").trim(),
+    clickUrl: typeof source.clickUrl === "string" ? source.clickUrl.trim() : String(base.clickUrl || "").trim()
+  };
+  if (slotKey === "bottom") {
+    normalized.displayIntervalHours = normalizeIntervalHours(source.displayIntervalHours, base.displayIntervalHours);
+  }
+  return normalized;
+}
+
+function normalizeAdsConfig(ads) {
+  const source = ads && typeof ads === "object" && !Array.isArray(ads) ? ads : {};
+  return {
+    top: normalizeBannerSlot("top", source.top, DEFAULT_CONFIG.ads.top),
+    bottom: normalizeBannerSlot("bottom", source.bottom, DEFAULT_CONFIG.ads.bottom)
+  };
+}
+
 function normalizeConfig(config) {
   const merged = { ...DEFAULT_CONFIG, ...(config || {}) };
-  const showMeinLangAd = typeof config?.showMeinLangAd === "boolean"
-    ? config.showMeinLangAd
-    : DEFAULT_CONFIG.showMeinLangAd;
   const entries = Array.isArray(config?.modules) && config.modules.length
     ? config.modules
     : [{ name: config?.name || merged.defaultModule, dataFile: config?.dataFile, timer: config?.timer, scoreConfig: config?.scoreConfig }];
@@ -84,7 +132,7 @@ function normalizeConfig(config) {
   const activeModule = modules.find((module) => module.name === defaultModuleName) || modules[0];
   return {
     ...merged,
-    showMeinLangAd,
+    ads: normalizeAdsConfig(config?.ads),
     modules,
     defaultModule: defaultModuleName,
     dataFile: activeModule.dataFile,
@@ -92,35 +140,6 @@ function normalizeConfig(config) {
     scoreConfig: activeModule.scoreConfig,
     activeModuleName: activeModule.name
   };
-}
-
-function isMeinLangAdEnabled(config) {
-  const stored = getStoredMeinLangAdPreference();
-  if (typeof stored === "boolean") {
-    return stored;
-  }
-  if (typeof config?.showMeinLangAd === "boolean") {
-    return config.showMeinLangAd;
-  }
-  return DEFAULT_CONFIG.showMeinLangAd;
-}
-
-function getStoredMeinLangAdPreference() {
-  const raw = window.localStorage.getItem(MEINLANG_AD_PREF_KEY);
-  if (raw === null) {
-    return null;
-  }
-  if (raw === "true") {
-    return true;
-  }
-  if (raw === "false") {
-    return false;
-  }
-  return null;
-}
-
-function setMeinLangAdPreference(enabled) {
-  window.localStorage.setItem(MEINLANG_AD_PREF_KEY, enabled ? "true" : "false");
 }
 
 async function loadConfig() {
@@ -154,6 +173,286 @@ async function loadDatabase(config) {
     }
   }
   return null;
+}
+
+function resolveBannerImagePath(value) {
+  const raw = String(value || "").trim();
+  if (!raw) {
+    return "";
+  }
+  if (/^(https?:)?\/\//i.test(raw) || raw.startsWith("data:")) {
+    return raw;
+  }
+  if (raw.startsWith("/")) {
+    return raw;
+  }
+  return `/${raw}`;
+}
+
+function resolveBannerClickPath(value) {
+  const raw = String(value || "").trim();
+  if (!raw) {
+    return "";
+  }
+  if (raw.startsWith("/") || raw.startsWith("#") || raw.startsWith("?")) {
+    return raw;
+  }
+  if (/^(https?:)?\/\//i.test(raw) || /^mailto:/i.test(raw) || /^tel:/i.test(raw)) {
+    return raw;
+  }
+  if (/^[a-z][a-z0-9+.-]*:/i.test(raw)) {
+    return "";
+  }
+  return `https://${raw}`;
+}
+
+function isExternalBannerLink(href) {
+  return /^(https?:)?\/\//i.test(String(href || ""));
+}
+
+function createBannerPicture(slotConfig, altText) {
+  const desktopSrc = resolveBannerImagePath(slotConfig?.desktopImage);
+  const mobileSrc = resolveBannerImagePath(slotConfig?.mobileImage);
+  if (!desktopSrc && !mobileSrc) {
+    return null;
+  }
+
+  const picture = document.createElement("picture");
+  if (mobileSrc) {
+    const mobileSource = document.createElement("source");
+    mobileSource.media = "(max-width: 767px)";
+    mobileSource.srcset = mobileSrc;
+    picture.append(mobileSource);
+  }
+
+  const img = document.createElement("img");
+  img.className = "site-banner-image";
+  img.src = desktopSrc || mobileSrc;
+  img.alt = altText;
+  img.loading = "lazy";
+  img.decoding = "async";
+  picture.append(img);
+  return picture;
+}
+
+function createBannerMedia(slotConfig, altText) {
+  const picture = createBannerPicture(slotConfig, altText);
+  if (!picture) {
+    return null;
+  }
+
+  const href = resolveBannerClickPath(slotConfig?.clickUrl);
+  if (!href) {
+    return picture;
+  }
+
+  const link = createEl("a", "site-banner-link");
+  link.href = href;
+  link.setAttribute("aria-label", altText);
+  if (isExternalBannerLink(href)) {
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+  }
+  link.append(picture);
+  return link;
+}
+
+function getTopBannerHost() {
+  return document.getElementById("home-view");
+}
+
+function renderTopBanner(topConfig) {
+  const existing = document.getElementById("site-top-banner");
+  if (existing) {
+    existing.remove();
+  }
+
+  if (!topConfig?.enabled) {
+    return;
+  }
+
+  const media = createBannerMedia(topConfig, "Top advertisement banner");
+  if (!media) {
+    return;
+  }
+
+  const host = getTopBannerHost();
+  if (!host) {
+    return;
+  }
+
+  const section = createEl("section", "site-banner-top-wrap");
+  section.id = "site-top-banner";
+  const inner = createEl("div", "site-banner-inner");
+  inner.append(media);
+  section.append(inner);
+  host.prepend(section);
+}
+
+function getBottomBannerFingerprint(bottomConfig) {
+  const desktop = String(bottomConfig?.desktopImage || "").trim();
+  const mobile = String(bottomConfig?.mobileImage || "").trim();
+  const clickUrl = String(bottomConfig?.clickUrl || "").trim();
+  return `${desktop}|${mobile}|${clickUrl}`;
+}
+
+function readBottomBannerDismissState() {
+  const raw = window.localStorage.getItem(BOTTOM_BANNER_DISMISS_KEY);
+  if (!raw) {
+    return null;
+  }
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return parsed;
+    }
+  } catch (error) {
+    // backwards compatibility for old string format
+  }
+  if (typeof raw === "string" && raw.trim()) {
+    return {
+      fingerprint: raw.trim(),
+      dismissedAt: 0
+    };
+  }
+  return null;
+}
+
+function getBottomBannerDismissIntervalMs(bottomConfig) {
+  const hours = normalizeIntervalHours(
+    bottomConfig?.displayIntervalHours,
+    DEFAULT_BOTTOM_BANNER_INTERVAL_HOURS
+  );
+  return hours * 60 * 60 * 1000;
+}
+
+function getBottomBannerDismissRemainingMs(bottomConfig) {
+  const fingerprint = getBottomBannerFingerprint(bottomConfig);
+  if (!fingerprint) {
+    return 0;
+  }
+  const state = readBottomBannerDismissState();
+  if (!state || String(state.fingerprint || "") !== fingerprint) {
+    return 0;
+  }
+  const intervalMs = getBottomBannerDismissIntervalMs(bottomConfig);
+  if (!intervalMs) {
+    return 0;
+  }
+  const dismissedAt = Number(state.dismissedAt);
+  if (!Number.isFinite(dismissedAt) || dismissedAt <= 0) {
+    return 0;
+  }
+  return Math.max(0, intervalMs - (Date.now() - dismissedAt));
+}
+
+function dismissBottomBanner(bottomConfig) {
+  const fingerprint = getBottomBannerFingerprint(bottomConfig);
+  if (!fingerprint) {
+    return;
+  }
+  const state = {
+    fingerprint,
+    dismissedAt: Date.now()
+  };
+  window.localStorage.setItem(BOTTOM_BANNER_DISMISS_KEY, JSON.stringify(state));
+}
+
+function getFixedFooterOffset() {
+  const candidates = [
+    document.getElementById("footer"),
+    document.getElementById("horen-footer")
+  ].filter(Boolean);
+
+  let maxHeight = 0;
+  candidates.forEach((element) => {
+    if (!element) {
+      return;
+    }
+    const styles = window.getComputedStyle(element);
+    if (styles.position !== "fixed" || styles.display === "none" || styles.visibility === "hidden") {
+      return;
+    }
+    maxHeight = Math.max(maxHeight, element.offsetHeight || 0);
+  });
+  return maxHeight;
+}
+
+let bottomBannerResizeHandler = null;
+let bottomBannerRetryTimer = null;
+
+function renderBottomBanner(bottomConfig) {
+  const existing = document.getElementById("site-bottom-banner");
+  if (existing) {
+    existing.remove();
+  }
+
+  if (bottomBannerResizeHandler) {
+    window.removeEventListener("resize", bottomBannerResizeHandler);
+    bottomBannerResizeHandler = null;
+  }
+  if (bottomBannerRetryTimer) {
+    window.clearTimeout(bottomBannerRetryTimer);
+    bottomBannerRetryTimer = null;
+  }
+
+  if (!bottomConfig?.enabled) {
+    return;
+  }
+
+  const dismissedForMs = getBottomBannerDismissRemainingMs(bottomConfig);
+  if (dismissedForMs > 0) {
+    bottomBannerRetryTimer = window.setTimeout(() => {
+      renderBottomBanner(bottomConfig);
+    }, dismissedForMs + 120);
+    return;
+  }
+
+  const media = createBannerMedia(bottomConfig, "Bottom advertisement banner");
+  if (!media) {
+    return;
+  }
+
+  const banner = createEl("div", "site-bottom-banner");
+  banner.id = "site-bottom-banner";
+
+  const inner = createEl("div", "site-banner-inner site-banner-bottom-inner");
+  const closeBtn = createEl("button", "site-bottom-banner-close", "Close");
+  closeBtn.type = "button";
+  closeBtn.addEventListener("click", () => {
+    dismissBottomBanner(bottomConfig);
+    banner.remove();
+    if (bottomBannerResizeHandler) {
+      window.removeEventListener("resize", bottomBannerResizeHandler);
+      bottomBannerResizeHandler = null;
+    }
+    const retryInMs = getBottomBannerDismissRemainingMs(bottomConfig);
+    if (retryInMs > 0) {
+      bottomBannerRetryTimer = window.setTimeout(() => {
+        renderBottomBanner(bottomConfig);
+      }, retryInMs + 120);
+    }
+  });
+
+  inner.append(media, closeBtn);
+  banner.append(inner);
+  document.body.append(banner);
+
+  const applyOffset = () => {
+    const offset = getFixedFooterOffset();
+    banner.style.bottom = `${offset > 0 ? offset + 12 : 12}px`;
+  };
+
+  bottomBannerResizeHandler = applyOffset;
+  window.addEventListener("resize", applyOffset);
+  applyOffset();
+}
+
+async function setupSiteBanners(config) {
+  const activeConfig = config ? normalizeConfig(config) : await loadConfig();
+  const ads = activeConfig?.ads || DEFAULT_CONFIG.ads;
+  renderTopBanner(ads.top);
+  renderBottomBanner(ads.bottom);
 }
 
 function getVersionKeys(themeEntry) {
@@ -433,4 +732,12 @@ function setupCommunityWidgets() {
     openGroup.href = buildWhatsAppComposeUrl(message);
     status.textContent = "";
   });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    void setupSiteBanners();
+  }, { once: true });
+} else {
+  void setupSiteBanners();
 }

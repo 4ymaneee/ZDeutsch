@@ -1,7 +1,21 @@
 {
   "fontScale": 1,
   "asideWidth": "40%",
-  "showMeinLangAd": false,
+  "ads": {
+    "top": {
+      "enabled": true,
+      "desktopImage": "assets/ads/banners/top-desktop-1773247310224-e21hvx-top-telc-desktop-970x90.png",
+      "mobileImage": "assets/ads/banners/top-mobile-1773247311859-roq32u-top-telc-mobile-320x50.png",
+      "clickUrl": "https://meinlang.com/app/register/telc"
+    },
+    "bottom": {
+      "enabled": true,
+      "desktopImage": "assets/ads/banners/bottom-desktop-1773247313973-h8ty26-bottom-telc-desktop-970x90.png",
+      "mobileImage": "assets/ads/banners/bottom-mobile-1773247314928-nr5z8k-bottom-telc-mobile-320x50.png",
+      "clickUrl": "https://meinlang.com/app/register/telc",
+      "displayIntervalHours": 3
+    }
+  },
   "defaultModule": "lesen",
   "modules": [
     {
