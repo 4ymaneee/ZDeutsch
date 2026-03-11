@@ -508,11 +508,11 @@ body.community-modal-open {
   overflow: hidden;
 }
 
-.site-banner-top-wrap {
+.site-promo-top-wrap {
   margin-bottom: 1rem;
 }
 
-.site-banner-inner {
+.site-promo-inner {
   max-width: 1024px;
   margin: 0 auto;
   border: 1px solid #d6d1c5;
@@ -522,7 +522,7 @@ body.community-modal-open {
   box-shadow: 0 8px 18px rgba(26, 26, 26, 0.08);
 }
 
-.site-banner-image {
+.site-promo-image {
   width: 100%;
   max-height: 90px;
   display: block;
@@ -530,12 +530,12 @@ body.community-modal-open {
   border-radius: 10px;
 }
 
-.site-banner-link {
+.site-promo-link {
   display: block;
   text-decoration: none;
 }
 
-.site-bottom-banner {
+.site-bottom-promo {
   position: fixed;
   left: 0;
   right: 0;
@@ -544,12 +544,12 @@ body.community-modal-open {
   pointer-events: none;
 }
 
-.site-banner-bottom-inner {
+.site-promo-bottom-inner {
   position: relative;
   pointer-events: auto;
 }
 
-.site-bottom-banner-close {
+.site-bottom-promo-close {
   position: absolute;
   top: 6px;
   right: 6px;
@@ -746,21 +746,21 @@ body.community-modal-open {
 }
 
 @media (max-width: 767px) {
-  .site-banner-inner {
+  .site-promo-inner {
     border-radius: 10px;
     padding: 3px;
   }
 
-  .site-banner-image {
+  .site-promo-image {
     max-height: 50px;
     border-radius: 8px;
   }
 
-  .site-bottom-banner {
+  .site-bottom-promo {
     padding: 0 8px;
   }
 
-  .site-bottom-banner-close {
+  .site-bottom-promo-close {
     top: 4px;
     right: 4px;
     font-size: 9px;

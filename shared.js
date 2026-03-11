@@ -47,6 +47,8 @@ const COMMUNITY_WHATSAPP_COMPOSE_URL = "https://wa.me/?text=";
 const LESEN_PROGRESS_STORAGE_KEY = "zdeutsch.lesen.progress.v1";
 const BOTTOM_BANNER_DISMISS_KEY = "zdeutsch.ads.bottom.dismissed.v1";
 const DEFAULT_BOTTOM_BANNER_INTERVAL_HOURS = 3;
+const LEGACY_PROMO_PATH_PREFIX = "assets/ads/banners/";
+const PUBLIC_PROMO_PATH_PREFIX = "assets/highlights/slots/";
 
 function classNames(...items) {
   return items.filter(Boolean).join(" ");
@@ -176,15 +178,21 @@ async function loadDatabase(config) {
 }
 
 function resolveBannerImagePath(value) {
-  const raw = String(value || "").trim();
-  if (!raw) {
+  const source = String(value || "").trim();
+  if (!source) {
     return "";
   }
-  if (/^(https?:)?\/\//i.test(raw) || raw.startsWith("data:")) {
-    return raw;
+  if (/^(https?:)?\/\//i.test(source) || source.startsWith("data:")) {
+    return source;
   }
-  if (raw.startsWith("/")) {
-    const cleanPath = raw.replace(/^\/+/, "");
+  const hasLeadingSlash = source.startsWith("/");
+  const normalizedSource = source.replace(/^\/+/, "");
+  const remappedPath = normalizedSource.startsWith(LEGACY_PROMO_PATH_PREFIX)
+    ? `${PUBLIC_PROMO_PATH_PREFIX}${normalizedSource.slice(LEGACY_PROMO_PATH_PREFIX.length)}`
+    : normalizedSource;
+
+  if (hasLeadingSlash) {
+    const cleanPath = remappedPath;
     const segments = String(window.location.pathname || "/")
       .split("/")
       .filter(Boolean);
@@ -194,7 +202,7 @@ function resolveBannerImagePath(value) {
     const basePath = segments.length ? `/${segments.join("/")}/` : "/";
     return `${basePath}${cleanPath}`;
   }
-  return raw;
+  return remappedPath;
 }
 
 function resolveBannerClickPath(value) {
@@ -234,7 +242,7 @@ function createBannerPicture(slotConfig, altText) {
   }
 
   const img = document.createElement("img");
-  img.className = "site-banner-image";
+  img.className = "site-promo-image";
   img.src = desktopSrc || mobileSrc;
   img.alt = altText;
   img.loading = "lazy";
@@ -254,7 +262,7 @@ function createBannerMedia(slotConfig, altText) {
     return picture;
   }
 
-  const link = createEl("a", "site-banner-link");
+  const link = createEl("a", "site-promo-link");
   link.href = href;
   link.setAttribute("aria-label", altText);
   if (isExternalBannerLink(href)) {
@@ -270,7 +278,7 @@ function getTopBannerHost() {
 }
 
 function renderTopBanner(topConfig) {
-  const existing = document.getElementById("site-top-banner");
+  const existing = document.getElementById("site-top-promo");
   if (existing) {
     existing.remove();
   }
@@ -289,9 +297,9 @@ function renderTopBanner(topConfig) {
     return;
   }
 
-  const section = createEl("section", "site-banner-top-wrap");
-  section.id = "site-top-banner";
-  const inner = createEl("div", "site-banner-inner");
+  const section = createEl("section", "site-promo-top-wrap");
+  section.id = "site-top-promo";
+  const inner = createEl("div", "site-promo-inner");
   inner.append(media);
   section.append(inner);
   host.prepend(section);
@@ -390,7 +398,7 @@ let bottomBannerResizeHandler = null;
 let bottomBannerRetryTimer = null;
 
 function renderBottomBanner(bottomConfig) {
-  const existing = document.getElementById("site-bottom-banner");
+  const existing = document.getElementById("site-bottom-promo");
   if (existing) {
     existing.remove();
   }
@@ -421,11 +429,11 @@ function renderBottomBanner(bottomConfig) {
     return;
   }
 
-  const banner = createEl("div", "site-bottom-banner");
-  banner.id = "site-bottom-banner";
+  const banner = createEl("div", "site-bottom-promo");
+  banner.id = "site-bottom-promo";
 
-  const inner = createEl("div", "site-banner-inner site-banner-bottom-inner");
-  const closeBtn = createEl("button", "site-bottom-banner-close", "Close");
+  const inner = createEl("div", "site-promo-inner site-promo-bottom-inner");
+  const closeBtn = createEl("button", "site-bottom-promo-close", "Close");
   closeBtn.type = "button";
   closeBtn.addEventListener("click", () => {
     dismissBottomBanner(bottomConfig);
