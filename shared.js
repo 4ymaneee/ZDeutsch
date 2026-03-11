@@ -184,9 +184,17 @@ function resolveBannerImagePath(value) {
     return raw;
   }
   if (raw.startsWith("/")) {
-    return raw;
+    const cleanPath = raw.replace(/^\/+/, "");
+    const segments = String(window.location.pathname || "/")
+      .split("/")
+      .filter(Boolean);
+    if (segments.length && /\.[a-z0-9]+$/i.test(segments[segments.length - 1])) {
+      segments.pop();
+    }
+    const basePath = segments.length ? `/${segments.join("/")}/` : "/";
+    return `${basePath}${cleanPath}`;
   }
-  return `/${raw}`;
+  return raw;
 }
 
 function resolveBannerClickPath(value) {
