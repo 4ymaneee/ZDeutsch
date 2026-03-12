@@ -1,9 +1,12 @@
 {
   "fontScale": 1,
   "asideWidth": "40%",
+  "homepagePromo": {
+    "enabled": true
+  },
   "ads": {
     "top": {
-      "enabled": true,
+      "enabled": false,
       "desktopImage": "assets/highlights/slots/top-desktop-1773247310224-e21hvx-top-telc-desktop-970x90.png",
       "mobileImage": "assets/highlights/slots/top-mobile-1773247311859-roq32u-top-telc-mobile-320x50.png",
       "clickUrl": "https://meinlang.com/app/register/telc"

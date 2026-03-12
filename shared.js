@@ -20,6 +20,9 @@ const DEFAULT_MODULE = {
 const DEFAULT_CONFIG = {
   fontScale: 1,
   asideWidth: "40%",
+  homepagePromo: {
+    enabled: true
+  },
   ads: {
     top: {
       enabled: false,
@@ -124,6 +127,15 @@ function normalizeAdsConfig(ads) {
   };
 }
 
+function normalizeHomepagePromoConfig(value) {
+  const source = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  return {
+    enabled: typeof source.enabled === "boolean"
+      ? source.enabled
+      : Boolean(DEFAULT_CONFIG.homepagePromo.enabled)
+  };
+}
+
 function normalizeConfig(config) {
   const merged = { ...DEFAULT_CONFIG, ...(config || {}) };
   const entries = Array.isArray(config?.modules) && config.modules.length
@@ -134,6 +146,7 @@ function normalizeConfig(config) {
   const activeModule = modules.find((module) => module.name === defaultModuleName) || modules[0];
   return {
     ...merged,
+    homepagePromo: normalizeHomepagePromoConfig(config?.homepagePromo),
     ads: normalizeAdsConfig(config?.ads),
     modules,
     defaultModule: defaultModuleName,
@@ -275,6 +288,14 @@ function createBannerMedia(slotConfig, altText) {
 
 function getTopBannerHost() {
   return document.getElementById("home-view");
+}
+
+function renderHomepagePromo(homepagePromoConfig) {
+  const section = document.getElementById("homepage-promo-section");
+  if (!section) {
+    return;
+  }
+  section.classList.toggle("hidden", !homepagePromoConfig?.enabled);
 }
 
 function renderTopBanner(topConfig) {
@@ -466,6 +487,7 @@ function renderBottomBanner(bottomConfig) {
 
 async function setupSiteBanners(config) {
   const activeConfig = config ? normalizeConfig(config) : await loadConfig();
+  renderHomepagePromo(activeConfig.homepagePromo);
   const ads = activeConfig?.ads || DEFAULT_CONFIG.ads;
   renderTopBanner(ads.top);
   renderBottomBanner(ads.bottom);
