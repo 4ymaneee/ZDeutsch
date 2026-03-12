@@ -5,6 +5,9 @@ const sectionList = document.getElementById("section-list");
 const themeGrid = document.getElementById("theme-grid");
 const themeSearchInput = document.getElementById("theme-search");
 const homeLoader = document.getElementById("home-loader");
+const homeLoaderStage = document.getElementById("home-loader-stage");
+const homeLoaderPercent = document.getElementById("home-loader-percent");
+const homeLoaderBar = document.getElementById("home-loader-bar");
 const versionModal = document.getElementById("version-modal");
 const versionOverlay = document.getElementById("version-overlay");
 const versionTitle = document.getElementById("version-title");
@@ -24,6 +27,10 @@ const state = {
 };
 
 const SECTION_KEYS = ["lesen", "horen", "shreiben"];
+const homeLoaderState = {
+  progress: 0,
+  intervalId: null
+};
 
 function getSectionFromHash() {
   const raw = String(window.location.hash || "")
@@ -61,6 +68,85 @@ function setHomeLoaderVisible(show) {
     return;
   }
   homeLoader.classList.toggle("hidden", !show);
+  document.body.classList.toggle("home-loader-active", show);
+  if (!show && homeLoaderState.intervalId) {
+    window.clearInterval(homeLoaderState.intervalId);
+    homeLoaderState.intervalId = null;
+  }
+}
+
+function clampHomeLoaderProgress(value) {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+function renderHomeLoaderProgress() {
+  const progress = clampHomeLoaderProgress(homeLoaderState.progress);
+  if (homeLoaderPercent) {
+    homeLoaderPercent.textContent = `${progress}%`;
+  }
+  if (homeLoaderBar) {
+    homeLoaderBar.style.width = `${progress}%`;
+  }
+}
+
+function setHomeLoaderStage(text) {
+  if (homeLoaderStage && text) {
+    homeLoaderStage.textContent = text;
+  }
+}
+
+function setHomeLoaderProgress(value, options = {}) {
+  const target = clampHomeLoaderProgress(value);
+  const animate = options.animate !== false;
+
+  if (homeLoaderState.intervalId) {
+    window.clearInterval(homeLoaderState.intervalId);
+    homeLoaderState.intervalId = null;
+  }
+
+  if (!animate) {
+    homeLoaderState.progress = target;
+    renderHomeLoaderProgress();
+    return;
+  }
+
+  if (target === homeLoaderState.progress) {
+    renderHomeLoaderProgress();
+    return;
+  }
+
+  const direction = target > homeLoaderState.progress ? 1 : -1;
+  homeLoaderState.intervalId = window.setInterval(() => {
+    const remaining = Math.abs(target - homeLoaderState.progress);
+    const step = Math.max(1, Math.ceil(remaining / 7));
+    homeLoaderState.progress += step * direction;
+
+    if ((direction > 0 && homeLoaderState.progress >= target) || (direction < 0 && homeLoaderState.progress <= target)) {
+      homeLoaderState.progress = target;
+      window.clearInterval(homeLoaderState.intervalId);
+      homeLoaderState.intervalId = null;
+    }
+
+    renderHomeLoaderProgress();
+  }, 36);
+}
+
+function delay(ms) {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
+}
+
+async function runHomeLoaderStep(meta, task) {
+  setHomeLoaderStage(meta.label);
+  setHomeLoaderProgress(meta.holdPercent);
+  const result = await task();
+  setHomeLoaderStage(meta.completeLabel || meta.label);
+  setHomeLoaderProgress(meta.completePercent);
+  return result;
 }
 
 function updateHeader() {
@@ -1687,15 +1773,54 @@ if (versionOverlay) {
 }
 
 async function init() {
+  setHomeLoaderVisible(true);
+  setHomeLoaderStage("Preparing library...");
+  setHomeLoaderProgress(4, { animate: false });
+
   if (typeof setupCommunityWidgets === "function") {
     setupCommunityWidgets();
   }
-  state.config = await loadConfig();
-  setHomeLoaderVisible(true);
-  state.db = await loadDatabase(state.config);
-  state.shreibenDb = await loadNamedDatabase("shreiben.json");
-  state.parts = await loadParts();
-  setHomeLoaderVisible(false);
+
+  state.config = await runHomeLoaderStep(
+    {
+      label: "Loading settings...",
+      holdPercent: 12,
+      completePercent: 20,
+      completeLabel: "Settings ready"
+    },
+    () => loadConfig()
+  );
+
+  state.db = await runHomeLoaderStep(
+    {
+      label: "Loading Lesen exams...",
+      holdPercent: 46,
+      completePercent: 70,
+      completeLabel: "Lesen exams ready"
+    },
+    () => loadDatabase(state.config)
+  );
+
+  state.shreibenDb = await runHomeLoaderStep(
+    {
+      label: "Loading Schreiben tasks...",
+      holdPercent: 80,
+      completePercent: 88,
+      completeLabel: "Schreiben tasks ready"
+    },
+    () => loadNamedDatabase("shreiben.json")
+  );
+
+  state.parts = await runHomeLoaderStep(
+    {
+      label: "Loading part structure...",
+      holdPercent: 94,
+      completePercent: 98,
+      completeLabel: "Finalizing library..."
+    },
+    () => loadParts()
+  );
+
   if (!state.db) {
     themeGrid.innerHTML = "";
     themeGrid.append(
@@ -1706,6 +1831,10 @@ async function init() {
       )
     );
     updateHeader();
+    setHomeLoaderStage("Library unavailable");
+    setHomeLoaderProgress(100);
+    await delay(220);
+    setHomeLoaderVisible(false);
     return;
   }
 
@@ -1715,6 +1844,10 @@ async function init() {
     state.section = hashSection;
   }
   renderHome();
+  setHomeLoaderStage("Library ready");
+  setHomeLoaderProgress(100);
+  await delay(220);
+  setHomeLoaderVisible(false);
 }
 
 init();

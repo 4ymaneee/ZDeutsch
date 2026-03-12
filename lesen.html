@@ -86,7 +86,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="theme.css">
   </head>
-  <body class="theme-body font-body h-screen overflow-hidden">
+  <body class="theme-body font-body h-screen overflow-hidden lesen-page">
     <div class="fixed inset-0">
       <div class="absolute inset-0 flag-glow-top"></div>
       <div class="absolute inset-0 flag-glow-bottom"></div>
@@ -94,7 +94,7 @@
     </div>
 
     <div class="relative flex flex-col h-screen">
-      <header class="fixed top-0 left-0 right-0 h-16 border-b border-black/10 bg-white/90 backdrop-blur-md shadow-sm z-40">
+      <header class="lesen-header fixed top-0 left-0 right-0 h-16 border-b border-black/10 bg-white/90 backdrop-blur-md shadow-sm z-40">
         <div class="w-full h-full px-6 flex items-center justify-between gap-4">
           <div id="header-left" class="flex items-center gap-3 shrink-0">
             <img id="brand-logo" src="logo.svg" alt="ZDeutsch" class="h-16 w-auto">
@@ -110,22 +110,24 @@
               </div>
             </div>
           </div>
-          <div class="flex-1 min-w-0 flex items-center">
+          <div id="part-cards-wrap" class="flex-1 min-w-0 flex items-center">
             <div id="part-cards" class="hidden w-full flex items-center justify-start gap-2 overflow-x-auto"></div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
+          <div id="header-actions" class="flex items-center gap-2 shrink-0">
             <div id="timer-display" class="hidden items-center gap-2 rounded-full border border-azure/40 bg-azure/10 px-3 py-1 text-[10px] font-display uppercase tracking-[0.2em] text-azure">
               <span id="timer-value">90:00</span>
             </div>
-            <button id="aside-toggle" class="h-9 w-9 rounded-xl border border-black/10 bg-white/80 text-slate flex items-center justify-center shadow-sm md:hidden" aria-label="Open sidebar" aria-controls="right-panel" aria-expanded="false">
-              <i data-lucide="layout" class="h-4 w-4" aria-hidden="true"></i>
-            </button>
             <button id="settings-btn" class="h-9 w-9 rounded-xl border border-black/10 bg-white/80 text-slate flex items-center justify-center shadow-sm">
               <i data-lucide="settings" class="h-4 w-4" aria-hidden="true"></i>
             </button>
           </div>
         </div>
       </header>
+
+      <button id="aside-toggle" class="aside-toggle-btn fixed md:hidden flex items-center justify-center gap-2 rounded-full border border-black/10 bg-white/80 text-slate shadow-sm" type="button" aria-label="Open tasks panel" aria-controls="right-panel" aria-expanded="false">
+        <i data-lucide="layout" class="h-4 w-4" aria-hidden="true"></i>
+        <span class="aside-toggle-label font-display uppercase tracking-[0.18em]">Panel</span>
+      </button>
 
       <div id="settings-panel" class="fixed top-20 right-6 w-64 rounded-2xl border border-stone-300 bg-white/95 shadow-panel p-4 hidden z-40">
         <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Settings</div>
@@ -148,8 +150,8 @@
       <main id="exam-view" class="pt-20 pb-20 px-6">
         <div class="w-full">
           <div id="exam-grid" class="grid gap-6 h-[calc(100vh-160px)]">
-            <section id="left-panel" class="rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-6 overflow-y-auto"></section>
-            <aside id="right-panel" role="complementary" class="rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-6 overflow-y-auto"></aside>
+            <section id="left-panel" class="exam-panel rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-6 overflow-y-auto"></section>
+            <aside id="right-panel" role="complementary" class="exam-panel hidden md:block rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-6 overflow-y-auto"></aside>
           </div>
         </div>
       </main>

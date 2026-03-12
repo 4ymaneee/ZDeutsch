@@ -67,6 +67,7 @@ const state = {
 };
 
 let partTransitionBusy = false;
+const DESKTOP_ASIDE_QUERY = "(min-width: 768px)";
 
 const selectionGuard = {
   pointerDown: false,
@@ -74,6 +75,57 @@ const selectionGuard = {
   startY: 0,
   suppressNextClick: false
 };
+
+function isDesktopViewport() {
+  return window.matchMedia(DESKTOP_ASIDE_QUERY).matches;
+}
+
+function syncAsideLayout({ open = state.asideOpen, focusPanel = false, restoreFocus = false } = {}) {
+  if (!rightPanel) {
+    return;
+  }
+
+  const desktop = isDesktopViewport();
+  const shouldOpen = !desktop && Boolean(open);
+  state.asideOpen = shouldOpen;
+  rightPanel.setAttribute("tabindex", "-1");
+
+  if (desktop) {
+    rightPanel.classList.remove("hidden", "mobile-aside-open");
+    rightPanel.setAttribute("aria-hidden", "false");
+    if (asideOverlay) {
+      asideOverlay.classList.add("hidden");
+    }
+    if (asideToggle) {
+      asideToggle.setAttribute("aria-expanded", "false");
+    }
+    return;
+  }
+
+  rightPanel.classList.toggle("hidden", !shouldOpen);
+  rightPanel.classList.toggle("mobile-aside-open", shouldOpen);
+  rightPanel.setAttribute("aria-hidden", shouldOpen ? "false" : "true");
+  if (asideOverlay) {
+    asideOverlay.classList.toggle("hidden", !shouldOpen);
+  }
+  if (asideToggle) {
+    asideToggle.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+  }
+
+  if (shouldOpen && focusPanel) {
+    try {
+      rightPanel.focus();
+    } catch (error) {
+      // no-op
+    }
+  } else if (!shouldOpen && restoreFocus && asideToggle) {
+    try {
+      asideToggle.focus();
+    } catch (error) {
+      // no-op
+    }
+  }
+}
 
 function isInExamPanels(target) {
   if (!(target instanceof Node)) {
@@ -366,6 +418,7 @@ function setView(view) {
   if (brandLogo) {
     brandLogo.classList.add("hidden");
   }
+  syncAsideLayout({ open: view === "exam" ? state.asideOpen : false });
   renderPartCards();
   updateTimerDisplay();
 }
@@ -883,8 +936,8 @@ function renderResults() {
 
 function renderActionBar(partKey) {
   const { key, submitted } = ensurePartState(partKey);
-  const wrapper = createEl("div", "sticky bottom-0 left-0 right-0 pt-4");
-  const bar = createEl("div", "flex items-center justify-between gap-2");
+  const wrapper = createEl("div", "exam-action-bar sticky bottom-0 left-0 right-0 pt-4");
+  const bar = createEl("div", "exam-action-bar-inner flex items-center justify-between gap-2");
   const button = createEl(
     "button",
     classNames(
@@ -1838,39 +1891,11 @@ if (resultHomeBtn) {
 
 // Aside (mobile) open/close helpers
 function openAside() {
-  if (!rightPanel || !asideOverlay) return;
-  state.asideOpen = true;
-  rightPanel.classList.remove("hidden");
-  rightPanel.classList.add("fixed", "right-0", "top-20", "bottom-20", "w-4/5", "z-50", "rounded-l-3xl");
-  asideOverlay.classList.remove("hidden");
-  // ARIA + focus
-  rightPanel.setAttribute("aria-hidden", "false");
-  if (asideToggle) asideToggle.setAttribute("aria-expanded", "true");
-  // make focusable and move focus
-  rightPanel.setAttribute("tabindex", "-1");
-  try { rightPanel.focus(); } catch (err) {}
-  document.body.classList.add("overflow-hidden");
+  syncAsideLayout({ open: true, focusPanel: true });
 }
 
-function closeAside() {
-  if (!rightPanel || !asideOverlay) return;
-  state.asideOpen = false;
-  asideOverlay.classList.add("hidden");
-  rightPanel.classList.remove("fixed", "right-0", "top-20", "bottom-20", "w-4/5", "z-50", "rounded-l-3xl");
-  // restore aria and focus
-  rightPanel.setAttribute("aria-hidden", "true");
-  if (asideToggle) asideToggle.setAttribute("aria-expanded", "false");
-  if (!window.matchMedia('(min-width: 768px)').matches) {
-    rightPanel.classList.add("hidden");
-  } else {
-    rightPanel.classList.remove("hidden");
-  }
-  try { if (asideToggle) asideToggle.focus(); } catch (err) {}
-  if (state.view === "exam") {
-    document.body.classList.add("overflow-hidden");
-  } else {
-    document.body.classList.remove("overflow-hidden");
-  }
+function closeAside({ restoreFocus = true } = {}) {
+  syncAsideLayout({ open: false, restoreFocus });
 }
 
 function toggleAside() {
@@ -1897,7 +1922,7 @@ if (asideOverlay) {
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    closeAside();
+    closeAside({ restoreFocus: false });
   }
 });
 
@@ -1907,27 +1932,10 @@ document.addEventListener("click", suppressClickAfterSelection, true);
 
 // Ensure state is correct on resize (desktop should show aside without overlay)
 window.addEventListener("resize", () => {
-  if (window.matchMedia('(min-width: 768px)').matches) {
-    // Desktop: ensure aside visible and overlay hidden
-    if (rightPanel) {
-      rightPanel.classList.remove("hidden");
-      rightPanel.classList.remove("fixed", "right-0", "top-20", "bottom-20", "w-4/5", "z-50", "rounded-l-3xl");
-    }
-    if (asideOverlay) asideOverlay.classList.add("hidden");
-    state.asideOpen = false;
-    if (state.view === "exam") {
-      document.body.classList.add("overflow-hidden");
-    } else {
-      document.body.classList.remove("overflow-hidden");
-    }
-  } else {
-    // Mobile: if not open, ensure aside remains hidden
-    if (!state.asideOpen && rightPanel) {
-      rightPanel.classList.add("hidden");
-      rightPanel.classList.remove("fixed", "right-0", "top-20", "bottom-20", "w-4/5", "z-50", "rounded-l-3xl");
-    }
-  }
+  syncAsideLayout({ open: state.asideOpen });
 });
+
+syncAsideLayout({ open: false });
 
 async function init() {
   if (typeof setupCommunityWidgets === "function") {
