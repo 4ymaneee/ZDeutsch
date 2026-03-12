@@ -12,7 +12,7 @@
       "clickUrl": "https://meinlang.com/app/register/telc"
     },
     "bottom": {
-      "enabled": true,
+      "enabled": false,
       "desktopImage": "assets/highlights/slots/bottom-desktop-1773247313973-h8ty26-bottom-telc-desktop-970x90.png",
       "mobileImage": "assets/highlights/slots/bottom-mobile-1773247314928-nr5z8k-bottom-telc-mobile-320x50.png",
       "clickUrl": "https://meinlang.com/app/register/telc",
