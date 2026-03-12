@@ -49,6 +49,11 @@ const COMMUNITY_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/CwFPqDeRbmqL5Rtx
 const COMMUNITY_WHATSAPP_COMPOSE_URL = "https://wa.me/?text=";
 const LESEN_PROGRESS_STORAGE_KEY = "zdeutsch.lesen.progress.v1";
 const BOTTOM_BANNER_DISMISS_KEY = "zdeutsch.ads.bottom.dismissed.v1";
+const WHATSAPP_SHARE_GATE_VISITS_KEY = "zdeutsch.shareGate.visits.v1";
+const WHATSAPP_SHARE_GATE_UNLOCK_KEY = "zdeutsch.shareGate.unlocked.v1";
+const WHATSAPP_SHARE_GATE_THRESHOLD = 3;
+const WHATSAPP_SHARE_GATE_SHARE_TEXT = "موقع مجاني رائع للتحضير لامتحان TELC في اللغة الألمانية. ساعدني كثيرًا، أنصحك به: ";
+const TELEGRAM_SHARE_BASE_URL = "https://t.me/share/url";
 const DEFAULT_BOTTOM_BANNER_INTERVAL_HOURS = 3;
 const LEGACY_PROMO_PATH_PREFIX = "assets/ads/banners/";
 const PUBLIC_PROMO_PATH_PREFIX = "assets/highlights/slots/";
@@ -599,6 +604,139 @@ function buildWhatsAppComposeUrl(message) {
   return `${COMMUNITY_WHATSAPP_COMPOSE_URL}${encodeURIComponent(message || "")}`;
 }
 
+function getStorageValue(key) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch (error) {
+    return null;
+  }
+}
+
+function setStorageValue(key, value) {
+  try {
+    window.localStorage.setItem(key, value);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function getWhatsAppShareGateVisitCount() {
+  const raw = getStorageValue(WHATSAPP_SHARE_GATE_VISITS_KEY);
+  const value = Number.parseInt(String(raw || ""), 10);
+  if (Number.isFinite(value) && value >= 0) {
+    return value;
+  }
+  return 0;
+}
+
+function incrementWhatsAppShareGateVisitCount() {
+  const nextCount = getWhatsAppShareGateVisitCount() + 1;
+  setStorageValue(WHATSAPP_SHARE_GATE_VISITS_KEY, String(nextCount));
+  return nextCount;
+}
+
+function isWhatsAppShareGateUnlocked() {
+  return getStorageValue(WHATSAPP_SHARE_GATE_UNLOCK_KEY) === "true";
+}
+
+function buildWhatsAppShareGateUrl() {
+  return buildWhatsAppComposeUrl(`${WHATSAPP_SHARE_GATE_SHARE_TEXT}${window.location.href}`);
+}
+
+function buildTelegramShareGateUrl() {
+  const params = new URLSearchParams({
+    url: window.location.href,
+    text: WHATSAPP_SHARE_GATE_SHARE_TEXT
+  });
+  return `${TELEGRAM_SHARE_BASE_URL}?${params.toString()}`;
+}
+
+function unlockWhatsAppShareGate() {
+  setStorageValue(WHATSAPP_SHARE_GATE_UNLOCK_KEY, "true");
+}
+
+function closeWhatsAppShareGate() {
+  const overlay = document.getElementById("whatsapp-share-gate");
+  if (overlay) {
+    overlay.remove();
+  }
+  document.documentElement.classList.remove("share-gate-open");
+  document.body.classList.remove("share-gate-open");
+}
+
+function openWhatsAppShareGate() {
+  if (document.getElementById("whatsapp-share-gate")) {
+    return;
+  }
+
+  const overlay = createEl("div", "whatsapp-share-gate");
+  overlay.id = "whatsapp-share-gate";
+  overlay.setAttribute("dir", "rtl");
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.setAttribute("aria-labelledby", "whatsapp-share-gate-title");
+  overlay.setAttribute("aria-describedby", "whatsapp-share-gate-description");
+
+  const panel = createEl("div", "whatsapp-share-gate__panel");
+  const title = createEl("h2", "whatsapp-share-gate__title", "شكراً لاستخدامك موقعنا");
+  title.id = "whatsapp-share-gate-title";
+  const description = createEl(
+    "p",
+    "whatsapp-share-gate__description",
+    "شكراً لك على استخدام موقعنا. إذا كان مفيداً لك، نرجو مشاركته عبر واتساب أو تيليجرام لتتمكن من الاستمرار في استخدامه بشكل دائم على هذا الجهاز."
+  );
+  description.id = "whatsapp-share-gate-description";
+  const actions = createEl("div", "whatsapp-share-gate__actions");
+  const whatsappButton = createEl("button", "whatsapp-share-gate__button whatsapp-share-gate__button--whatsapp", "مشاركة عبر واتساب");
+  whatsappButton.type = "button";
+  const telegramButton = createEl("button", "whatsapp-share-gate__button whatsapp-share-gate__button--telegram", "مشاركة عبر تيليجرام");
+  telegramButton.type = "button";
+  const buttons = [whatsappButton, telegramButton];
+
+  const handleShare = (url) => {
+    buttons.forEach((button) => {
+      button.disabled = true;
+    });
+    window.open(url, "_blank", "noopener,noreferrer");
+    unlockWhatsAppShareGate();
+    closeWhatsAppShareGate();
+  };
+
+  whatsappButton.addEventListener("click", () => {
+    handleShare(buildWhatsAppShareGateUrl());
+  });
+
+  telegramButton.addEventListener("click", () => {
+    handleShare(buildTelegramShareGateUrl());
+  });
+
+  actions.append(whatsappButton, telegramButton);
+  panel.append(title, description, actions);
+  overlay.append(panel);
+  document.body.append(overlay);
+
+  document.documentElement.classList.add("share-gate-open");
+  document.body.classList.add("share-gate-open");
+
+  try {
+    whatsappButton.focus({ preventScroll: true });
+  } catch (error) {
+    whatsappButton.focus();
+  }
+}
+
+function setupWhatsAppShareGate() {
+  if (isWhatsAppShareGateUnlocked()) {
+    return;
+  }
+
+  const visitCount = incrementWhatsAppShareGateVisitCount();
+  if (visitCount > WHATSAPP_SHARE_GATE_THRESHOLD) {
+    openWhatsAppShareGate();
+  }
+}
+
 function copyTextFallback(text) {
   const temp = document.createElement("textarea");
   temp.value = text;
@@ -772,10 +910,13 @@ function setupCommunityWidgets() {
   });
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => {
-    void setupSiteBanners();
-  }, { once: true });
-} else {
+function initSharedSiteFeatures() {
+  setupWhatsAppShareGate();
   void setupSiteBanners();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initSharedSiteFeatures, { once: true });
+} else {
+  initSharedSiteFeatures();
 }
