@@ -14,6 +14,9 @@ const versionOverlay = document.getElementById("version-overlay");
 const versionTitle = document.getElementById("version-title");
 const versionOptions = document.getElementById("version-options");
 const versionCloseBtn = document.getElementById("version-close");
+const installPromptCard = document.getElementById("install-prompt-card");
+const installPromptText = document.getElementById("install-prompt-text");
+const installPromptButton = document.getElementById("install-prompt-button");
 
 const state = {
   db: null,
@@ -37,6 +40,8 @@ const homeLoaderState = {
   progress: 0,
   intervalId: null
 };
+
+let deferredInstallPrompt = null;
 
 function getSectionFromHash() {
   const raw = String(window.location.hash || "")
@@ -162,6 +167,44 @@ function updateHeader() {
   if (levelPill) {
     levelPill.textContent = (state.level || "").toUpperCase();
   }
+}
+
+function isStandaloneMode() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function isIosDevice() {
+  const ua = window.navigator.userAgent || "";
+  return /iphone|ipad|ipod/i.test(ua) || (window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
+}
+
+function isIosSafari() {
+  const ua = window.navigator.userAgent || "";
+  return isIosDevice() && /safari/i.test(ua) && !/crios|fxios|edgios|optios|opios/i.test(ua);
+}
+
+function updateInstallPromptUi() {
+  if (!installPromptCard || !installPromptButton || !installPromptText) {
+    return;
+  }
+
+  const canShowOnMobile = window.matchMedia("(max-width: 767px)").matches;
+  const installed = isStandaloneMode();
+  const showPrompt = canShowOnMobile && !installed && (Boolean(deferredInstallPrompt) || isIosSafari());
+  installPromptCard.classList.toggle("hidden", !showPrompt);
+
+  if (!showPrompt) {
+    return;
+  }
+
+  if (deferredInstallPrompt) {
+    installPromptText.textContent = "Install ZDeutsch on your phone for faster access and a cleaner app-like experience.";
+    installPromptButton.textContent = "Install";
+    return;
+  }
+
+  installPromptText.textContent = "On iPhone or iPad, open Safari's Share menu and choose Add to Home Screen.";
+  installPromptButton.textContent = "How to Install";
 }
 
 function renderChoiceButton(label, active) {
@@ -1788,6 +1831,7 @@ function renderHome() {
   updateSearchInputContext();
   renderThemeCards();
   updateHeader();
+  updateInstallPromptUi();
 }
 
 function resolveInitialLevel() {
@@ -1813,6 +1857,41 @@ if (themeSearchInput) {
     renderThemeCards();
   });
 }
+
+if (installPromptButton) {
+  installPromptButton.addEventListener("click", async () => {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      try {
+        await deferredInstallPrompt.userChoice;
+      } catch (error) {
+        // ignore dismissed prompts
+      }
+      deferredInstallPrompt = null;
+      updateInstallPromptUi();
+      return;
+    }
+
+    if (isIosSafari()) {
+      window.alert("To install ZDeutsch on iPhone or iPad:\n1. Open the Share menu in Safari.\n2. Tap 'Add to Home Screen'.\n3. Tap 'Add'.");
+    }
+  });
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  updateInstallPromptUi();
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  updateInstallPromptUi();
+});
+
+window.addEventListener("resize", () => {
+  updateInstallPromptUi();
+});
 
 window.addEventListener("hashchange", () => {
   if (!state.db) {

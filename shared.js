@@ -911,6 +911,13 @@ function setupCommunityWidgets() {
 }
 
 function initSharedSiteFeatures() {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch(() => {
+        // Ignore registration issues on unsupported/local hosts.
+      });
+    }, { once: true });
+  }
   setupWhatsAppShareGate();
   void setupSiteBanners();
 }

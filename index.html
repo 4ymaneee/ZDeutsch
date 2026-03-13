@@ -3,7 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffcc00">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ZDeutsch">
     <title>ZDeutsch | Zadelkhair Deutsch</title>
+    <link rel="manifest" href="manifest.webmanifest?v=20260313-1">
+    <link rel="apple-touch-icon" href="pwa/apple-touch-icon.png?v=20260313-1">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Newsreader:wght@400;500;600&family=Tajawal:wght@500;700;800;900&display=swap">
     <script type="text/javascript">
       (function(c, l, a, r, i, t, y) {
@@ -141,6 +147,22 @@
               </div>
             </div>
 
+            <section id="install-prompt-card" class="hidden md:hidden mt-5 rounded-[1.75rem] border border-azure/40 bg-azure/10 p-4 shadow-sm">
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <div class="text-[10px] font-display uppercase tracking-[0.24em] text-azure">Install App</div>
+                  <p id="install-prompt-text" class="mt-2 text-sm leading-6 text-ink">Add ZDeutsch to your home screen for faster access on your phone.</p>
+                </div>
+                <button
+                  id="install-prompt-button"
+                  type="button"
+                  class="inline-flex shrink-0 items-center rounded-full border border-azure/40 bg-white px-4 py-2 text-[10px] font-display uppercase tracking-[0.18em] text-azure shadow-sm"
+                >
+                  Install
+                </button>
+              </div>
+            </section>
+
             <section
               id="homepage-promo-section"
               class="hidden"
@@ -252,7 +274,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://unpkg.com/lucide@0.471.0/dist/umd/lucide.min.js"></script>
-    <script src="shared.js?v=20260312-1"></script>
-    <script src="main.js?v=20260313-2"></script>
+    <script src="shared.js?v=20260313-1"></script>
+    <script src="main.js?v=20260313-3"></script>
   </body>
 </html>
