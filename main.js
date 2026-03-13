@@ -4,6 +4,7 @@ const levelList = document.getElementById("level-list");
 const sectionList = document.getElementById("section-list");
 const themeGrid = document.getElementById("theme-grid");
 const themeSearchInput = document.getElementById("theme-search");
+const themeSearchScope = document.getElementById("theme-search-scope");
 const homeLoader = document.getElementById("home-loader");
 const homeLoaderStage = document.getElementById("home-loader-stage");
 const homeLoaderPercent = document.getElementById("home-loader-percent");
@@ -27,6 +28,11 @@ const state = {
 };
 
 const SECTION_KEYS = ["lesen", "horen", "shreiben"];
+const SECTION_LABELS = {
+  lesen: "LESEN",
+  horen: "HÖREN",
+  shreiben: "SHREIBEN"
+};
 const homeLoaderState = {
   progress: 0,
   intervalId: null
@@ -168,6 +174,60 @@ function renderChoiceButton(label, active) {
         : "border-stone-300 bg-stone-50 text-slate shadow-sm"
     ),
     label
+  );
+}
+
+function getSectionLabel(sectionKey) {
+  const key = normalize(sectionKey);
+  return SECTION_LABELS[key] || String(sectionKey || "").toUpperCase();
+}
+
+function clearThemeSearch() {
+  state.search = "";
+  if (themeSearchInput) {
+    themeSearchInput.value = "";
+  }
+}
+
+function getSearchPlaceholder() {
+  const levelLabel = (state.level || "").toUpperCase();
+  if (state.section === "shreiben") {
+    return `Search ${levelLabel} Schreiben tasks...`;
+  }
+  if (state.section === "horen") {
+    return `Search ${levelLabel} Hören practice...`;
+  }
+  return `Search ${levelLabel} Lesen themes...`;
+}
+
+function updateSearchInputContext() {
+  const levelLabel = (state.level || "").toUpperCase();
+  const sectionLabel = getSectionLabel(state.section);
+  if (themeSearchScope) {
+    themeSearchScope.textContent = [levelLabel, sectionLabel].filter(Boolean).join(" · ");
+  }
+  if (themeSearchInput) {
+    const placeholder = getSearchPlaceholder();
+    themeSearchInput.placeholder = placeholder;
+    themeSearchInput.setAttribute("aria-label", placeholder);
+    themeSearchInput.value = state.search || "";
+  }
+}
+
+function matchesSearchQuery(query, ...values) {
+  if (!query) {
+    return true;
+  }
+  return values.some((value) => normalize(value).includes(query));
+}
+
+function renderThemeEmptyState(message) {
+  themeGrid.append(
+    createEl(
+      "div",
+      "rounded-2xl border border-stone-200 bg-stone-50 p-6 text-sm text-slate",
+      message
+    )
   );
 }
 
@@ -1444,8 +1504,12 @@ function renderLevelButtons() {
     const button = renderChoiceButton(levelKey.toUpperCase(), levelKey === state.level);
     button.type = "button";
     button.addEventListener("click", () => {
+      if (state.level === levelKey) {
+        return;
+      }
       state.level = levelKey;
       state.theme = null;
+      clearThemeSearch();
       window.localStorage.setItem("lastLevel", levelKey);
       renderHome();
     });
@@ -1455,11 +1519,6 @@ function renderLevelButtons() {
 
 function renderSectionButtons() {
   sectionList.innerHTML = "";
-  const sectionLabels = {
-    lesen: "LESEN",
-    horen: "HÖREN",
-    shreiben: "SHREIBEN"
-  };
   const levelKey = state.level || "b1";
   const levelEntry = state.parts?.levels?.[levelKey];
   const partConfigs = Array.isArray(levelEntry) ? levelEntry : (levelEntry?.parts || []);
@@ -1473,7 +1532,7 @@ function renderSectionButtons() {
   syncSectionHash(state.section, { replace: true });
 
   availableSections.forEach((value) => {
-    const label = sectionLabels[value] || value.toUpperCase();
+    const label = getSectionLabel(value);
     const button = renderChoiceButton(label, state.section === value);
     button.type = "button";
     button.addEventListener("click", () => {
@@ -1482,8 +1541,10 @@ function renderSectionButtons() {
         return;
       }
       state.section = value;
+      clearThemeSearch();
       syncSectionHash(state.section);
       renderSectionButtons();
+      updateSearchInputContext();
       renderThemeCards();
     });
     sectionList.append(button);
@@ -1493,17 +1554,26 @@ function renderSectionButtons() {
 function renderThemeCards() {
   themeGrid.innerHTML = "";
   const levelKey = state.level || "b1";
+  const query = normalize(state.search);
   if (state.section === "horen") {
     const partConfig = getPartConfig(levelKey, "horen");
-    themeGrid.append(
-      createEl(
-        "div",
-        "rounded-3xl border border-stone-200 bg-white/90 p-6 text-sm text-slate",
-        "Hören-Codes öffnen eine separate Übung, bei der Sie Aussagen als richtig oder falsch markieren."
-      )
+    const hasMatch = partConfig && matchesSearchQuery(
+      query,
+      partConfig?.name,
+      partConfig?.description,
+      partConfig?.module
     );
-    if (partConfig) {
+    if (hasMatch) {
+      themeGrid.append(
+        createEl(
+          "div",
+          "rounded-3xl border border-stone-200 bg-white/90 p-6 text-sm text-slate",
+          "Hören-Codes öffnen eine separate Übung, bei der Sie Aussagen als richtig oder falsch markieren."
+        )
+      );
       themeGrid.append(buildHorenCard(levelKey, partConfig));
+    } else if (query) {
+      renderThemeEmptyState(`No ${getSectionLabel(state.section)} results found in ${(state.level || "").toUpperCase()}.`);
     } else {
       themeGrid.append(
         createEl(
@@ -1517,11 +1587,15 @@ function renderThemeCards() {
   }
   if (state.section === "shreiben") {
     const partConfig = getPartConfig(levelKey, "shreiben");
-    const tasks = getShreibenTasks(levelKey);
+    const tasks = getShreibenTasks(levelKey).filter((task) => {
+      return matchesSearchQuery(query, task?.title, task?.prompt, task?.partLabel);
+    });
     if (partConfig && tasks.length) {
       tasks.forEach((task) => {
         themeGrid.append(buildShreibenCard(levelKey, task));
       });
+    } else if (query) {
+      renderThemeEmptyState(`No ${getSectionLabel(state.section)} results found in ${(state.level || "").toUpperCase()}.`);
     } else {
       themeGrid.append(
         createEl(
@@ -1537,7 +1611,6 @@ function renderThemeCards() {
   let themes = levelEntry.themeOrder?.length
     ? levelEntry.themeOrder
     : Object.keys(levelEntry.themes || {});
-  const query = normalize(state.search);
   if (query) {
     themes = themes.filter((themeKey) => {
       const entry = levelEntry.themes?.[themeKey];
@@ -1637,13 +1710,9 @@ function renderThemeCards() {
   });
 
   if (!themes.length) {
-    themeGrid.append(
-      createEl(
-        "div",
-        "rounded-2xl border border-stone-200 bg-stone-50 p-6 text-sm text-slate",
-        "No themes found."
-      )
-    );
+    renderThemeEmptyState(query
+      ? `No ${getSectionLabel(state.section)} results found in ${(state.level || "").toUpperCase()}.`
+      : "No themes found.");
   }
   refreshIcons();
 }
@@ -1716,10 +1785,8 @@ function buildShreibenCard(levelKey, task) {
 function renderHome() {
   renderLevelButtons();
   renderSectionButtons();
+  updateSearchInputContext();
   renderThemeCards();
-  if (themeSearchInput) {
-    themeSearchInput.value = state.search || "";
-  }
   updateHeader();
 }
 
@@ -1756,7 +1823,9 @@ window.addEventListener("hashchange", () => {
     return;
   }
   state.section = hashSection;
+  clearThemeSearch();
   renderSectionButtons();
+  updateSearchInputContext();
   renderThemeCards();
 });
 

@@ -374,6 +374,10 @@ body.home-loader-active {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
+.home-search-scope {
+  font-size: 0.68rem;
+}
+
 .home-search-input {
   min-height: 2.9rem;
 }
@@ -688,14 +692,13 @@ body.home-loader-active {
     line-height: 1.08;
   }
 
-  .home-page .home-control-grid {
-    grid-template-columns: 1fr;
-    gap: 0.8rem;
-  }
-
   .home-page .home-control-card {
     padding: 0.95rem;
     border-radius: 1.25rem;
+  }
+
+  .home-page .home-search-scope {
+    font-size: 0.6rem;
   }
 
   .home-page .home-search-input {
