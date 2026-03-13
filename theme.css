@@ -1623,7 +1623,7 @@ body.shreiben-fullscreen-open {
     max(0.5rem, env(safe-area-inset-right))
     max(0.75rem, calc(env(safe-area-inset-bottom) + 0.5rem))
     max(0.5rem, env(safe-area-inset-left));
-  z-index: 220;
+  z-index: 99;
   min-height: auto;
   overflow: hidden;
   border-color: var(--flag-gold-dark);
