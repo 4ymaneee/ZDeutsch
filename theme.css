@@ -354,6 +354,7 @@ body.home-loader-active {
   grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
   gap: 1.5rem 2rem;
   align-items: start;
+  display: none;
 }
 
 .home-hero-copy h2 {
