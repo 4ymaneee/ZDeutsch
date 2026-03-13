@@ -212,6 +212,8 @@ const state = {
   editorFontSize: DEFAULT_EDITOR_FONT_SIZE
 };
 
+let activeFullscreen = null;
+
 function refreshIcons() {
   if (typeof window.lucide !== "undefined" && typeof window.lucide.createIcons === "function") {
     window.lucide.createIcons();
@@ -573,6 +575,43 @@ function persistEditorFontSize(value) {
   window.localStorage.setItem(EDITOR_FONT_SIZE_KEY, String(value));
 }
 
+function syncFullscreenButton(button, enabled) {
+  if (!button) {
+    return;
+  }
+
+  button.replaceChildren();
+  const icon = createEl("i", "h-4 w-4");
+  icon.setAttribute("data-lucide", enabled ? "minimize-2" : "maximize-2");
+  icon.setAttribute("aria-hidden", "true");
+  const label = createEl("span", "", enabled ? "Exit" : "Fullscreen");
+  label.setAttribute("data-fullscreen-label", "true");
+  button.append(icon, label);
+}
+
+function setWritingFullscreen(block, button, enabled) {
+  if (!block || !button) {
+    return;
+  }
+
+  if (enabled) {
+    if (activeFullscreen && activeFullscreen.block !== block) {
+      setWritingFullscreen(activeFullscreen.block, activeFullscreen.button, false);
+    }
+    activeFullscreen = { block, button };
+  } else if (activeFullscreen?.block === block) {
+    activeFullscreen = null;
+  }
+
+  block.classList.toggle("is-fullscreen", enabled);
+  document.body.classList.toggle("shreiben-fullscreen-open", enabled);
+  button.dataset.fullscreen = enabled ? "true" : "false";
+  button.setAttribute("aria-pressed", enabled ? "true" : "false");
+  button.setAttribute("aria-label", enabled ? "Exit fullscreen editor" : "Open fullscreen editor");
+  syncFullscreenButton(button, enabled);
+  refreshIcons();
+}
+
 function insertCharacterAtCursor(textarea, value) {
   if (!textarea) {
     return;
@@ -648,7 +687,7 @@ async function copyPromptAndOpenChatGpt(userText) {
 }
 
 function renderInfoBlock(title, children) {
-  const block = createEl("section", "rounded-2xl border border-stone-200 bg-stone-50 p-4");
+  const block = createEl("section", "rounded-2xl border border-stone-200 bg-stone-50 p-3 sm:p-4");
   block.append(createEl("h3", "text-sm font-display uppercase tracking-[0.2em] text-ink", title));
   children.forEach((item) => block.append(item));
   return block;
@@ -760,7 +799,7 @@ function renderMarkdownBlock(markdown) {
 }
 
 function renderTask(task) {
-  const card = createEl("article", "rounded-3xl border border-stone-300 bg-white p-5 shadow-sm space-y-5");
+  const card = createEl("article", "rounded-[1.6rem] border border-stone-300 bg-white p-3 sm:p-5 shadow-sm space-y-4 sm:space-y-5");
   const titleRow = createEl("div", "flex flex-wrap items-center justify-between gap-3");
   titleRow.append(
     createEl("h3", "text-xl font-display text-ink", task.title || "Aufgabe"),
@@ -768,18 +807,31 @@ function renderTask(task) {
   );
   card.append(titleRow);
 
-  const layout = createEl("div", "space-y-4 lg:grid lg:grid-cols-2 lg:gap-5 lg:space-y-0");
+  const layout = createEl("div", "space-y-3 sm:space-y-4 lg:grid lg:grid-cols-2 lg:gap-5 lg:space-y-0");
   const leftColumn = createEl("div", "space-y-4 lg:h-[calc(100vh-15rem)] lg:overflow-y-auto lg:pr-1");
   leftColumn.append(renderInfoBlock("istructions", [renderMarkdownBlock(task.istructions)]));
   leftColumn.append(renderInfoBlock("content", [renderMarkdownBlock(task.content)]));
   leftColumn.append(renderInfoBlock("tasks", [renderMarkdownBlock(task.tasks)]));
 
   const rightColumn = createEl("div", "lg:h-[calc(100vh-15rem)] lg:pl-1");
-  const writingBlock = createEl("section", "rounded-2xl border border-azure/30 bg-azure/10 p-4 flex flex-col gap-3 h-full");
-  writingBlock.append(createEl("h4", "text-sm font-display uppercase tracking-[0.2em] text-azure", "Ihre Antwort"));
+  const writingBlock = createEl("section", "shreiben-writing-block rounded-[1.45rem] border border-azure/30 bg-azure/10 p-3 sm:p-4 flex flex-col gap-3 h-full");
+  const writingHeader = createEl("div", "flex items-center justify-between gap-2");
+  writingHeader.append(createEl("h4", "text-sm font-display uppercase tracking-[0.2em] text-azure", "Ihre Antwort"));
+
+  const fullscreenBtn = createEl(
+    "button",
+    "shreiben-fullscreen-toggle inline-flex items-center gap-2 rounded-xl border border-azure/40 bg-white/90 px-3 py-2 text-[11px] font-display uppercase tracking-[0.16em] text-ink transition-colors hover:bg-white"
+  );
+  fullscreenBtn.type = "button";
+  fullscreenBtn.dataset.fullscreen = "false";
+  fullscreenBtn.setAttribute("aria-pressed", "false");
+  fullscreenBtn.setAttribute("aria-label", "Open fullscreen editor");
+  syncFullscreenButton(fullscreenBtn, false);
+  writingHeader.append(fullscreenBtn);
+  writingBlock.append(writingHeader);
 
   const textarea = document.createElement("textarea");
-  textarea.className = "shreiben-editor w-full flex-1 min-h-[320px] lg:min-h-0 rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-ink focus:outline-none focus:border-azure/50 focus:ring-2 focus:ring-azure/20";
+  textarea.className = "shreiben-editor w-full flex-1 min-h-[56svh] sm:min-h-[420px] lg:min-h-0 rounded-[1.35rem] border border-stone-300 bg-white px-3 py-3 sm:px-4 text-sm leading-7 text-ink focus:outline-none focus:border-azure/50 focus:ring-2 focus:ring-azure/20";
   textarea.placeholder = "Schreiben Sie hier Ihre Beschwerde...";
   textarea.value = getDraft(task.id);
   textarea.style.fontSize = `${state.editorFontSize}px`;
@@ -822,12 +874,20 @@ function renderTask(task) {
   });
   actionsRow.append(copyAndOpenBtn);
 
-  const toolbar = createEl("div", "mt-auto pt-2 border-t border-stone-200/80 flex flex-wrap items-center gap-2");
+  fullscreenBtn.addEventListener("click", () => {
+    const nextState = fullscreenBtn.dataset.fullscreen !== "true";
+    setWritingFullscreen(writingBlock, fullscreenBtn, nextState);
+    if (nextState) {
+      window.requestAnimationFrame(() => textarea.focus());
+    }
+  });
+
+  const toolbar = createEl("div", "mt-auto pt-2 border-t border-stone-200/80 flex flex-wrap items-center gap-1.5 sm:gap-2");
   toolbar.append(createEl("span", "text-[10px] font-display uppercase tracking-[0.2em] text-slate", "Sonderzeichen:"));
   GERMAN_SPECIAL_CHARS.forEach((char) => {
     const button = createEl(
       "button",
-      "h-8 min-w-[2.25rem] rounded-xl border border-stone-300 bg-white px-2 text-sm font-display text-ink hover:border-stone-300",
+      "h-8 min-w-[2.15rem] rounded-xl border border-stone-300 bg-white px-2 text-sm font-display text-ink hover:border-stone-300",
       char
     );
     button.type = "button";
@@ -848,6 +908,9 @@ function renderTask(task) {
 }
 
 function renderActivePart() {
+  if (activeFullscreen) {
+    setWritingFullscreen(activeFullscreen.block, activeFullscreen.button, false);
+  }
   contentContainer.innerHTML = "";
   const part = getPart(state.partKey);
   if (!part) {
@@ -902,6 +965,12 @@ function applyHeaderInfo() {
     themeTitle.textContent = `Shreiben (${state.levelKey?.toUpperCase() || "B2"})`;
   }
 }
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && activeFullscreen) {
+    setWritingFullscreen(activeFullscreen.block, activeFullscreen.button, false);
+  }
+});
 
 if (returnBtn) {
   returnBtn.addEventListener("click", () => {

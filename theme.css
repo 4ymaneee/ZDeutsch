@@ -1595,3 +1595,53 @@ body.share-gate-open > *:not(#whatsapp-share-gate) {
     line-height: 1.8;
   }
 }
+
+.shreiben-writing-block {
+  position: relative;
+  transition: box-shadow 180ms ease, transform 180ms ease, padding 180ms ease;
+}
+
+.shreiben-fullscreen-toggle {
+  flex: 0 0 auto;
+}
+
+.shreiben-editor {
+  resize: vertical;
+}
+
+body.shreiben-fullscreen-open {
+  overflow: hidden;
+}
+
+.shreiben-writing-block.is-fullscreen {
+  position: fixed;
+  inset:
+    max(0.5rem, env(safe-area-inset-top))
+    max(0.5rem, env(safe-area-inset-right))
+    max(0.75rem, calc(env(safe-area-inset-bottom) + 0.5rem))
+    max(0.5rem, env(safe-area-inset-left));
+  z-index: 220;
+  min-height: auto;
+  overflow: hidden;
+  border-color: var(--flag-gold-dark);
+  background: rgba(255, 245, 204, 0.98);
+  box-shadow:
+    0 0 0 100vmax rgba(26, 26, 26, 0.18),
+    0 28px 60px rgba(26, 26, 26, 0.22);
+}
+
+.shreiben-writing-block.is-fullscreen .shreiben-editor {
+  min-height: 0;
+  height: 100%;
+}
+
+@media (max-width: 767px) {
+  .shreiben-writing-block.is-fullscreen {
+    border-radius: 22px;
+    padding: 0.85rem;
+  }
+
+  .shreiben-writing-block.is-fullscreen .shreiben-fullscreen-toggle [data-fullscreen-label] {
+    display: none;
+  }
+}

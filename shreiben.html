@@ -85,9 +85,9 @@
       };
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="theme.css?v=20260312-1">
+    <link rel="stylesheet" href="theme.css?v=20260313-1">
   </head>
-  <body class="theme-body font-body min-h-screen">
+  <body class="theme-body shreiben-page font-body min-h-screen">
     <div class="fixed inset-0">
       <div class="absolute inset-0 flag-glow-top"></div>
       <div class="absolute inset-0 flag-glow-bottom"></div>
@@ -95,7 +95,7 @@
     </div>
 
     <header class="fixed top-0 left-0 right-0 h-16 border-b border-black/10 bg-white/90 backdrop-blur-md shadow-sm z-40">
-      <div class="w-full h-full px-6 flex items-center justify-between gap-4">
+      <div class="w-full h-full px-3 sm:px-6 flex items-center justify-between gap-3 sm:gap-4">
         <div id="header-left" class="flex items-center gap-3 shrink-0">
           <button id="return-btn" class="h-9 w-9 rounded-xl border border-black/10 bg-white/80 text-slate flex items-center justify-center shadow-sm">
             <i data-lucide="arrow-left" class="h-4 w-4" aria-hidden="true"></i>
@@ -117,7 +117,7 @@
       </div>
     </header>
 
-    <div id="settings-panel" class="fixed right-6 top-20 w-64 rounded-2xl border border-stone-300 bg-white/95 shadow-panel p-4 hidden z-40">
+    <div id="settings-panel" class="fixed right-3 sm:right-6 top-20 w-[calc(100vw-1.5rem)] max-w-64 rounded-2xl border border-stone-300 bg-white/95 shadow-panel p-4 hidden z-40">
       <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Editor Settings</div>
       <div class="mt-4">
         <div class="flex items-center justify-between text-xs text-slate font-display uppercase tracking-[0.2em]">
@@ -128,19 +128,19 @@
       </div>
     </div>
 
-    <main class="relative z-10 w-full px-4 pt-24 pb-12 sm:px-6 lg:px-8">
-      <div class="rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-6">
+    <main class="relative z-10 w-full px-2 pt-20 pb-6 sm:px-6 sm:pt-24 sm:pb-12 lg:px-8">
+      <div class="rounded-[1.75rem] border border-stone-300 bg-white/90 shadow-panel p-3 sm:p-6">
         <div class="text-xs uppercase tracking-[0.3em] text-slate font-display">Shreiben</div>
         <h2 class="mt-2 text-2xl font-display text-ink">Schreibaufgaben</h2>
         <p class="mt-2 text-sm text-slate">Lesen Sie die Anzeige, bearbeiten Sie die Leitpunkte und schreiben Sie Ihre Beschwerde.</p>
 
-        <div id="part-cards" class="mt-5 flex flex-wrap items-center gap-2"></div>
-        <section id="shreiben-content" class="mt-6 space-y-6"></section>
+        <div id="part-cards" class="mt-4 sm:mt-5 flex flex-wrap items-center gap-2"></div>
+        <section id="shreiben-content" class="mt-4 sm:mt-6 space-y-4 sm:space-y-6"></section>
       </div>
     </main>
 
     <script src="https://unpkg.com/lucide@0.471.0/dist/umd/lucide.min.js"></script>
     <script src="shared.js?v=20260312-1"></script>
-    <script src="shreiben.js?v=20260312-1"></script>
+    <script src="shreiben.js?v=20260313-1"></script>
   </body>
 </html>
