@@ -1504,7 +1504,7 @@ body.share-gate-open > *:not(#whatsapp-share-gate) {
 
 .whatsapp-share-gate__panel {
   position: relative;
-  width: min(100%, 480px);
+  /* width: min(100%, 540px); */
   border: 1px solid rgba(216, 205, 187, 0.92);
   border-radius: 28px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 247, 220, 0.98) 100%);
@@ -1514,9 +1514,19 @@ body.share-gate-open > *:not(#whatsapp-share-gate) {
   direction: rtl;
 }
 
+.whatsapp-share-gate__eyebrow {
+  margin: 0 0 10px;
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #0f766e;
+}
+
 .whatsapp-share-gate__title {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Tajawal", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 800;
   line-height: 1.3;
@@ -1525,15 +1535,106 @@ body.share-gate-open > *:not(#whatsapp-share-gate) {
 
 .whatsapp-share-gate__description {
   margin: 16px 0 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Tajawal", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 1rem;
   line-height: 1.9;
   color: #334155;
 }
 
+.whatsapp-share-gate__tracker {
+  margin-top: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  background: rgba(255, 255, 255, 0.78);
+  padding: 18px 16px;
+  text-align: right;
+}
+
+.whatsapp-share-gate__tracker-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.whatsapp-share-gate__tracker-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-family: "Tajawal", system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.whatsapp-share-gate__tracker-badge.is-unlocked {
+  background: rgba(37, 211, 102, 0.15);
+  color: #166534;
+}
+
+.whatsapp-share-gate__tracker-badge.is-locked {
+  background: rgba(245, 158, 11, 0.16);
+  color: #9a6700;
+}
+
+.whatsapp-share-gate__progress-value {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 1.2rem;
+  color: #131a21;
+}
+
+.whatsapp-share-gate__progress-text {
+  margin: 14px 0 0;
+  font-family: "Tajawal", system-ui, sans-serif;
+  line-height: 1.8;
+  color: #334155;
+}
+
+.whatsapp-share-gate__progress-track {
+  position: relative;
+  height: 12px;
+  margin-top: 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.2);
+}
+
+.whatsapp-share-gate__progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #0f766e 0%, #25d366 100%);
+  transition: width 0.22s ease;
+}
+
+.whatsapp-share-gate__hint {
+  margin: 14px 0 6px;
+  font-family: "Tajawal", system-ui, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #0f766e;
+}
+
+.whatsapp-share-gate__link-value {
+  display: block;
+  width: 100%;
+  overflow-wrap: anywhere;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.05);
+  padding: 10px 12px;
+  direction: ltr;
+  text-align: left;
+  font-family: "Space Grotesk", monospace;
+  font-size: 0.76rem;
+  line-height: 1.6;
+  color: #1e293b;
+}
+
 .whatsapp-share-gate__actions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin-top: 24px;
 }
@@ -1572,6 +1673,42 @@ body.share-gate-open > *:not(#whatsapp-share-gate) {
   transform: translateY(-1px);
 }
 
+.whatsapp-share-gate__button--copy {
+  background: #131a21;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.22);
+}
+
+.whatsapp-share-gate__button--copy:hover {
+  background: #0f172a;
+  transform: translateY(-1px);
+}
+
+.whatsapp-share-gate__secondary-actions {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.whatsapp-share-gate__button--refresh {
+  background: rgba(255, 255, 255, 0.82);
+  color: #131a21;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow: none;
+}
+
+.whatsapp-share-gate__button--refresh:hover {
+  background: rgba(255, 255, 255, 0.96);
+  transform: translateY(-1px);
+}
+
+.whatsapp-share-gate__status-note {
+  margin: 0;
+  min-height: 1.5em;
+  font-family: "Tajawal", system-ui, sans-serif;
+  line-height: 1.7;
+  color: #475569;
+}
+
 .whatsapp-share-gate__button:disabled {
   cursor: wait;
   transform: none;
@@ -1597,6 +1734,11 @@ body.share-gate-open > *:not(#whatsapp-share-gate) {
   .whatsapp-share-gate__description {
     font-size: 0.96rem;
     line-height: 1.8;
+  }
+
+  .whatsapp-share-gate__tracker-row {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 

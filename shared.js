@@ -49,14 +49,28 @@ const COMMUNITY_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/CwFPqDeRbmqL5Rtx
 const COMMUNITY_WHATSAPP_COMPOSE_URL = "https://wa.me/?text=";
 const LESEN_PROGRESS_STORAGE_KEY = "zdeutsch.lesen.progress.v1";
 const BOTTOM_BANNER_DISMISS_KEY = "zdeutsch.ads.bottom.dismissed.v1";
-const WHATSAPP_SHARE_GATE_VISITS_KEY = "zdeutsch.shareGate.visits.v1";
-const WHATSAPP_SHARE_GATE_UNLOCK_KEY = "zdeutsch.shareGate.unlocked.v1";
+const WHATSAPP_SHARE_GATE_USER_ID_KEY = "zdeutsch.shareGate.userId.v1";
+const WHATSAPP_SHARE_GATE_VISITS_KEY = "zdeutsch.shareGate.visits.v2";
+const WHATSAPP_SHARE_GATE_UNLOCK_KEY = "zdeutsch.shareGate.unlocked.v2";
 const WHATSAPP_SHARE_GATE_THRESHOLD = 3;
+const WHATSAPP_SHARE_GATE_UNLOCK_THRESHOLD = 2;
 const WHATSAPP_SHARE_GATE_SHARE_TEXT = "موقع مجاني رائع للتحضير لامتحان TELC في اللغة الألمانية. ساعدني كثيرًا، أنصحك به: ";
 const TELEGRAM_SHARE_BASE_URL = "https://t.me/share/url";
+const SHARE_GATE_STATUS_API_PATH = "/api/share/status";
+const SHARE_GATE_VISIT_API_PATH = "/api/share/visit";
+const WHATSAPP_SHARE_GATE_POLL_INTERVAL_MS = 12000;
 const DEFAULT_BOTTOM_BANNER_INTERVAL_HOURS = 3;
 const LEGACY_PROMO_PATH_PREFIX = "assets/ads/banners/";
 const PUBLIC_PROMO_PATH_PREFIX = "assets/highlights/slots/";
+
+const shareGateRuntime = {
+  userId: "",
+  status: null,
+  elements: null,
+  isRefreshing: false,
+  pollTimerId: 0,
+  closeTimerId: 0
+};
 
 function classNames(...items) {
   return items.filter(Boolean).join(" ");
@@ -640,33 +654,236 @@ function isWhatsAppShareGateUnlocked() {
   return getStorageValue(WHATSAPP_SHARE_GATE_UNLOCK_KEY) === "true";
 }
 
+function setWhatsAppShareGateUnlocked(value) {
+  setStorageValue(WHATSAPP_SHARE_GATE_UNLOCK_KEY, value ? "true" : "false");
+}
+
+function sanitizeShareGateUserId(value) {
+  const normalized = String(value || "").trim();
+  return /^[a-zA-Z0-9-]{8,80}$/.test(normalized) ? normalized : "";
+}
+
+function generateShareGateUserId() {
+  if (window.crypto?.randomUUID) {
+    return window.crypto.randomUUID();
+  }
+  return `sg-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
+}
+
+function getOrCreateShareGateUserId() {
+  const existing = sanitizeShareGateUserId(getStorageValue(WHATSAPP_SHARE_GATE_USER_ID_KEY));
+  if (existing) {
+    return existing;
+  }
+  const nextUserId = generateShareGateUserId();
+  setStorageValue(WHATSAPP_SHARE_GATE_USER_ID_KEY, nextUserId);
+  return nextUserId;
+}
+
+function buildShareGatePagePath() {
+  return String(window.location.pathname || "/").trim() || "/";
+}
+
+function buildTrackedShareLink(userId = shareGateRuntime.userId || getOrCreateShareGateUserId()) {
+  const trackedUserId = sanitizeShareGateUserId(userId);
+  const url = new URL(window.location.href);
+  url.searchParams.delete("by");
+  if (trackedUserId) {
+    url.searchParams.set("by", trackedUserId);
+  }
+  return url.toString();
+}
+
 function buildWhatsAppShareGateUrl() {
-  return buildWhatsAppComposeUrl(`${WHATSAPP_SHARE_GATE_SHARE_TEXT}${window.location.href}`);
+  return buildWhatsAppComposeUrl(`${WHATSAPP_SHARE_GATE_SHARE_TEXT}${buildTrackedShareLink()}`);
 }
 
 function buildTelegramShareGateUrl() {
   const params = new URLSearchParams({
-    url: window.location.href,
+    url: buildTrackedShareLink(),
     text: WHATSAPP_SHARE_GATE_SHARE_TEXT
   });
   return `${TELEGRAM_SHARE_BASE_URL}?${params.toString()}`;
 }
 
-function unlockWhatsAppShareGate() {
-  setStorageValue(WHATSAPP_SHARE_GATE_UNLOCK_KEY, "true");
+function consumeShareGateReferrerFromUrl() {
+  const url = new URL(window.location.href);
+  const referrerUserId = sanitizeShareGateUserId(url.searchParams.get("by"));
+  if (url.searchParams.has("by")) {
+    url.searchParams.delete("by");
+    const nextUrl = `${url.pathname}${url.search}${url.hash}`;
+    window.history.replaceState({}, document.title, nextUrl);
+  }
+  return referrerUserId;
+}
+
+async function requestShareGateJson(url, options = {}) {
+  const response = await fetch(url, {
+    method: options.method || "GET",
+    credentials: "same-origin",
+    headers: {
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
+      ...(options.headers || {})
+    },
+    body: options.body
+  });
+
+  let payload = {};
+  try {
+    payload = await response.json();
+  } catch (error) {
+    payload = {};
+  }
+
+  if (!response.ok || payload.ok === false) {
+    throw new Error(payload.message || "Share tracking request failed");
+  }
+
+  return payload;
+}
+
+async function fetchWhatsAppShareGateStatus(userId) {
+  const params = new URLSearchParams({
+    userId,
+    path: buildShareGatePagePath()
+  });
+  return requestShareGateJson(`${SHARE_GATE_STATUS_API_PATH}?${params.toString()}`);
+}
+
+async function reportWhatsAppShareGateVisit(referrerUserId, visitorUserId) {
+  return requestShareGateJson(SHARE_GATE_VISIT_API_PATH, {
+    method: "POST",
+    body: JSON.stringify({
+      referrerUserId,
+      visitorUserId,
+      path: buildShareGatePagePath()
+    })
+  });
+}
+
+function getWhatsAppShareGateUnlockThreshold(status = shareGateRuntime.status) {
+  const candidate = Number(status?.unlockThreshold);
+  if (Number.isFinite(candidate) && candidate > 0) {
+    return candidate;
+  }
+  return WHATSAPP_SHARE_GATE_UNLOCK_THRESHOLD;
+}
+
+function getWhatsAppShareGateVisitThreshold(status = shareGateRuntime.status) {
+  const candidate = Number(status?.gateVisitThreshold);
+  if (Number.isFinite(candidate) && candidate >= 0) {
+    return candidate;
+  }
+  return WHATSAPP_SHARE_GATE_THRESHOLD;
+}
+
+function setWhatsAppShareGateStatusNote(message) {
+  if (!shareGateRuntime.elements?.statusNote) {
+    return;
+  }
+  shareGateRuntime.elements.statusNote.textContent = String(message || "");
+}
+
+function renderWhatsAppShareGateStatus(status = shareGateRuntime.status) {
+  const elements = shareGateRuntime.elements;
+  if (!elements) {
+    return;
+  }
+
+  const uniqueVisitors = Math.max(0, Number(status?.uniqueVisitors || 0));
+  const unlockThreshold = getWhatsAppShareGateUnlockThreshold(status);
+  const unlocked = Boolean(status?.unlocked);
+  const progressPercent = Math.max(0, Math.min(100, (uniqueVisitors / unlockThreshold) * 100));
+
+  elements.badge.textContent = unlocked ? "تم الفتح" : "مقفول";
+  elements.badge.classList.toggle("is-unlocked", unlocked);
+  elements.badge.classList.toggle("is-locked", !unlocked);
+  elements.progressValue.textContent = `${uniqueVisitors} / ${unlockThreshold}`;
+  elements.progressFill.style.width = `${progressPercent}%`;
+  elements.progressText.textContent = unlocked
+    ? "قام شخصان مختلفان بفتح رابطك. يمكنك المتابعة الآن."
+    : `فتح رابطك ${uniqueVisitors} من أصل ${unlockThreshold}. عندما يصل العدد إلى ${unlockThreshold} سيتم فتح الموقع تلقائياً.`;
+  elements.linkValue.textContent = buildTrackedShareLink();
+  elements.refreshButton.disabled = shareGateRuntime.isRefreshing;
+}
+
+function clearWhatsAppShareGateTimers() {
+  if (shareGateRuntime.pollTimerId) {
+    window.clearInterval(shareGateRuntime.pollTimerId);
+    shareGateRuntime.pollTimerId = 0;
+  }
+  if (shareGateRuntime.closeTimerId) {
+    window.clearTimeout(shareGateRuntime.closeTimerId);
+    shareGateRuntime.closeTimerId = 0;
+  }
+}
+
+function startWhatsAppShareGatePolling() {
+  clearWhatsAppShareGateTimers();
+  shareGateRuntime.pollTimerId = window.setInterval(() => {
+    if (document.visibilityState === "visible") {
+      void syncWhatsAppShareGateStatus();
+    }
+  }, WHATSAPP_SHARE_GATE_POLL_INTERVAL_MS);
+}
+
+async function syncWhatsAppShareGateStatus({ announce = false } = {}) {
+  if (!shareGateRuntime.userId || shareGateRuntime.isRefreshing) {
+    return shareGateRuntime.status;
+  }
+
+  shareGateRuntime.isRefreshing = true;
+  if (announce) {
+    setWhatsAppShareGateStatusNote("جاري تحديث العدد...");
+  }
+  if (shareGateRuntime.elements?.refreshButton) {
+    shareGateRuntime.elements.refreshButton.disabled = true;
+  }
+
+  try {
+    const status = await fetchWhatsAppShareGateStatus(shareGateRuntime.userId);
+    shareGateRuntime.status = status;
+    setWhatsAppShareGateUnlocked(Boolean(status.unlocked));
+    renderWhatsAppShareGateStatus(status);
+
+    if (status.unlocked) {
+      setWhatsAppShareGateStatusNote("تم فتح الموقع. سيتم إغلاق هذه النافذة الآن.");
+      clearWhatsAppShareGateTimers();
+      shareGateRuntime.closeTimerId = window.setTimeout(() => {
+        closeWhatsAppShareGate();
+      }, 1400);
+    } else if (announce) {
+      setWhatsAppShareGateStatusNote(`تم تحديث العدد: ${status.uniqueVisitors} من ${status.unlockThreshold}.`);
+    }
+
+    return status;
+  } catch (error) {
+    if (announce || shareGateRuntime.elements) {
+      setWhatsAppShareGateStatusNote("تعذر تحديث العدد الآن. حاول مرة أخرى بعد قليل.");
+    }
+    return shareGateRuntime.status;
+  } finally {
+    shareGateRuntime.isRefreshing = false;
+    if (shareGateRuntime.elements?.refreshButton) {
+      shareGateRuntime.elements.refreshButton.disabled = false;
+    }
+  }
 }
 
 function closeWhatsAppShareGate() {
+  clearWhatsAppShareGateTimers();
   const overlay = document.getElementById("whatsapp-share-gate");
   if (overlay) {
     overlay.remove();
   }
+  shareGateRuntime.elements = null;
   document.documentElement.classList.remove("share-gate-open");
   document.body.classList.remove("share-gate-open");
 }
 
-function openWhatsAppShareGate() {
+function openWhatsAppShareGate(initialStatus = shareGateRuntime.status) {
   if (document.getElementById("whatsapp-share-gate")) {
+    renderWhatsAppShareGateStatus(initialStatus);
     return;
   }
 
@@ -679,28 +896,42 @@ function openWhatsAppShareGate() {
   overlay.setAttribute("aria-describedby", "whatsapp-share-gate-description");
 
   const panel = createEl("div", "whatsapp-share-gate__panel");
-  const title = createEl("h2", "whatsapp-share-gate__title", "شكراً لاستخدامك موقعنا");
+  const eyebrow = createEl("p", "whatsapp-share-gate__eyebrow", "Referral Unlock");
+  const title = createEl("h2", "whatsapp-share-gate__title", "شارك الرابط مع شخصين مختلفين");
   title.id = "whatsapp-share-gate-title";
   const description = createEl(
     "p",
     "whatsapp-share-gate__description",
-    "شكراً لك على استخدام موقعنا. إذا كان مفيداً لك، نرجو مشاركته عبر واتساب أو تيليجرام لتتمكن من الاستمرار في استخدامه بشكل دائم على هذا الجهاز."
+    "حتى تستمر في استخدام الموقع على هذا الجهاز، أرسل رابطك لشخصين مختلفين. عندما يفتح شخصان مختلفان الرابط سيتم فتح الموقع تلقائياً."
   );
   description.id = "whatsapp-share-gate-description";
+  const tracker = createEl("div", "whatsapp-share-gate__tracker");
+  const trackerRow = createEl("div", "whatsapp-share-gate__tracker-row");
+  const badge = createEl("span", "whatsapp-share-gate__tracker-badge is-locked", "مقفول");
+  const progressValue = createEl("strong", "whatsapp-share-gate__progress-value", "0 / 2");
+  trackerRow.append(badge, progressValue);
+  const progressText = createEl("p", "whatsapp-share-gate__progress-text", "");
+  const progressTrack = createEl("div", "whatsapp-share-gate__progress-track");
+  const progressFill = createEl("div", "whatsapp-share-gate__progress-fill");
+  progressTrack.append(progressFill);
+  const linkLabel = createEl("p", "whatsapp-share-gate__hint", "رابطك الخاص");
+  const linkValue = createEl("code", "whatsapp-share-gate__link-value", buildTrackedShareLink());
+  tracker.append(trackerRow, progressText, progressTrack, linkLabel, linkValue);
   const actions = createEl("div", "whatsapp-share-gate__actions");
   const whatsappButton = createEl("button", "whatsapp-share-gate__button whatsapp-share-gate__button--whatsapp", "مشاركة عبر واتساب");
   whatsappButton.type = "button";
   const telegramButton = createEl("button", "whatsapp-share-gate__button whatsapp-share-gate__button--telegram", "مشاركة عبر تيليجرام");
   telegramButton.type = "button";
-  const buttons = [whatsappButton, telegramButton];
+  const copyButton = createEl("button", "whatsapp-share-gate__button whatsapp-share-gate__button--copy", "نسخ الرابط");
+  copyButton.type = "button";
+  const secondaryActions = createEl("div", "whatsapp-share-gate__secondary-actions");
+  const refreshButton = createEl("button", "whatsapp-share-gate__button whatsapp-share-gate__button--refresh", "تحديث العدد");
+  refreshButton.type = "button";
+  const statusNote = createEl("p", "whatsapp-share-gate__status-note", "");
 
   const handleShare = (url) => {
-    buttons.forEach((button) => {
-      button.disabled = true;
-    });
     window.open(url, "_blank", "noopener,noreferrer");
-    unlockWhatsAppShareGate();
-    closeWhatsAppShareGate();
+    setWhatsAppShareGateStatusNote("تم فتح نافذة المشاركة. بعد أن يفتح الرابط شخصان مختلفان اضغط تحديث.");
   };
 
   whatsappButton.addEventListener("click", () => {
@@ -711,10 +942,43 @@ function openWhatsAppShareGate() {
     handleShare(buildTelegramShareGateUrl());
   });
 
-  actions.append(whatsappButton, telegramButton);
-  panel.append(title, description, actions);
+  copyButton.addEventListener("click", async () => {
+    const trackedLink = buildTrackedShareLink();
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(trackedLink);
+        setWhatsAppShareGateStatusNote("تم نسخ الرابط. أرسله الآن لشخصين مختلفين.");
+        return;
+      } catch (error) {
+        // ignore and fallback
+      }
+    }
+    copyTextFallback(trackedLink);
+    setWhatsAppShareGateStatusNote("تم نسخ الرابط. أرسله الآن لشخصين مختلفين.");
+  });
+
+  refreshButton.addEventListener("click", () => {
+    void syncWhatsAppShareGateStatus({ announce: true });
+  });
+
+  actions.append(whatsappButton, telegramButton, copyButton);
+  secondaryActions.append(refreshButton, statusNote);
+  panel.append(eyebrow, title, description, tracker, actions, secondaryActions);
   overlay.append(panel);
   document.body.append(overlay);
+
+  shareGateRuntime.elements = {
+    badge,
+    progressValue,
+    progressText,
+    progressFill,
+    linkValue,
+    refreshButton,
+    statusNote
+  };
+
+  renderWhatsAppShareGateStatus(initialStatus);
+  startWhatsAppShareGatePolling();
 
   document.documentElement.classList.add("share-gate-open");
   document.body.classList.add("share-gate-open");
@@ -726,14 +990,26 @@ function openWhatsAppShareGate() {
   }
 }
 
-function setupWhatsAppShareGate() {
-  if (isWhatsAppShareGateUnlocked()) {
+async function setupWhatsAppShareGate() {
+  shareGateRuntime.userId = getOrCreateShareGateUserId();
+
+  const referrerUserId = consumeShareGateReferrerFromUrl();
+  if (referrerUserId) {
+    try {
+      await reportWhatsAppShareGateVisit(referrerUserId, shareGateRuntime.userId);
+    } catch (error) {
+      // ignore tracking failures and continue
+    }
+  }
+
+  const status = await syncWhatsAppShareGateStatus();
+  if (status?.unlocked || isWhatsAppShareGateUnlocked()) {
     return;
   }
 
   const visitCount = incrementWhatsAppShareGateVisitCount();
-  if (visitCount > WHATSAPP_SHARE_GATE_THRESHOLD) {
-    openWhatsAppShareGate();
+  if (visitCount > getWhatsAppShareGateVisitThreshold(status)) {
+    openWhatsAppShareGate(status);
   }
 }
 
@@ -918,7 +1194,7 @@ function initSharedSiteFeatures() {
       });
     }, { once: true });
   }
-  setupWhatsAppShareGate();
+  void setupWhatsAppShareGate();
   void setupSiteBanners();
 }
 
