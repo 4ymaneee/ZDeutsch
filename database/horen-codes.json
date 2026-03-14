@@ -27,445 +27,519 @@
                   "topics": [
                     {
                       "id": "b1-teil-1-quiz-1",
-                      "title": "Georg und Claudia",
+                      "title": "Arbeitsplatz für ihren Vater",
                       "tag": "Teil 1 Thema 1",
                       "statements": [
                         {
                           "id": "b1-teil-1-quiz-1-s1",
                           "number": 1,
-                          "text": "Die Schweizer geben für Urlaub mehr Geld aus als für ihre Gesundheit.",
-                          "correct": false
+                          "text": "Der Sprecher versteht sich nicht gut mit seiner Mutter.",
+                          "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-1-s2",
                           "number": 2,
-                          "text": "Der Speisewagen befindet sich im hinteren Teil des Zuges.",
+                          "text": "Die Sprecherin ist am liebsten mit ihren Eltern zusammen.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-1-s3",
                           "number": 3,
-                          "text": "Sie sollen um 19:30 Uhr bei Georg und Claudia sein .",
-                          "correct": false
+                          "text": "Die Sprecherin möchte nicht immer gestört werden.",
+                          "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-1-s4",
                           "number": 4,
-                          "text": "Im südlichen Österreich ist es tagsüber sonnig, später windig und regnerisch.",
-                          "correct": true
+                          "text": "Die Sprecherin wünscht sich einen Arbeitsplatz für ihren Vater.",
+                          "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-1-s5",
                           "number": 5,
-                          "text": "Der Sänger beginnt seine Konzertreise mit einer Vorstellung in Wien.",
+                          "text": "Der Sprecher ist kein besonders guter Schüler.",
                           "correct": true
                         }
                       ]
                     },
                     {
                       "id": "b1-teil-1-quiz-2",
-                      "title": "Ingolstadt",
+                      "title": "Einkaufe im Internet",
                       "tag": "Teil 1 Thema 2",
                       "statements": [
                         {
                           "id": "b1-teil-1-quiz-2-s1",
                           "number": 1,
-                          "text": "Der Liederabend findetzu einem späteren Termin statt.",
-                          "correct": true
+                          "text": "Herr Krause kauft seine Medikamente am liebsten in der nächsten Stadt.",
+                          "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-2-s2",
                           "number": 2,
-                          "text": "Clara kann wegen einer Prüfung die Theaterkarten nicht abholen.",
-                          "correct": false
+                          "text": "Frau Schmidt findet zu Hause nicht genug Ruhe, um im Internet einzukaufen.",
+                          "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-2-s3",
                           "number": 3,
-                          "text": "Im Schwarzwald können die Straßen morgen glatt werden.",
+                          "text": "Herr Pawliczek erledigt alle seine Einkäufe im Internet.",
                           "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-2-s4",
                           "number": 4,
-                          "text": "Im Untergeschoss gibt es Winterkleidung zum halben Preis.",
+                          "text": "Frau Ruttnigg ist vom Einkaufen im Internet nicht überzeugt.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-2-s5",
                           "number": 5,
-                          "text": "Sie müssen in Ingolstadt die Regionalbahn nach Regensburg nehmen.",
+                          "text": "Frau Zimmermann legt beim Einkaufen großen Wert auf persönlichen Kontakt.",
                           "correct": false
                         }
                       ]
                     },
                     {
                       "id": "b1-teil-1-quiz-3",
-                      "title": "Der Fahrer",
+                      "title": "Computer",
                       "tag": "Teil 1 Thema 3",
                       "statements": [
                         {
                           "id": "b1-teil-1-quiz-3-s1",
                           "number": 1,
-                          "text": "Das Wetter ist am Abend noch gut.",
+                          "text": "Der Sprecher benutzt den Computer nur am Arbeitsplatz.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-3-s2",
                           "number": 2,
-                          "text": "Der Gasthof Lindner ist neben einer Tankstelle.",
+                          "text": "Die Sprecherin hat kein großes Vertrauen zu Computern.",
                           "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-3-s3",
                           "number": 3,
-                          "text": "Die Firma liefert das bestellte Sofa am Dienstag ab drei Uhr nachmittags.",
+                          "text": "Die Sprecherin braucht den Computer im täglichen Leben.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-3-s4",
                           "number": 4,
-                          "text": "Der Film Komiker läuft täglich um 20 Uhr.",
+                          "text": "Die Sprecherin lehnt Computer ab.",
                           "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-3-s5",
                           "number": 5,
-                          "text": "Der Fahrer des Wagens mit dem Kennzeichen HB-D 256 soll ins Erdgeschoss kommen.",
-                          "correct": true
+                          "text": "Der Sprecher hat zu Hause keinen Computer.",
+                          "correct": false
                         }
                       ]
                     },
                     {
                       "id": "b1-teil-1-quiz-4",
-                      "title": "Innenstadt",
+                      "title": "Einzelkind",
                       "tag": "Teil 1 Thema 4",
                       "statements": [
                         {
                           "id": "b1-teil-1-quiz-4-s1",
                           "number": 1,
-                          "text": "Alle Kunden müssen an der Kasse nebenan bezahlen.",
+                          "text": "Die Sprecherin wäre lieber ein Einzelkind.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-4-s2",
                           "number": 2,
-                          "text": "Sie können mit dem Bus in die Innenstadt fahren.",
+                          "text": "Der Sprecher hat heute ein gutes Verhältnis zu seinem Bruder.",
                           "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-4-s3",
                           "number": 3,
-                          "text": "Die Polizei informiert, dass alle Parkhäuser bei der Ausstellung besetzt sind.",
-                          "correct": false
+                          "text": "Die Sprecherin hat schon früh lernen müssen, dass man im Zusammenleben viel Rücksicht nehmen muss.",
+                          "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-4-s4",
                           "number": 4,
-                          "text": "Dr. Krausch ist ab dem 18. Oktober wieder in der Praxis.",
-                          "correct": true
+                          "text": "Die Sprecherin würde heute gern noch eine Schwester haben.",
+                          "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-4-s5",
                           "number": 5,
-                          "text": "Sie können noch eine Stunde durch alle Geschäfte laufen.",
-                          "correct": false
+                          "text": "Die Sprecherin versteht sich sehr gut mit ihrem Bruder.",
+                          "correct": true
                         }
                       ]
                     },
                     {
                       "id": "b1-teil-1-quiz-5",
-                      "title": "Prag",
+                      "title": "Sport als für Kultur",
                       "tag": "Teil 1 Thema 5",
                       "statements": [
                         {
                           "id": "b1-teil-1-quiz-5-s1",
                           "number": 1,
-                          "text": "Das Hörspiel Katzen in der Nacht wird morgen um 20:30 Uhr gesendet.",
+                          "text": "Der Sprecher hört besonders gern moderne Musik.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-5-s2",
                           "number": 2,
-                          "text": "Montags bis freitags ab 8:00 Uhr kann man sich persönlich beraten lassen.",
+                          "text": "Der Sprecher interessiert sich für Sport als für Kultur.",
                           "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-5-s3",
                           "number": 3,
-                          "text": "Ihr Flug nach Prag ist nicht pünktlich.",
-                          "correct": false
+                          "text": "Die Sprecherin hätte gerne mehr Zeit für die Kultur.",
+                          "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-5-s4",
                           "number": 4,
-                          "text": "Das Flugzeug landet mit 20 Minuten Verspätung in Leipzig.",
+                          "text": "Die Sprecherin geht so oft sie kann ins Theater.",
                           "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-5-s5",
                           "number": 5,
-                          "text": "Im Speisewagen kann man ins Internet gehen.",
+                          "text": "Die Sprecherin geht oft in Kunstausstellungen.",
                           "correct": false
                         }
                       ]
                     },
                     {
                       "id": "b1-teil-1-quiz-6",
-                      "title": "Hauptbahnhof",
+                      "title": "Bus zur Arbeit",
                       "tag": "Teil 1 Thema 6",
                       "statements": [
                         {
                           "id": "b1-teil-1-quiz-6-s1",
                           "number": 1,
-                          "text": "Badezimmerspiegel finden Sie im Untergeschoss.",
+                          "text": "Der Sprecher fährt nie mit dem Auto zur Arbeit.",
                           "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-6-s2",
                           "number": 2,
-                          "text": "Das Hallenbad schließt heute um 21:00 Uhr.",
-                          "correct": true
+                          "text": "Die Sprecherin könnte sich vorstellen, mit dem Bus zur Arbeit zu fahren.",
+                          "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-6-s3",
                           "number": 3,
-                          "text": "Sie können gleich in Richtung Eilenburg umsteigen.",
+                          "text": "Die Sprecherin findet es gut, dass sie zur Arbeit ein Stück zu Fuß gehen kann.",
                           "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-6-s4",
                           "number": 4,
-                          "text": "Die Linie 2 fährt zum Hauptbahnhof.",
+                          "text": "Für die Sprecherin ist der Firmenbus die einzige Möglichkeit zur Arbeit zu kommen.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-6-s5",
                           "number": 5,
-                          "text": "Sie können mit der S1 nach Hütteldorf fahren.",
+                          "text": "Der Sprecher benutzt für den Weg zur Arbeit zurzeit verschiedene Verkehrsmittel.",
                           "correct": false
                         }
                       ]
                     },
                     {
                       "id": "b1-teil-1-quiz-7",
-                      "title": "Griechenland",
+                      "title": "Arbeit zu fahren",
                       "tag": "Teil 1 Thema 7",
                       "statements": [
                         {
                           "id": "b1-teil-1-quiz-7-s1",
                           "number": 1,
-                          "text": "Sie können zwei Flüge nach Griechenland gewinnen.",
+                          "text": "Die Sprecherin geht gern zu Fuß.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-7-s2",
                           "number": 2,
-                          "text": "Am besten fahren Sie ab Northeim mit dem Bus.",
+                          "text": "Die Sprecherin fährt jeden Tag mit ihrem Motorrad zur Arbeit.",
                           "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-7-s3",
                           "number": 3,
-                          "text": "Für Ihre Gruppe ist ein Wagen im Zug nach Aschaffenburg reserviert.",
-                          "correct": true
+                          "text": "Der Sprecher könnte sich vorstellen, mit dem Bus zur Arbeit zu fahren.",
+                          "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-7-s4",
                           "number": 4,
-                          "text": "Erst morgen Abend bildet sich Nebel.",
+                          "text": "Die Sprecherin fährt immer mit dem Fahrrad zur Arbeit.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-7-s5",
                           "number": 5,
-                          "text": "Auf der Internetseite kann man auch günstige Angebote für Haushaltsgerät.",
+                          "text": "Der Sprecher findet es in Ordnung, dass seine Frau immer das Auto hat.",
                           "correct": true
                         }
                       ]
                     },
                     {
                       "id": "b1-teil-1-quiz-8",
-                      "title": "Norddeutschland",
+                      "title": "In der Schule",
                       "tag": "Teil 1 Thema 8",
                       "statements": [
                         {
                           "id": "b1-teil-1-quiz-8-s1",
                           "number": 1,
-                          "text": "Hamburg hat öfter gewonnen als Stuttgart.",
+                          "text": "Der Sprecher möchte, dass sein Kind die eigenen Ideen realisieren kann.",
                           "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-8-s2",
                           "number": 2,
-                          "text": "Auf dem Mittleren Ring in München wird die Geschwindigkeit kontrolliert.",
+                          "text": "Für die Sprechen ist es unwichtig, ob ihre Kinder in der Schule gut sind.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-8-s3",
                           "number": 3,
-                          "text": "In Norddeutschland steigen die Temperaturen morgen auf 5 bis 7 Grad.",
-                          "correct": false
+                          "text": "Es ist dem Sprecher wichtig, dass seine Kinder gesund leben.",
+                          "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-8-s4",
                           "number": 4,
-                          "text": "Nach zwei Monaten müssen Sie für die Zeitschrift bezahlen.",
+                          "text": "Der Sprecher findet es wichtig, dass Eltern immer für ihre Kinder da sind.",
                           "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-8-s5",
                           "number": 5,
-                          "text": "Janas Geburtstagsfest findet nicht im LEO statt.",
+                          "text": "Die Sprecherin glaubt, dass sie mehr mit ihrer Tochter sprechen müsste.",
                           "correct": false
                         }
                       ]
                     },
                     {
                       "id": "b1-teil-1-quiz-9",
-                      "title": "Füssen",
+                      "title": "Bus zur Arbeit",
                       "tag": "Teil 1 Thema 9",
                       "statements": [
                         {
                           "id": "b1-teil-1-quiz-9-s1",
                           "number": 1,
-                          "text": "Im City-Kino werden im Untergeschoss alte Filme gezeigt.",
+                          "text": "Für die Sprecherin ist der Firmenbus die einzige Möglichkeit zur Arbeit zu kommen.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-9-s2",
                           "number": 2,
-                          "text": "Die Großmutter kann heute nicht kommen.",
+                          "text": "Der Sprecher benutzt für den Weg zur Arbeit zurzeit verschiedene Verkehrsmittel.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-9-s3",
                           "number": 3,
-                          "text": "Der nächste Zug nach Füssen fährt um 10:56 Uhr",
-                          "correct": true
+                          "text": "Die Sprecherin geht den ganzen Weg zur Arbeit zu Fuß.",
+                          "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-9-s4",
                           "number": 4,
-                          "text": "Die Firma befindet sich in der Bellmondstraße.",
+                          "text": "Die Sprecherin könnte sich vorstellen, mit dem Bus zur Arbeit zu fahren.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-9-s5",
                           "number": 5,
-                          "text": "Das Zugteam bringt Ihnen Südtiroler Käsespezialitäten an Ihren Platz.",
-                          "correct": false
+                          "text": "Der Sprecher fährt nie mit dem Auto zur Arbeit.",
+                          "correct": true
                         }
                       ]
                     },
                     {
                       "id": "b1-teil-1-quiz-10",
-                      "title": "Mannheim",
+                      "title": "Urlaub",
                       "tag": "Teil 1 Thema 10",
                       "statements": [
                         {
                           "id": "b1-teil-1-quiz-10-s1",
                           "number": 1,
-                          "text": "Dr. Hoffmann ist um Urlaub unter der Nummer 957 30 75 zu erreichen.",
+                          "text": "Die Sprecherin hat die Ferien bei Verwandten verbracht.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-10-s2",
                           "number": 2,
-                          "text": "Heute Abend beginnt es zu schneien.",
-                          "correct": false
+                          "text": "Der Sprecher hat den Urlaub mit den Eltern gemeinsam geplant.",
+                          "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-10-s3",
                           "number": 3,
-                          "text": "Sie können den Film das Leben ist schön um 18: 15 Uhr im Central sehen.",
-                          "correct": false
+                          "text": "Der Sprecher hätte gern Urlaub wie die anderen Kinder gemacht.",
+                          "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-10-s4",
                           "number": 4,
-                          "text": "Katrin hätte am Dreiundzwanzigsten Zeit.",
-                          "correct": true
+                          "text": "Die Sprecherin hat mit ihren Eltern regelmäßig Fahrradausflüge gemacht.",
+                          "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-10-s5",
                           "number": 5,
-                          "text": "Der Zug nach Mannheim fährt um 13:14 Uhr ab.",
+                          "text": "Dem Sprecher hat der Wanderurlaub nicht so gut gefallen.",
                           "correct": true
                         }
                       ]
                     },
                     {
                       "id": "b1-teil-1-quiz-11",
-                      "title": "Buchabteilung",
+                      "title": "Fremdsprache",
                       "tag": "Teil 1 Thema 11",
                       "statements": [
                         {
                           "id": "b1-teil-1-quiz-11-s1",
                           "number": 1,
-                          "text": "In der Buchabteilung ist ein berühmter Autor zu Gast.",
-                          "correct": true
+                          "text": "Der Sprecher findet es schade, dass er im Kindergarten keine Fremdsprache lernen konnte.",
+                          "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-11-s2",
                           "number": 2,
-                          "text": "Wegen des Nebels sollte man heute nicht nach München fahren.",
-                          "correct": false
+                          "text": "Die Sprecherin meint, dass das Fremdsprachenlernen erst in der Schule beginnen sollte.",
+                          "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-11-s3",
                           "number": 3,
-                          "text": "Der Zug nach Wein fährt heute von einem anderen Bahnsteig ab.",
+                          "text": "Die Sprecherin ist dagegen, dass Kinder so früh eine Fremdsprache lernen.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-11-s4",
                           "number": 4,
-                          "text": "Die Firma ist mit der Straßenbahn in Richtung Königsplatz zu erreichen.",
+                          "text": "Der Sprecher ist dagegen, dass Kinder schon früh Fremdsprache lernen.",
                           "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-11-s5",
                           "number": 5,
-                          "text": "Ab nächsten Montag kann man wieder einen Termin vereinbaren.",
+                          "text": "Die Sprecherin meint, dass das frühe Lernen einer Fremdsprache für viele Kinder Nachteile hat.",
                           "correct": true
                         }
                       ]
                     },
                     {
                       "id": "b1-teil-1-quiz-12",
-                      "title": "Meissner",
+                      "title": "Handys",
                       "tag": "Teil 1 Thema 12",
                       "statements": [
                         {
                           "id": "b1-teil-1-quiz-12-s1",
                           "number": 1,
-                          "text": "Sie müssen Frau Meissner noch die Pläne für Ihr Wohnzimmer schicken",
-                          "correct": false
+                          "text": "Die Sprecherin findet Handys für Kinder nicht gut.",
+                          "correct": true
                         },
                         {
                           "id": "b1-teil-1-quiz-12-s2",
                           "number": 2,
-                          "text": "Die Schnellbahn S7 hat den ganzen Tag über Verspätung.",
+                          "text": "Der Sprecher hätte auch gern ein Handy.",
                           "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-12-s3",
                           "number": 3,
-                          "text": "Den Kunden werden heute die Computer der Firma Hypersoft besonders günstig angeboten.",
-                          "correct": true
+                          "text": "Der Sprecher ruft gerne sein Partnerin mit dem Handy an.",
+                          "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-12-s4",
                           "number": 4,
-                          "text": "Das Wetter in Füssen-Reutte ist zum Schifahren besser als in Garmisch.",
-                          "correct": true
+                          "text": "Der Sprecher benützt das Handy für Gespräche mit Freunden.",
+                          "correct": false
                         },
                         {
                           "id": "b1-teil-1-quiz-12-s5",
                           "number": 5,
-                          "text": "Der Zug um 18:16 Uhr fahrt direkt nach Münschen.",
+                          "text": "Die Sprecherin fühlt sich durch Handys gestört.",
+                          "correct": true
+                        }
+                      ]
+                    },
+                    {
+                      "id": "b1-teil-1-quiz-13",
+                      "title": "Radfahrad",
+                      "tag": "Teil 1 Thema 13",
+                      "statements": [
+                        {
+                          "id": "b1-teil-1-quiz-13-s1",
+                          "number": 1,
+                          "text": "Der Sprecher denkt, dass Radfahrer auf der Straße den Verkehr behindern.",
+                          "correct": true
+                        },
+                        {
+                          "id": "b1-teil-1-quiz-13-s2",
+                          "number": 2,
+                          "text": "Die Sprecherin meint, dass Radwege unütig sind.",
                           "correct": false
+                        },
+                        {
+                          "id": "b1-teil-1-quiz-13-s3",
+                          "number": 3,
+                          "text": "Die Sprecherin möchte mehr Radwegen.",
+                          "correct": false
+                        },
+                        {
+                          "id": "b1-teil-1-quiz-13-s4",
+                          "number": 4,
+                          "text": "Für den Sprecher haben Radwege Vorteile.",
+                          "correct": true
+                        },
+                        {
+                          "id": "b1-teil-1-quiz-13-s5",
+                          "number": 5,
+                          "text": "Für den Sprecher machen Radwege das Radfahren sicherer.",
+                          "correct": true
+                        }
+                      ]
+                    },
+                    {
+                      "id": "b1-teil-1-quiz-14",
+                      "title": "Miroslav",
+                      "tag": "Teil 1 Thema 14",
+                      "statements": [
+                        {
+                          "id": "b1-teil-1-quiz-14-s1",
+                          "number": 1,
+                          "text": "Der Mann sieht sich am liebsten lustige Filme an.",
+                          "correct": true
+                        },
+                        {
+                          "id": "b1-teil-1-quiz-14-s2",
+                          "number": 2,
+                          "text": "Die Frau sieht sich am liebsten politische Sendungen an.",
+                          "correct": false
+                        },
+                        {
+                          "id": "b1-teil-1-quiz-14-s3",
+                          "number": 3,
+                          "text": "Der Mann sieht gern Familienfilme.",
+                          "correct": false
+                        },
+                        {
+                          "id": "b1-teil-1-quiz-14-s4",
+                          "number": 4,
+                          "text": "Das Kind sieht sich am liebsten spannende Krimis an.",
+                          "correct": true
+                        },
+                        {
+                          "id": "b1-teil-1-quiz-14-s5",
+                          "number": 5,
+                          "text": "Die Sprecherin sieht sich am liebsten Liebes- und Familienfilme an.",
+                          "correct": true
                         }
                       ]
                     }
