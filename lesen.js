@@ -31,6 +31,7 @@ const prevBtn = document.getElementById("prev-btn");
 const nextBtn = document.getElementById("next-btn");
 const asideToggle = document.getElementById("aside-toggle");
 const asideOverlay = document.getElementById("aside-overlay");
+const ASIDE_TOGGLE_HINT_KEY = "zdeutsch.lesen.asideToggleHintDismissed.v1";
 
 // initialize ARIA state
 if (asideToggle) {
@@ -78,6 +79,23 @@ const selectionGuard = {
 
 function isDesktopViewport() {
   return window.matchMedia(DESKTOP_ASIDE_QUERY).matches;
+}
+
+function hasDismissedAsideToggleHint() {
+  return window.localStorage.getItem(ASIDE_TOGGLE_HINT_KEY) === "true";
+}
+
+function syncAsideToggleHint() {
+  if (!asideToggle) {
+    return;
+  }
+  const shouldAnimate = !isDesktopViewport() && !hasDismissedAsideToggleHint();
+  asideToggle.classList.toggle("is-attention-seeking", shouldAnimate);
+}
+
+function dismissAsideToggleHint() {
+  window.localStorage.setItem(ASIDE_TOGGLE_HINT_KEY, "true");
+  syncAsideToggleHint();
 }
 
 function syncAsideLayout({ open = state.asideOpen, focusPanel = false, restoreFocus = false } = {}) {
@@ -1910,6 +1928,7 @@ function toggleAside() {
 if (asideToggle) {
   asideToggle.addEventListener("click", (e) => {
     e.stopPropagation();
+    dismissAsideToggleHint();
     toggleAside();
   });
 }
@@ -1933,9 +1952,11 @@ document.addEventListener("click", suppressClickAfterSelection, true);
 // Ensure state is correct on resize (desktop should show aside without overlay)
 window.addEventListener("resize", () => {
   syncAsideLayout({ open: state.asideOpen });
+  syncAsideToggleHint();
 });
 
 syncAsideLayout({ open: false });
+syncAsideToggleHint();
 
 async function init() {
   if (typeof setupCommunityWidgets === "function") {

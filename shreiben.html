@@ -116,6 +116,9 @@
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
+          <div id="timer-display" class="hidden items-center gap-2 rounded-full border border-azure/40 bg-azure/10 px-3 py-1 text-[10px] font-display uppercase tracking-[0.2em] text-azure">
+            <span id="timer-value">30:00</span>
+          </div>
           <button id="settings-btn" class="h-9 w-9 rounded-xl border border-black/10 bg-white/80 text-slate flex items-center justify-center shadow-sm hover:bg-white transition-colors">
             <i data-lucide="settings" class="h-4 w-4" aria-hidden="true"></i>
           </button>
@@ -132,6 +135,13 @@
         </div>
         <input id="font-size-input" type="range" min="14" max="24" step="1" value="16" class="mt-3 w-full">
       </div>
+      <div class="mt-4 border-t border-stone-200 pt-4">
+        <label class="flex items-center justify-between text-xs text-slate font-display uppercase tracking-[0.2em]">
+          <span>Timer</span>
+          <input id="timer-toggle" type="checkbox" class="h-4 w-4">
+        </label>
+        <p id="timer-copy" class="mt-2 text-[10px] text-slate">30 min countdown for writing.</p>
+      </div>
     </div>
 
     <main class="relative z-10 w-full px-2 pt-20 pb-6 sm:px-6 sm:pt-24 sm:pb-12 lg:px-8">
@@ -147,6 +157,6 @@
 
     <script src="https://unpkg.com/lucide@0.471.0/dist/umd/lucide.min.js"></script>
     <script src="shared.js?v=20260314-2"></script>
-    <script src="shreiben.js?v=20260313-1"></script>
+    <script src="shreiben.js?v=20260314-1"></script>
   </body>
 </html>

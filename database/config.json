@@ -75,8 +75,8 @@
       "name": "shreiben",
       "dataFile": "shreiben.json",
       "timer": {
-        "enabled": false,
-        "durationMinutes": 45
+        "enabled": true,
+        "durationMinutes": 30
       },
       "scoreConfig": {
         "passPercent": 60,

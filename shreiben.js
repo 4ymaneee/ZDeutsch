@@ -7,10 +7,17 @@ const settingsBtn = document.getElementById("settings-btn");
 const settingsPanel = document.getElementById("settings-panel");
 const fontSizeInput = document.getElementById("font-size-input");
 const fontSizeValue = document.getElementById("font-size-value");
+const timerDisplay = document.getElementById("timer-display");
+const timerValue = document.getElementById("timer-value");
+const timerToggle = document.getElementById("timer-toggle");
+const timerCopy = document.getElementById("timer-copy");
 
 const EDITOR_FONT_SIZE_KEY = "zdeutsch.shreiben.editorFontSize";
+const TIMER_ENABLED_KEY = "zdeutsch.shreiben.timerEnabled";
 const DEFAULT_EDITOR_FONT_SIZE = 16;
 const DEFAULT_PART_KEY = "teil-1";
+const SHREIBEN_MODULE_NAME = "shreiben";
+const DEFAULT_TIMER_MINUTES = 30;
 const GERMAN_SPECIAL_CHARS = ["ä", "ö", "ü", "ß", "Ä", "Ö", "Ü", "ẞ"];
 const CHATGPT_CORRECTION_PROMPT = `You are a certified TELC Deutsch B2 examiner.
 
@@ -205,11 +212,18 @@ Important rules:
 
 const state = {
   data: null,
+  config: null,
   levelKey: "b2",
   partKey: DEFAULT_PART_KEY,
   taskId: null,
   drafts: {},
-  editorFontSize: DEFAULT_EDITOR_FONT_SIZE
+  editorFontSize: DEFAULT_EDITOR_FONT_SIZE,
+  timer: {
+    enabled: true,
+    durationMs: DEFAULT_TIMER_MINUTES * 60 * 1000,
+    endAt: null,
+    intervalId: null
+  }
 };
 
 let activeFullscreen = null;
@@ -218,6 +232,133 @@ function refreshIcons() {
   if (typeof window.lucide !== "undefined" && typeof window.lucide.createIcons === "function") {
     window.lucide.createIcons();
   }
+}
+
+function getShreibenConfig(config) {
+  const modules = Array.isArray(config?.modules) ? config.modules : [];
+  const match = modules.find((module) => String(module?.name || "").trim().toLowerCase() === SHREIBEN_MODULE_NAME);
+  if (match) {
+    return match;
+  }
+  return {
+    name: SHREIBEN_MODULE_NAME,
+    timer: {
+      enabled: true,
+      durationMinutes: DEFAULT_TIMER_MINUTES
+    }
+  };
+}
+
+function getStoredTimerEnabled() {
+  const raw = window.localStorage.getItem(TIMER_ENABLED_KEY);
+  if (raw === null) {
+    return null;
+  }
+  return raw === "true";
+}
+
+function getTimerConfig() {
+  const config = state.config?.timer || {};
+  const stored = getStoredTimerEnabled();
+  const durationMinutes = Number.isFinite(config.durationMinutes)
+    ? Number(config.durationMinutes)
+    : DEFAULT_TIMER_MINUTES;
+  return {
+    enabled: typeof stored === "boolean"
+      ? stored
+      : typeof config.enabled === "boolean"
+        ? config.enabled
+        : true,
+    durationMinutes: Math.max(0, durationMinutes),
+    durationMs: Math.max(0, durationMinutes) * 60 * 1000
+  };
+}
+
+function formatTime(ms) {
+  const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function updateTimerCopy(durationMinutes) {
+  if (!timerCopy) {
+    return;
+  }
+  const label = Number.isFinite(durationMinutes) ? durationMinutes : DEFAULT_TIMER_MINUTES;
+  timerCopy.textContent = `${label} min countdown for writing.`;
+}
+
+function updateTimerDisplay(remainingMs) {
+  if (!timerDisplay || !timerValue) {
+    return;
+  }
+  const show = state.timer.enabled;
+  timerDisplay.classList.toggle("hidden", !show);
+  if (!show) {
+    return;
+  }
+  const value = Number.isFinite(remainingMs) ? remainingMs : state.timer.durationMs;
+  timerValue.textContent = formatTime(value);
+}
+
+function stopWritingTimer() {
+  if (state.timer.intervalId) {
+    window.clearInterval(state.timer.intervalId);
+    state.timer.intervalId = null;
+  }
+  state.timer.endAt = null;
+}
+
+function startWritingTimer() {
+  stopWritingTimer();
+  const timerConfig = getTimerConfig();
+  state.timer.enabled = timerConfig.enabled;
+  state.timer.durationMs = timerConfig.durationMs;
+  updateTimerCopy(timerConfig.durationMinutes);
+  if (!timerConfig.enabled || timerConfig.durationMs <= 0) {
+    updateTimerDisplay(timerConfig.durationMs);
+    return;
+  }
+  state.timer.endAt = Date.now() + timerConfig.durationMs;
+  updateTimerDisplay(timerConfig.durationMs);
+  state.timer.intervalId = window.setInterval(() => {
+    if (!state.timer.endAt) {
+      stopWritingTimer();
+      updateTimerDisplay();
+      return;
+    }
+    const remaining = state.timer.endAt - Date.now();
+    if (remaining <= 0) {
+      stopWritingTimer();
+      updateTimerDisplay(0);
+      window.alert(`Die Schreibzeit von ${timerConfig.durationMinutes} Minuten ist abgelaufen.`);
+      return;
+    }
+    updateTimerDisplay(remaining);
+  }, 1000);
+}
+
+function setTimerEnabled(enabled) {
+  state.timer.enabled = Boolean(enabled);
+  window.localStorage.setItem(TIMER_ENABLED_KEY, state.timer.enabled ? "true" : "false");
+  if (!state.timer.enabled) {
+    stopWritingTimer();
+    updateTimerDisplay();
+    return;
+  }
+  startWritingTimer();
+}
+
+function applyTimerConfig() {
+  const timerConfig = getTimerConfig();
+  state.timer.enabled = timerConfig.enabled;
+  state.timer.durationMs = timerConfig.durationMs;
+  if (timerToggle) {
+    timerToggle.checked = timerConfig.enabled;
+  }
+  updateTimerCopy(timerConfig.durationMinutes);
+  updateTimerDisplay(timerConfig.durationMs);
 }
 
 async function loadShreibenDatabase() {
@@ -936,7 +1077,7 @@ function renderActivePart() {
     contentContainer.append(
       createEl("div", "rounded-2xl border border-stone-200 bg-stone-50 p-4 text-sm text-slate", "Noch keine Aufgaben vorhanden.")
     );
-    return;
+    return false;
   }
 
   const taskId = String(state.taskId || "").trim();
@@ -948,13 +1089,14 @@ function renderActivePart() {
     contentContainer.append(
       createEl("div", "rounded-2xl border border-rose/30 bg-rose/10 p-4 text-sm text-rose", "Die ausgewählte Schreiben-Aufgabe wurde nicht gefunden.")
     );
-    return;
+    return false;
   }
 
   tasksToRender.forEach((task) => {
     contentContainer.append(renderTask(task));
   });
   refreshIcons();
+  return true;
 }
 
 function applyHeaderInfo() {
@@ -998,9 +1140,24 @@ if (fontSizeInput) {
   });
 }
 
+if (timerToggle) {
+  timerToggle.addEventListener("change", () => {
+    setTimerEnabled(timerToggle.checked);
+  });
+}
+
+window.addEventListener("pagehide", () => {
+  stopWritingTimer();
+});
+
 async function init() {
   if (typeof setupCommunityWidgets === "function") {
     setupCommunityWidgets();
+  }
+  if (typeof loadConfig === "function") {
+    state.config = getShreibenConfig(await loadConfig());
+  } else {
+    state.config = getShreibenConfig(null);
   }
   state.data = await loadShreibenDatabase();
   if (!state.data) {
@@ -1041,9 +1198,13 @@ async function init() {
   }
 
   applyEditorFontSize(getStoredEditorFontSize());
+  applyTimerConfig();
   applyHeaderInfo();
   renderPartList();
-  renderActivePart();
+  const hasTask = renderActivePart();
+  if (hasTask) {
+    startWritingTimer();
+  }
   refreshIcons();
 }
 
