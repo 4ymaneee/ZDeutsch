@@ -1,0 +1,16 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="reverse-gradient" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer Rounded Square (Solid Gradient Background) -->
+  <rect width="512" height="512" rx="120" fill="url(#reverse-gradient)"/>
+  
+  <!-- Mirrored White Styled Z (Horizontal Flip) -->
+  <g transform="translate(512, 0) scale(-1, 1)">
+    <path d="M165 170C165 161.716 171.716 155 180 155H332C340.284 155 347 161.716 347 170V185C347 193.284 340.284 200 332 200H235L339.42 322.316C344.24 327.965 347 335.152 347 342.592V347C347 355.284 340.284 362 332 362H180C171.716 362 165 355.284 165 347V332C165 323.716 171.716 317 180 317H285L172.58 194.684C167.76 189.035 165 181.848 165 174.408V170Z" fill="white"/>
+  </g>
+</svg>

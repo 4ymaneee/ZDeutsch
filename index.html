@@ -1,280 +1,337 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#ffcc00">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="ZDeutsch">
-    <title>ZDeutsch | Zadelkhair Deutsch</title>
-    <link rel="manifest" href="manifest.webmanifest?v=20260313-1">
-    <link rel="apple-touch-icon" href="pwa/apple-touch-icon.png?v=20260313-1">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Newsreader:wght@400;500;600&family=Tajawal:wght@500;700;800;900&display=swap">
-    <script type="text/javascript">
-      (function(c, l, a, r, i, t, y) {
-        c[a] = c[a] || function() {
-          (c[a].q = c[a].q || []).push(arguments);
-        };
-        t = l.createElement(r);
-        t.async = 1;
-        t.src = "https://www.clarity.ms/tag/" + i;
-        y = l.getElementsByTagName(r)[0];
-        y.parentNode.insertBefore(t, y);
-      })(window, document, "clarity", "script", "vugci4h4o0");
-    </script>
-    <script>
-      tailwind.config = {
-        safelist: [
-          "bg-stone-50",
-          "bg-stone-100",
-          "bg-stone-200",
-          "bg-azure",
-          "bg-white",
-          "bg-white/80",
-          "bg-white/90",
-          "bg-azure/10",
-          "bg-mint/10",
-          "bg-mint/20",
-          "bg-rose/10",
-          "bg-rose/15",
-          "border-stone-200",
-          "border-stone-300",
-          "border-azure/30",
-          "border-azure/40",
-          "border-azure/50",
-          "border-azure/60",
-          "border-mint/30",
-          "border-mint/40",
-          "border-mint/50",
-          "border-mint/60",
-          "border-rose/30",
-          "border-rose/40",
-          "border-rose/50",
-          "border-black/20",
-          "text-azure",
-          "text-mint",
-          "text-rose",
-          "text-white",
-          "ring-2",
-          "ring-azure/20",
-          "ring-azure/30",
-          "shadow-sm",
-          "shadow-panel",
-          "shadow-lg",
-          "hover:border-stone-300",
-          "hover:-translate-y-0.5"
-        ],
-        theme: {
-          extend: {
-            fontFamily: {
-              display: ["Space Grotesk", "sans-serif"],
-              body: ["Newsreader", "serif"]
-            },
-            colors: {
-              ink: "#1f2933",
-              mist: "#f8f5f0",
-              shell: "#ffffff",
-              haze: "#f2f3f5",
-              slate: "#5c6672",
-              azure: "#0f766e",
-              mint: "#15803d",
-              amber: "#b45309",
-              rose: "#dc2626"
-            },
-            boxShadow: {
-              panel: "0 24px 60px rgba(15, 23, 42, 0.12)"
-            }
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffcc00">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ZDeutsch">
+  <title>ZDeutsch | Zadelkhair Deutsch</title>
+  <link rel="manifest" href="manifest.webmanifest?v=20260313-1">
+  <link rel="apple-touch-icon" href="pwa/apple-touch-icon.png?v=20260313-1">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Newsreader:wght@400;500;600&family=Tajawal:wght@500;700;800;900&display=swap">
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () {
+        (c[a].q = c[a].q || []).push(arguments);
+      };
+      t = l.createElement(r);
+      t.async = 1;
+      t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0];
+      y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "vugci4h4o0");
+  </script>
+  <script>
+    tailwind.config = {
+      safelist: [
+        "bg-stone-50",
+        "bg-stone-100",
+        "bg-stone-200",
+        "bg-azure",
+        "bg-white",
+        "bg-white/80",
+        "bg-white/90",
+        "bg-azure/10",
+        "bg-mint/10",
+        "bg-mint/20",
+        "bg-rose/10",
+        "bg-rose/15",
+        "border-stone-200",
+        "border-stone-300",
+        "border-azure/30",
+        "border-azure/40",
+        "border-azure/50",
+        "border-azure/60",
+        "border-mint/30",
+        "border-mint/40",
+        "border-mint/50",
+        "border-mint/60",
+        "border-rose/30",
+        "border-rose/40",
+        "border-rose/50",
+        "border-black/20",
+        "text-azure",
+        "text-mint",
+        "text-rose",
+        "text-white",
+        "ring-2",
+        "ring-azure/20",
+        "ring-azure/30",
+        "shadow-sm",
+        "shadow-panel",
+        "shadow-lg",
+        "hover:border-stone-300",
+        "hover:-translate-y-0.5"
+      ],
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ["Space Grotesk", "sans-serif"],
+            body: ["Newsreader", "serif"]
+          },
+          colors: {
+            ink: "#1f2933",
+            mist: "#f8f5f0",
+            shell: "#ffffff",
+            haze: "#f2f3f5",
+            slate: "#5c6672",
+            azure: "#0f766e",
+            mint: "#15803d",
+            amber: "#b45309",
+            rose: "#dc2626"
+          },
+          boxShadow: {
+            panel: "0 24px 60px rgba(15, 23, 42, 0.12)"
           }
         }
-      };
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="theme.css?v=20260313-2">
-  </head>
-  <body class="theme-body font-body min-h-screen home-page">
-    <div class="fixed inset-0">
-      <div class="absolute inset-0 flag-glow-top"></div>
-      <div class="absolute inset-0 flag-glow-bottom"></div>
-      <div class="absolute inset-0 grid-overlay"></div>
-    </div>
+      }
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="theme.css?v=20260313-2">
+</head>
 
-    <div class="relative min-h-screen">
-      <header class="home-header sticky top-0 z-40 border-b border-black/10 bg-white/90 backdrop-blur-md shadow-sm">
-        <div class="home-header-inner w-full px-6">
-          <div class="home-header-brand">
-            <img id="brand-logo" src="logo.svg?v=20260312-1" alt="ZDeutsch" class="h-16 w-auto">
-            <div class="home-header-copy">
-              <p class="home-header-eyebrow font-display uppercase tracking-[0.24em] text-slate">Zadelkhair Deutsch</p>
-              <div id="header-title" class="home-header-title">
-                <h1 id="theme-title" class="font-display text-base">Select a theme</h1>
-                <span id="level-pill" class="rounded-full border border-azure/40 bg-azure/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] text-azure font-display">B1</span>
-              </div>
-            </div>
-          </div>
-          <div class="home-header-badge font-display uppercase tracking-[0.22em] text-slate">TELC Library</div>
-        </div>
-      </header>
+<body class="theme-body font-body min-h-screen home-page">
+  <div class="fixed inset-0">
+    <div class="absolute inset-0 flag-glow-top"></div>
+    <div class="absolute inset-0 flag-glow-bottom"></div>
+    <div class="absolute inset-0 grid-overlay"></div>
+  </div>
 
-      <section id="home-view" class="home-view pb-16 px-6 relative">
-        <div id="home-loader" class="fixed inset-0 z-[90] flex items-center justify-center px-6">
-          <div class="home-loader-backdrop absolute inset-0"></div>
-          <div class="home-loader-panel relative w-full max-w-xl overflow-hidden rounded-[2rem] border border-stone-300 bg-white/95 shadow-panel p-6 sm:p-8">
-            <div class="flex items-start justify-between gap-4">
-              <div class="min-w-0 space-y-2">
-                <div class="font-display text-xs uppercase tracking-[0.28em] text-slate">Loading library</div>
-                <h2 class="text-2xl font-display text-ink sm:text-3xl">Preparing your exam themes</h2>
-                <p id="home-loader-stage" class="text-sm text-slate" role="status" aria-live="polite">Preparing library...</p>
-              </div>
-              <div id="home-loader-percent" class="home-loader-percent font-display text-azure">0%</div>
-            </div>
-            <div class="mt-6 home-loader-progress-track">
-              <div id="home-loader-bar" class="home-loader-progress-fill"></div>
-            </div>
-            <div class="mt-5 flex items-center gap-3 text-xs font-display uppercase tracking-[0.18em] text-slate">
-              <span class="home-loader-spinner" aria-hidden="true"></span>
-              <span>Syncing exams, parts and tasks</span>
+  <div class="relative min-h-screen">
+    <header class="home-header sticky top-0 z-40 border-b border-black/10 bg-white/90 backdrop-blur-md shadow-sm">
+      <div class="home-header-inner w-full px-6">
+        <div class="home-header-brand">
+          <img id="brand-logo" src="logo.svg?v=20260312-1" alt="ZDeutsch" class="h-16 w-auto">
+          <div class="home-header-copy">
+            <p class="home-header-eyebrow font-display uppercase tracking-[0.24em] text-slate">Zadelkhair Deutsch</p>
+            <div id="header-title" class="home-header-title">
+              <h1 id="theme-title" class="font-display text-base">Select a theme</h1>
+              <span id="level-pill"
+                class="rounded-full border border-azure/40 bg-azure/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] text-azure font-display">B1</span>
             </div>
           </div>
         </div>
-        <div class="w-full">
-          <div class="home-shell rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-8">
-            <div class="home-hero">
-              <div class="home-hero-copy space-y-2">
-                <p class="font-display text-xs uppercase tracking-[0.3em] text-slate">Zadelkhair Deutsch Exam Library</p>
-                <h2 class="text-3xl font-display">Wähle dein Prüfungsthema</h2>
-                <p>Prepare for your TELC language exam for <span class="font-bold text-azure">FREE!</span></p>
-              </div>
-            </div>
+        <div class="home-header-badge font-display uppercase tracking-[0.22em] text-slate">TELC Library</div>
+      </div>
+    </header>
 
-            <section id="install-prompt-card" class="hidden md:hidden mt-5 rounded-[1.75rem] border border-azure/40 bg-azure/10 p-4 shadow-sm">
-              <div class="flex items-start justify-between gap-3">
+    <section id="home-view" class="home-view pb-16 px-6 relative">
+      <div id="home-loader" class="fixed inset-0 z-[90] flex items-center justify-center px-6">
+        <div class="home-loader-backdrop absolute inset-0"></div>
+        <div
+          class="home-loader-panel relative w-full max-w-xl overflow-hidden rounded-[2rem] border border-stone-300 bg-white/95 shadow-panel p-6 sm:p-8">
+          <div class="flex items-start justify-between gap-4">
+            <div class="min-w-0 space-y-2">
+              <div class="font-display text-xs uppercase tracking-[0.28em] text-slate">Loading library</div>
+              <h2 class="text-2xl font-display text-ink sm:text-3xl">Preparing your exam themes</h2>
+              <p id="home-loader-stage" class="text-sm text-slate" role="status" aria-live="polite">Preparing library...
+              </p>
+            </div>
+            <div id="home-loader-percent" class="home-loader-percent font-display text-azure">0%</div>
+          </div>
+          <div class="mt-6 home-loader-progress-track">
+            <div id="home-loader-bar" class="home-loader-progress-fill"></div>
+          </div>
+          <div class="mt-5 flex items-center gap-3 text-xs font-display uppercase tracking-[0.18em] text-slate">
+            <span class="home-loader-spinner" aria-hidden="true"></span>
+            <span>Syncing exams, parts and tasks</span>
+          </div>
+        </div>
+      </div>
+      <div class="w-full">
+        <div class="home-shell rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-8">
+          <div class="home-hero">
+            <div class="home-hero-copy space-y-2">
+              <p class="font-display text-xs uppercase tracking-[0.3em] text-slate">Zadelkhair Deutsch Exam Library</p>
+              <h2 class="text-3xl font-display">Wähle dein Prüfungsthema</h2>
+              <p>Prepare for your TELC language exam for <span class="font-bold text-azure">FREE!</span></p>
+            </div>
+          </div>
+
+          <section id="install-prompt-card"
+            class="hidden md:hidden mt-5 rounded-[1.75rem] border border-azure/40 bg-azure/10 p-4 shadow-sm">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <div class="text-[10px] font-display uppercase tracking-[0.24em] text-azure">Install App</div>
+                <p id="install-prompt-text" class="mt-2 text-sm leading-6 text-ink">Add ZDeutsch to your home screen for
+                  faster access on your phone.</p>
+              </div>
+              <button id="install-prompt-button" type="button"
+                class="inline-flex shrink-0 items-center rounded-full border border-azure/40 bg-white px-4 py-2 text-[10px] font-display uppercase tracking-[0.18em] text-azure shadow-sm">
+                Install
+              </button>
+            </div>
+          </section>
+
+          <section id="homepage-promo-section"
+            class="mt-8 flex flex-col md:flex-row items-stretch justify-center gap-6">
+            <!-- Zertify Promo Card -->
+            <a href="https://www.zertify.app/" target="_blank" rel="noopener noreferrer" dir="rtl"
+              aria-label="تسجل في Zertify"
+              class="homepage-promo-card group relative flex-1 basis-0 overflow-hidden no-underline transition duration-300 hover:-translate-y-1"
+              style="font-family:'Tajawal','Space Grotesk',sans-serif;border:1px solid #e2e8f0;border-radius:28px;padding:30px;background:radial-gradient(500px 250px at 0% -8%, rgba(99, 102, 241, 0.2), transparent 70%), radial-gradient(520px 260px at 96% 4%, rgba(168, 85, 247, 0.15), transparent 74%), linear-gradient(145deg, #ffffff 0%, #f9faff 48%, #f5f3ff 100%);box-shadow:0 20px 36px rgba(79, 70, 229, 0.08);">
+              <div class="homepage-promo-shell relative h-full flex flex-col justify-between">
                 <div class="min-w-0">
-                  <div class="text-[10px] font-display uppercase tracking-[0.24em] text-azure">Install App</div>
-                  <p id="install-prompt-text" class="mt-2 text-sm leading-6 text-ink">Add ZDeutsch to your home screen for faster access on your phone.</p>
-                </div>
-                <button
-                  id="install-prompt-button"
-                  type="button"
-                  class="inline-flex shrink-0 items-center rounded-full border border-azure/40 bg-white px-4 py-2 text-[10px] font-display uppercase tracking-[0.18em] text-azure shadow-sm"
-                >
-                  Install
-                </button>
-              </div>
-            </section>
-
-            <section
-              id="homepage-promo-section"
-              class="hidden"
-            >
-              <a
-                href="https://meinlang.com/app/register/telc"
-                target="_blank"
-                rel="noopener noreferrer"
-                dir="rtl"
-                aria-label="سجّل في MeinLang"
-                class="homepage-promo-card group relative mx-auto block max-w-[760px] overflow-hidden no-underline transition duration-300 hover:-translate-y-1"
-                style="font-family:'Tajawal','Space Grotesk',sans-serif;border:1px solid #cfe5d8;border-radius:28px;padding:30px;background:radial-gradient(500px 250px at 0% -8%, rgba(31, 157, 98, 0.24), transparent 70%), radial-gradient(520px 260px at 96% 4%, rgba(42, 123, 228, 0.17), transparent 74%), linear-gradient(145deg, #fbfffd 0%, #f2faf6 48%, #f9fcff 100%);box-shadow:0 20px 36px rgba(13, 78, 49, 0.11);"
-              >
-                <div class="homepage-promo-shell relative">
-                  <div class="min-w-0">
-                    <div class="homepage-promo-header flex items-center justify-between gap-3">
-                      <div class="homepage-promo-brand">
-                        <div class="homepage-promo-brand-label text-[10px] font-display font-bold uppercase tracking-[0.34em]" style="color:#1d6d49;font-weight:800;">MeinLang</div>
-                        <div class="homepage-promo-brand-subtitle mt-1 text-[13px] font-bold sm:text-sm" style="color:#1d6d49;font-weight:800;">منصة ذكية لتعلّم الألمانية</div>
-                      </div>
-                      <div class="homepage-promo-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-[15px] bg-white shadow-[0_10px_22px_rgba(15,23,42,0.14)] sm:h-12 sm:w-12">
-                        <img
-                          src="assets/meinlang/mein-lang-icon-color.svg?v=20260312-1"
-                          alt="MeinLang"
-                          class="h-7 w-7 sm:h-8 sm:w-8"
-                        >
-                      </div>
+                  <div class="homepage-promo-header flex items-center justify-between gap-3">
+                    <div
+                      class="homepage-promo-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-[15px] bg-white shadow-[0_10px_22px_rgba(79,70,229,0.12)] sm:h-12 sm:w-12 overflow-hidden">
+                      <img src="zertify-logo.svg" alt="Zertify" class="h-full w-full object-contain p-1.5">
                     </div>
-
-                    <h3 class="homepage-promo-title mt-3 max-w-2xl" style="font-size:clamp(1.5rem, 2vw, 3rem);line-height:1.03;color:#103d2b;font-weight:900;">
-                      تعلّم الألمانية بشكل أذكى وأسرع.
-                    </h3>
-                    <p class="homepage-promo-summary mt-2 max-w-2xl text-[12px] leading-6 sm:text-[13px]" style="color:#1d6d49;font-weight:800;">
-                      <span class="homepage-promo-summary-desktop">قراءة تفاعلية، ترجمة عربية، مفردات ذكية، وتدريب عملي لاختبار TELC.</span>
-                      <span class="homepage-promo-summary-mobile">قراءة وترجمة ومفردات لاختبار TELC.</span>
-                    </p>
-
-                    <div class="homepage-promo-footer mt-2.5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                      <div class="homepage-promo-meta flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] uppercase tracking-[0.16em] sm:text-[9.5px]" style="color:#2b5f49;font-weight:800;">
-                        <span>قراءة تفاعلية</span>
-                        <span class="h-1 w-1 rounded-full" style="background:#7eb29a;"></span>
-                        <span>ترجمة عربية</span>
-                        <span class="h-1 w-1 rounded-full" style="background:#7eb29a;"></span>
-                        <span>مفردات ذكية</span>
-                        <span class="h-1 w-1 rounded-full" style="background:#7eb29a;"></span>
-                        <span>TELC</span>
-                      </div>
-
-                      <div class="homepage-promo-cta inline-flex w-fit items-center gap-2 rounded-full transition group-hover:-translate-y-0.5" style="display:inline-flex;align-items:center;gap:8px;border-radius:999px;border:1px solid #c0dfcf;padding:8px 13px;background:rgba(255, 255, 255, 0.96);color:#1d6d49;font-size:0.9rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;box-shadow:0 8px 16px rgba(13, 74, 46, 0.07);">
-                        <span>اكتشف MeinLang</span>
-                        <span class="text-[15px]">←</span>
-                      </div>
+                    <div class="homepage-promo-brand">
+                      <div
+                        class="homepage-promo-brand-label text-[10px] font-display font-bold uppercase tracking-[0.34em]"
+                        style="color:#4f46e5;font-weight:800;">Zertify</div>
+                      <div class="homepage-promo-brand-subtitle mt-1 text-[13px] font-bold sm:text-sm"
+                        style="color:#4f46e5;font-weight:800;">الكل فواحد لامتحانات TELC</div>
                     </div>
                   </div>
-                </div>
-              </a>
-            </section>
 
-            <div id="community-promo-target" class="mt-6"></div>
+                  <h3 class="homepage-promo-title mt-4"
+                    style="font-size:clamp(1.4rem, 1.8vw, 1.8rem);line-height:1.1;color:#1e1b4b;font-weight:900;">
+                    نجح فـ TELC بذكاء، ماشي بتمارة.
+                  </h3>
+                  <p class="homepage-promo-summary mt-2 text-[12px] leading-6 sm:text-[13px]"
+                    style="color:#4338ca;font-weight:800;">
+                    أول منصة مغربية كتعاونك توجد لـ TELC B1/B2 وبالدارجة، باش تفهم كلشي وتنجح من المرة الأولى.
+                  </p>
+                </div>
 
-            <div class="home-sections mt-8 space-y-6">
-              <div class="home-control-card">
-                <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Levels</div>
-                <div id="level-list" class="mt-3 flex flex-wrap gap-3"></div>
-              </div>
-              <div class="home-control-card home-parts-card">
-                <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Parts</div>
-                <div id="section-list" class="mt-3 flex flex-wrap gap-3"></div>
-              </div>
-              <div class="home-control-card home-search-card">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                  <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Search</div>
-                  <div id="theme-search-scope" class="home-search-scope font-display uppercase tracking-[0.18em] text-slate"></div>
-                </div>
-                <div class="mt-3">
-                  <input
-                    id="theme-search"
-                    type="search"
-                    placeholder="Search themes..."
-                    class="home-search-input w-full rounded-2xl border border-stone-300 bg-white/80 px-4 py-2 text-sm text-ink shadow-sm focus:border-azure/40 focus:outline-none"
-                  >
+                <div
+                  class="homepage-promo-footer mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div
+                    class="homepage-promo-meta flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] uppercase tracking-[0.16em] sm:text-[9.5px]"
+                    style="color:#4338ca;font-weight:800;">
+                    <span>TELC B1 & B2</span>
+                    <span class="h-1 w-1 rounded-full" style="background:#a5b4fc;"></span>
+                    <span>شرح بالدارجة 🇲🇦</span>
+                    <span class="h-1 w-1 rounded-full" style="background:#a5b4fc;"></span>
+                    <span>Road to Germany 🇩🇪</span>
+                  </div>
+
+                  <div
+                    class="homepage-promo-cta inline-flex w-fit items-center gap-2 rounded-full transition group-hover:-translate-y-0.5"
+                    style="display:inline-flex;align-items:center;gap:8px;border-radius:999px;border:1px solid #e0e7ff;padding:8px 13px;background:rgba(255, 255, 255, 0.96);color:#4f46e5;font-size:0.85rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;box-shadow:0 8px 16px rgba(79, 70, 229, 0.07);">
+                    <span>اكتشف Zertify</span>
+                    <span class="text-[15px]">←</span>
+                  </div>
                 </div>
               </div>
-              <div class="home-themes-block">
-                <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Themes</div>
-                <div id="theme-grid" class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+            </a>
+
+            <!-- MeinLang Promo Card (Original) -->
+            <a href="https://meinlang.com/app/register/telc" target="_blank" rel="noopener noreferrer" dir="rtl"
+              aria-label="سجّل في MeinLang"
+              class="homepage-promo-card group relative flex-1 basis-0 overflow-hidden no-underline transition duration-300 hover:-translate-y-1"
+              style="font-family:'Tajawal','Space Grotesk',sans-serif;border:1px solid #cfe5d8;border-radius:28px;padding:30px;background:radial-gradient(500px 250px at 0% -8%, rgba(31, 157, 98, 0.24), transparent 70%), radial-gradient(520px 260px at 96% 4%, rgba(42, 123, 228, 0.17), transparent 74%), linear-gradient(145deg, #fbfffd 0%, #f2faf6 48%, #f9fcff 100%);box-shadow:0 20px 36px rgba(13, 78, 49, 0.11);">
+              <div class="homepage-promo-shell relative h-full flex flex-col justify-between">
+                <div class="min-w-0">
+                  <div class="homepage-promo-header flex items-center justify-between gap-3">
+                    <div class="homepage-promo-brand">
+                      <div
+                        class="homepage-promo-brand-label text-[10px] font-display font-bold uppercase tracking-[0.34em]"
+                        style="color:#1d6d49;font-weight:800;">MeinLang</div>
+                      <div class="homepage-promo-brand-subtitle mt-1 text-[13px] font-bold sm:text-sm"
+                        style="color:#1d6d49;font-weight:800;">منصة ذكية لتعلّم الألمانية</div>
+                    </div>
+                    <div
+                      class="homepage-promo-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-[15px] bg-white shadow-[0_10px_22px_rgba(15,23,42,0.14)] sm:h-12 sm:w-12">
+                      <img src="assets/meinlang/mein-lang-icon-color.svg?v=20260312-1" alt="MeinLang"
+                        class="h-7 w-7 sm:h-8 sm:w-8">
+                    </div>
+                  </div>
+
+                  <h3 class="homepage-promo-title mt-4"
+                    style="font-size:clamp(1.4rem, 1.8vw, 1.8rem);line-height:1.1;color:#103d2b;font-weight:900;">
+                    تعلّم الألمانية بشكل أذكى وأسرع.
+                  </h3>
+                  <p class="homepage-promo-summary mt-2 text-[12px] leading-6 sm:text-[13px]"
+                    style="color:#1d6d49;font-weight:800;">
+                    قراءة تفاعلية، ترجمة عربية، مفردات ذكية، وتدريب عملي لاختبار TELC بالدارجة المغربية.
+                  </p>
+                </div>
+
+                <div
+                  class="homepage-promo-footer mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div
+                    class="homepage-promo-meta flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] uppercase tracking-[0.16em] sm:text-[9.5px]"
+                    style="color:#2b5f49;font-weight:800;">
+                    <span>قراءة تفاعلية</span>
+                    <span class="h-1 w-1 rounded-full" style="background:#7eb29a;"></span>
+                    <span>ترجمة عربية</span>
+                    <span class="h-1 w-1 rounded-full" style="background:#7eb29a;"></span>
+                    <span>TELC</span>
+                  </div>
+
+                  <div
+                    class="homepage-promo-cta inline-flex w-fit items-center gap-2 rounded-full transition group-hover:-translate-y-0.5"
+                    style="display:inline-flex;align-items:center;gap:8px;border-radius:999px;border:1px solid #c0dfcf;padding:8px 13px;background:rgba(255, 255, 255, 0.96);color:#1d6d49;font-size:0.85rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;box-shadow:0 8px 16px rgba(13, 74, 46, 0.07);">
+                    <span>اكتشف MeinLang</span>
+                    <span class="text-[15px]">←</span>
+                  </div>
+                </div>
               </div>
+            </a>
+          </section>
+
+          <div id="community-promo-target" class="mt-6"></div>
+
+          <div class="home-sections mt-8 space-y-6">
+            <div class="home-control-card">
+              <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Levels</div>
+              <div id="level-list" class="mt-3 flex flex-wrap gap-3"></div>
+            </div>
+            <div class="home-control-card home-parts-card">
+              <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Parts</div>
+              <div id="section-list" class="mt-3 flex flex-wrap gap-3"></div>
+            </div>
+            <div class="home-control-card home-search-card">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Search</div>
+                <div id="theme-search-scope"
+                  class="home-search-scope font-display uppercase tracking-[0.18em] text-slate"></div>
+              </div>
+              <div class="mt-3">
+                <input id="theme-search" type="search" placeholder="Search themes..."
+                  class="home-search-input w-full rounded-2xl border border-stone-300 bg-white/80 px-4 py-2 text-sm text-ink shadow-sm focus:border-azure/40 focus:outline-none">
+              </div>
+            </div>
+            <div class="home-themes-block">
+              <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Themes</div>
+              <div id="theme-grid" class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
             </div>
           </div>
         </div>
-      </section>
-    </div>
-
-    <div id="version-modal" class="fixed inset-0 z-50 hidden">
-      <div id="version-overlay" class="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
-      <div class="relative mx-auto mt-28 w-[90%] max-w-lg rounded-3xl border border-stone-300 bg-white/95 shadow-panel p-6">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Select version</div>
-            <h3 id="version-title" class="mt-2 text-lg font-display text-ink">Choose a version</h3>
-          </div>
-          <button id="version-close" class="h-9 w-9 rounded-xl border border-black/10 bg-white/80 text-slate flex items-center justify-center shadow-sm">
-            <i data-lucide="x" class="h-4 w-4" aria-hidden="true"></i>
-          </button>
-        </div>
-        <div id="version-options" class="mt-5 grid gap-3"></div>
       </div>
-    </div>
+    </section>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://unpkg.com/lucide@0.471.0/dist/umd/lucide.min.js"></script>
-    <script src="shared.js?v=20260313-1"></script>
-    <script src="main.js?v=20260313-3"></script>
-  </body>
+  <div id="version-modal" class="fixed inset-0 z-50 hidden">
+    <div id="version-overlay" class="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
+    <div
+      class="relative mx-auto mt-28 w-[90%] max-w-lg rounded-3xl border border-stone-300 bg-white/95 shadow-panel p-6">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Select version</div>
+          <h3 id="version-title" class="mt-2 text-lg font-display text-ink">Choose a version</h3>
+        </div>
+        <button id="version-close"
+          class="h-9 w-9 rounded-xl border border-black/10 bg-white/80 text-slate flex items-center justify-center shadow-sm">
+          <i data-lucide="x" class="h-4 w-4" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div id="version-options" class="mt-5 grid gap-3"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.471.0/dist/umd/lucide.min.js"></script>
+  <script src="shared.js?v=20260313-1"></script>
+  <script src="main.js?v=20260313-3"></script>
+</body>
+
 </html>
