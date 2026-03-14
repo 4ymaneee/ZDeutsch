@@ -50,9 +50,10 @@ const COMMUNITY_WHATSAPP_COMPOSE_URL = "https://wa.me/?text=";
 const LESEN_PROGRESS_STORAGE_KEY = "zdeutsch.lesen.progress.v1";
 const BOTTOM_BANNER_DISMISS_KEY = "zdeutsch.ads.bottom.dismissed.v1";
 const WHATSAPP_SHARE_GATE_USER_ID_KEY = "zdeutsch.shareGate.userId.v1";
-const WHATSAPP_SHARE_GATE_VISITS_KEY = "zdeutsch.shareGate.visits.v2";
+const WHATSAPP_SHARE_GATE_STARTED_AT_KEY = "zdeutsch.shareGate.startedAt.v1";
 const WHATSAPP_SHARE_GATE_UNLOCK_KEY = "zdeutsch.shareGate.unlocked.v2";
-const WHATSAPP_SHARE_GATE_THRESHOLD = 3;
+const WHATSAPP_SHARE_GATE_DELAY_HOURS = 24;
+const WHATSAPP_SHARE_GATE_DELAY_MS = WHATSAPP_SHARE_GATE_DELAY_HOURS * 60 * 60 * 1000;
 const WHATSAPP_SHARE_GATE_UNLOCK_THRESHOLD = 2;
 const WHATSAPP_SHARE_GATE_SHARE_TEXT = "موقع مجاني رائع للتحضير لامتحان TELC في اللغة الألمانية. ساعدني كثيرًا، أنصحك به: ";
 const TELEGRAM_SHARE_BASE_URL = "https://t.me/share/url";
@@ -635,19 +636,23 @@ function setStorageValue(key, value) {
   }
 }
 
-function getWhatsAppShareGateVisitCount() {
-  const raw = getStorageValue(WHATSAPP_SHARE_GATE_VISITS_KEY);
+function getWhatsAppShareGateStartedAt() {
+  const raw = getStorageValue(WHATSAPP_SHARE_GATE_STARTED_AT_KEY);
   const value = Number.parseInt(String(raw || ""), 10);
-  if (Number.isFinite(value) && value >= 0) {
+  if (Number.isFinite(value) && value > 0) {
     return value;
   }
   return 0;
 }
 
-function incrementWhatsAppShareGateVisitCount() {
-  const nextCount = getWhatsAppShareGateVisitCount() + 1;
-  setStorageValue(WHATSAPP_SHARE_GATE_VISITS_KEY, String(nextCount));
-  return nextCount;
+function ensureWhatsAppShareGateStartedAt() {
+  const existing = getWhatsAppShareGateStartedAt();
+  if (existing > 0) {
+    return existing;
+  }
+  const startedAt = Date.now();
+  setStorageValue(WHATSAPP_SHARE_GATE_STARTED_AT_KEY, String(startedAt));
+  return startedAt;
 }
 
 function isWhatsAppShareGateUnlocked() {
@@ -769,12 +774,12 @@ function getWhatsAppShareGateUnlockThreshold(status = shareGateRuntime.status) {
   return WHATSAPP_SHARE_GATE_UNLOCK_THRESHOLD;
 }
 
-function getWhatsAppShareGateVisitThreshold(status = shareGateRuntime.status) {
-  const candidate = Number(status?.gateVisitThreshold);
+function getWhatsAppShareGateDelayMs(status = shareGateRuntime.status) {
+  const candidate = Number(status?.gateDelayHours);
   if (Number.isFinite(candidate) && candidate >= 0) {
-    return candidate;
+    return candidate * 60 * 60 * 1000;
   }
-  return WHATSAPP_SHARE_GATE_THRESHOLD;
+  return WHATSAPP_SHARE_GATE_DELAY_MS;
 }
 
 function setWhatsAppShareGateStatusNote(message) {
@@ -1007,8 +1012,8 @@ async function setupWhatsAppShareGate() {
     return;
   }
 
-  const visitCount = incrementWhatsAppShareGateVisitCount();
-  if (visitCount > getWhatsAppShareGateVisitThreshold(status)) {
+  const startedAt = ensureWhatsAppShareGateStartedAt();
+  if ((Date.now() - startedAt) >= getWhatsAppShareGateDelayMs(status)) {
     openWhatsAppShareGate(status);
   }
 }
