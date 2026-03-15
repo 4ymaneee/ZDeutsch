@@ -1151,7 +1151,7 @@ window.addEventListener("pagehide", () => {
 });
 
 async function init() {
-  if (typeof setupCommunityWidgets === "function") {
+  if (typeof setupCommunityWidgets === "function" && window.__ZDeutschSharingEnabled !== false) {
     setupCommunityWidgets();
   }
   if (typeof loadConfig === "function") {

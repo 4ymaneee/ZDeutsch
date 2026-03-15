@@ -17,12 +17,17 @@ const DEFAULT_MODULE = {
   }
 };
 
+const DEFAULT_SHARING_CONFIG = {
+  enabled: true
+};
+
 const DEFAULT_CONFIG = {
   fontScale: 1,
   asideWidth: "40%",
   homepagePromo: {
     enabled: true
   },
+  sharing: DEFAULT_SHARING_CONFIG,
   ads: {
     top: {
       enabled: false,
@@ -43,6 +48,9 @@ const DEFAULT_CONFIG = {
   timer: DEFAULT_MODULE.timer,
   scoreConfig: DEFAULT_MODULE.scoreConfig,
   dataFile: DEFAULT_MODULE.dataFile
+};
+const DEFAULT_SHARING_CONFIG = {
+  enabled: true
 };
 
 const COMMUNITY_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/CwFPqDeRbmqL5Rtx02NOCP?mode=hq1tswi";
@@ -159,6 +167,13 @@ function normalizeHomepagePromoConfig(value) {
   };
 }
 
+function normalizeSharingConfig(value) {
+  const source = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  return {
+    enabled: typeof source.enabled === "boolean" ? source.enabled : Boolean(DEFAULT_SHARING_CONFIG.enabled)
+  };
+}
+
 function normalizeConfig(config) {
   const merged = { ...DEFAULT_CONFIG, ...(config || {}) };
   const entries = Array.isArray(config?.modules) && config.modules.length
@@ -169,6 +184,7 @@ function normalizeConfig(config) {
   const activeModule = modules.find((module) => module.name === defaultModuleName) || modules[0];
   return {
     ...merged,
+    sharing: normalizeSharingConfig(config?.sharing),
     homepagePromo: normalizeHomepagePromoConfig(config?.homepagePromo),
     ads: normalizeAdsConfig(config?.ads),
     modules,
@@ -1211,7 +1227,7 @@ function setupCommunityWidgets() {
   });
 }
 
-function initSharedSiteFeatures() {
+async function initSharedSiteFeatures() {
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("./sw.js").catch(() => {
@@ -1219,8 +1235,12 @@ function initSharedSiteFeatures() {
       });
     }, { once: true });
   }
-  void setupWhatsAppShareGate();
-  void setupSiteBanners();
+  const config = await loadConfig();
+  window.__ZDeutschSharingEnabled = config?.sharing?.enabled !== false;
+  if (config?.sharing?.enabled !== false) {
+    void setupWhatsAppShareGate();
+  }
+  void setupSiteBanners(config);
 }
 
 if (document.readyState === "loading") {

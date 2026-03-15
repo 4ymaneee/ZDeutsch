@@ -67,6 +67,10 @@ const state = {
   }
 };
 
+function sharingIsEnabled(config) {
+  return config?.sharing?.enabled !== false;
+}
+
 let partTransitionBusy = false;
 const DESKTOP_ASIDE_QUERY = "(min-width: 768px)";
 
@@ -1959,10 +1963,10 @@ syncAsideLayout({ open: false });
 syncAsideToggleHint();
 
 async function init() {
-  if (typeof setupCommunityWidgets === "function") {
+  state.config = await loadConfig();
+  if (sharingIsEnabled(state.config) && typeof setupCommunityWidgets === "function") {
     setupCommunityWidgets();
   }
-  state.config = await loadConfig();
   const storedScale = getStoredFontScale();
   const scale = storedScale ?? state.config.fontScale ?? DEFAULT_CONFIG.fontScale;
   applyFontScale(scale);

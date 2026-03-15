@@ -4,6 +4,9 @@
   "homepagePromo": {
     "enabled": true
   },
+  "sharing": {
+    "enabled": true
+  },
   "ads": {
     "top": {
       "enabled": false,

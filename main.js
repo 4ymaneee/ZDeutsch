@@ -41,6 +41,10 @@ const homeLoaderState = {
   intervalId: null
 };
 
+function sharingIsEnabled(config) {
+  return config?.sharing?.enabled !== false;
+}
+
 let deferredInstallPrompt = null;
 
 function getSectionFromHash() {
@@ -1925,10 +1929,6 @@ async function init() {
   setHomeLoaderStage("Preparing library...");
   setHomeLoaderProgress(4, { animate: false });
 
-  if (typeof setupCommunityWidgets === "function") {
-    setupCommunityWidgets();
-  }
-
   state.config = await runHomeLoaderStep(
     {
       label: "Loading settings...",
@@ -1936,8 +1936,12 @@ async function init() {
       completePercent: 20,
       completeLabel: "Settings ready"
     },
-    () => loadConfig()
+      () => loadConfig()
   );
+
+  if (sharingIsEnabled(state.config) && typeof setupCommunityWidgets === "function") {
+    setupCommunityWidgets();
+  }
 
   state.db = await runHomeLoaderStep(
     {
