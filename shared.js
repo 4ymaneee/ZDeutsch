@@ -47,6 +47,9 @@ const DEFAULT_CONFIG = {
 
 const COMMUNITY_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/CwFPqDeRbmqL5Rtx02NOCP?mode=hq1tswi";
 const COMMUNITY_WHATSAPP_COMPOSE_URL = "https://wa.me/?text=";
+const SHARE_GATE_API_ORIGIN = "https://zdeutsch.203.161.46.84.sslip.io";
+const SHARE_GATE_PUBLIC_APP_URL = "https://zadelkhair.github.io/ZDeutsch/";
+const SHARE_GATE_LOCALHOST_ORIGIN_PATTERN = /^https?:\/\/(?:(?:[a-z0-9-]+\.)*localhost|127\.0\.0\.1)(?::\d+)?$/i;
 const LESEN_PROGRESS_STORAGE_KEY = "zdeutsch.lesen.progress.v1";
 const BOTTOM_BANNER_DISMISS_KEY = "zdeutsch.ads.bottom.dismissed.v1";
 const WHATSAPP_SHARE_GATE_USER_ID_KEY = "zdeutsch.shareGate.userId.v1";
@@ -57,8 +60,8 @@ const WHATSAPP_SHARE_GATE_DELAY_MS = WHATSAPP_SHARE_GATE_DELAY_HOURS * 60 * 60 *
 const WHATSAPP_SHARE_GATE_UNLOCK_THRESHOLD = 2;
 const WHATSAPP_SHARE_GATE_SHARE_TEXT = "موقع مجاني رائع للتحضير لامتحان TELC في اللغة الألمانية. ساعدني كثيرًا، أنصحك به: ";
 const TELEGRAM_SHARE_BASE_URL = "https://t.me/share/url";
-const SHARE_GATE_STATUS_API_PATH = "/api/share/status";
-const SHARE_GATE_VISIT_API_PATH = "/api/share/visit";
+const SHARE_GATE_STATUS_API_URL = `${SHARE_GATE_API_ORIGIN}/api/share/status`;
+const SHARE_GATE_VISIT_API_URL = `${SHARE_GATE_API_ORIGIN}/api/share/visit`;
 const WHATSAPP_SHARE_GATE_POLL_INTERVAL_MS = 12000;
 const DEFAULT_BOTTOM_BANNER_INTERVAL_HOURS = 3;
 const LEGACY_PROMO_PATH_PREFIX = "assets/ads/banners/";
@@ -686,13 +689,30 @@ function getOrCreateShareGateUserId() {
 }
 
 function buildShareGatePagePath() {
-  return String(window.location.pathname || "/").trim() || "/";
+  const pathname = String(window.location.pathname || "/").trim() || "/";
+  if (pathname === "/site" || pathname === "/site/") {
+    return "/";
+  }
+  if (pathname.startsWith("/site/")) {
+    return pathname.slice("/site".length) || "/";
+  }
+  return pathname;
+}
+
+function buildShareGatePublicPageUrl() {
+  const currentUrl = new URL(window.location.href);
+  const targetUrl = SHARE_GATE_LOCALHOST_ORIGIN_PATTERN.test(currentUrl.origin)
+    ? new URL(currentUrl.href)
+    : new URL(SHARE_GATE_PUBLIC_APP_URL);
+  targetUrl.search = currentUrl.search;
+  targetUrl.hash = currentUrl.hash;
+  targetUrl.searchParams.delete("by");
+  return targetUrl;
 }
 
 function buildTrackedShareLink(userId = shareGateRuntime.userId || getOrCreateShareGateUserId()) {
   const trackedUserId = sanitizeShareGateUserId(userId);
-  const url = new URL(window.location.href);
-  url.searchParams.delete("by");
+  const url = buildShareGatePublicPageUrl();
   if (trackedUserId) {
     url.searchParams.set("by", trackedUserId);
   }
@@ -725,7 +745,7 @@ function consumeShareGateReferrerFromUrl() {
 async function requestShareGateJson(url, options = {}) {
   const response = await fetch(url, {
     method: options.method || "GET",
-    credentials: "same-origin",
+    credentials: "omit",
     headers: {
       ...(options.body ? { "Content-Type": "application/json" } : {}),
       ...(options.headers || {})
@@ -752,11 +772,11 @@ async function fetchWhatsAppShareGateStatus(userId) {
     userId,
     path: buildShareGatePagePath()
   });
-  return requestShareGateJson(`${SHARE_GATE_STATUS_API_PATH}?${params.toString()}`);
+  return requestShareGateJson(`${SHARE_GATE_STATUS_API_URL}?${params.toString()}`);
 }
 
 async function reportWhatsAppShareGateVisit(referrerUserId, visitorUserId) {
-  return requestShareGateJson(SHARE_GATE_VISIT_API_PATH, {
+  return requestShareGateJson(SHARE_GATE_VISIT_API_URL, {
     method: "POST",
     body: JSON.stringify({
       referrerUserId,
