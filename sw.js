@@ -1,5 +1,5 @@
-const STATIC_CACHE = "zdeutsch-static-v5";
-const RUNTIME_CACHE = "zdeutsch-runtime-v5";
+const STATIC_CACHE = "zdeutsch-static-v6";
+const RUNTIME_CACHE = "zdeutsch-runtime-v6";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -23,6 +23,23 @@ const APP_SHELL = [
   "./database/shreiben.json",
   "./database/horen-codes.json"
 ];
+const NETWORK_FIRST_ASSET_PATTERN = /\.(?:css|html|js|webmanifest)$/i;
+
+function cacheResponse(cacheName, request, response) {
+  if (!response || (!response.ok && response.type !== "opaque")) {
+    return response;
+  }
+  const responseClone = response.clone();
+  caches.open(cacheName).then((cache) => cache.put(request, responseClone));
+  return response;
+}
+
+function shouldUseNetworkFirst(request, url) {
+  if (request.mode === "navigate") {
+    return true;
+  }
+  return NETWORK_FIRST_ASSET_PATTERN.test(url.pathname || "");
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -55,14 +72,10 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (request.mode === "navigate") {
+  if (shouldUseNetworkFirst(request, url)) {
     event.respondWith(
       fetch(request)
-        .then((response) => {
-          const responseClone = response.clone();
-          caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, responseClone));
-          return response;
-        })
+        .then((response) => cacheResponse(RUNTIME_CACHE, request, response))
         .catch(async () => {
           return caches.match(request, { ignoreSearch: true }) || caches.match("./index.html");
         })
@@ -77,14 +90,7 @@ self.addEventListener("fetch", (event) => {
       }
 
       return fetch(request)
-        .then((response) => {
-          if (!response || (!response.ok && response.type !== "opaque")) {
-            return response;
-          }
-          const responseClone = response.clone();
-          caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, responseClone));
-          return response;
-        })
+        .then((response) => cacheResponse(RUNTIME_CACHE, request, response))
         .catch(() => caches.match(request, { ignoreSearch: true }).then((cachedResponse) => cachedResponse || caches.match("./index.html")));
     })
   );
