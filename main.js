@@ -45,6 +45,25 @@ function sharingIsEnabled(config) {
   return config?.sharing?.enabled !== false;
 }
 
+async function loadConfigSafe() {
+  if (typeof window.loadConfig === "function") {
+    return window.loadConfig();
+  }
+  const paths = ["database/config.json", "../database/config.json"];
+  for (const path of paths) {
+    try {
+      const response = await fetch(path);
+      if (response.ok) {
+        const config = await response.json();
+        return { ...DEFAULT_CONFIG, ...config };
+      }
+    } catch (error) {
+      // ignore and try next path
+    }
+  }
+  return { ...DEFAULT_CONFIG };
+}
+
 let deferredInstallPrompt = null;
 
 function getSectionFromHash() {
@@ -1936,7 +1955,7 @@ async function init() {
       completePercent: 20,
       completeLabel: "Settings ready"
     },
-      () => loadConfig()
+    () => loadConfigSafe()
   );
 
   if (sharingIsEnabled(state.config) && typeof setupCommunityWidgets === "function") {

@@ -26,7 +26,8 @@
     })(window, document, "clarity", "script", "vugci4h4o0");
   </script>
   <script>
-    tailwind.config = {
+    window.tailwind = window.tailwind || {};
+    window.tailwind.config = {
       safelist: [
         "bg-stone-50",
         "bg-stone-100",
@@ -88,10 +89,11 @@
             panel: "0 24px 60px rgba(15, 23, 42, 0.12)"
           }
         }
-      };
-    </script>
+      }
+    };
+  </script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="theme.css?v=20260314-1">
+    <link rel="stylesheet" href="theme.css?v=20260315-1">
   </head>
 
 <body class="theme-body font-body min-h-screen home-page">
@@ -282,8 +284,8 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://unpkg.com/lucide@0.471.0/dist/umd/lucide.min.js"></script>
-  <script src="shared.js?v=20260314-2"></script>
-  <script src="main.js?v=20260313-3"></script>
+  <script src="shared.js?v=20260315-2"></script>
+  <script src="main.js?v=20260315-2"></script>
 </body>
 
 </html>

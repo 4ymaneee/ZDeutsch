@@ -49,9 +49,6 @@ const DEFAULT_CONFIG = {
   scoreConfig: DEFAULT_MODULE.scoreConfig,
   dataFile: DEFAULT_MODULE.dataFile
 };
-const DEFAULT_SHARING_CONFIG = {
-  enabled: true
-};
 
 const COMMUNITY_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/CwFPqDeRbmqL5Rtx02NOCP?mode=hq1tswi";
 const COMMUNITY_WHATSAPP_COMPOSE_URL = "https://wa.me/?text=";
@@ -211,6 +208,8 @@ async function loadConfig() {
   }
   return normalizeConfig();
 }
+
+window.loadConfig = loadConfig;
 
 async function loadDatabase(config) {
   const resolvedConfig = config || DEFAULT_CONFIG;
