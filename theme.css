@@ -1826,6 +1826,8 @@ body.share-gate-open>*:not(#whatsapp-share-gate) {
     width: 100%;
     border-radius: 24px;
     padding: 24px 18px;
+    height: 100%;
+    overflow: scroll;
   }
 
   .whatsapp-share-gate__actions {
