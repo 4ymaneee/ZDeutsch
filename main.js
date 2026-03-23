@@ -41,23 +41,121 @@ const homeLoaderState = {
   intervalId: null
 };
 
+const MAIN_DEFAULT_CONFIG = (typeof DEFAULT_CONFIG === "object" && DEFAULT_CONFIG)
+  ? DEFAULT_CONFIG
+  : {
+      fontScale: 1,
+      asideWidth: "40%",
+      homepagePromo: { enabled: true },
+      ads: {
+        top: {
+          enabled: false,
+          desktopImage: "",
+          mobileImage: "",
+          clickUrl: ""
+        },
+        bottom: {
+          enabled: false,
+          desktopImage: "",
+          mobileImage: "",
+          clickUrl: "",
+          displayIntervalHours: 3
+        }
+      },
+      modules: [
+        {
+          name: "lesen",
+          dataFile: "lesen.json",
+          timer: {
+            enabled: true,
+            durationMinutes: 90
+          },
+          scoreConfig: {
+            passPercent: 60,
+            parts: {
+              "teil-1": { pointsPerQuestion: 5 },
+              "teil-2": { pointsPerQuestion: 5 },
+              "teil-3": { pointsPerQuestion: 2.5 },
+              "sprachbausteine-1": { pointsPerQuestion: 1.5 },
+              "sprachbausteine-2": { pointsPerQuestion: 1.5 }
+            }
+          }
+        }
+      ],
+      defaultModule: "lesen",
+      timer: {
+        enabled: true,
+        durationMinutes: 90
+      },
+      scoreConfig: {
+        passPercent: 60,
+        parts: {
+          "teil-1": { pointsPerQuestion: 5 },
+          "teil-2": { pointsPerQuestion: 5 },
+          "teil-3": { pointsPerQuestion: 2.5 },
+          "sprachbausteine-1": { pointsPerQuestion: 1.5 },
+          "sprachbausteine-2": { pointsPerQuestion: 1.5 }
+        }
+      },
+      dataFile: "lesen.json"
+    };
+
+const MAIN_SCRIPT_BASE_URL = (() => {
+  if (document.currentScript?.src) {
+    try {
+      return new URL(".", document.currentScript.src);
+    } catch (error) {
+      // fall through
+    }
+  }
+
+  const linkedScript = document.querySelector('script[src*="main.js"]');
+  if (linkedScript?.src) {
+    try {
+      return new URL(".", linkedScript.src);
+    } catch (error) {
+      // fall through
+    }
+  }
+
+  return new URL(".", window.location.href);
+})();
+
+function buildConfigFallbackPaths() {
+  const paths = [
+    new URL("database/config.json", MAIN_SCRIPT_BASE_URL).toString(),
+    "database/config.json",
+    "../database/config.json"
+  ];
+
+  const seen = new Set();
+  return paths.filter((path) => {
+    const key = String(path || "").trim();
+    if (!key || seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
+}
+
 async function loadConfigSafe() {
   if (typeof window.loadConfig === "function") {
     return window.loadConfig();
   }
-  const paths = ["database/config.json", "../database/config.json"];
+  const paths = buildConfigFallbackPaths();
   for (const path of paths) {
     try {
       const response = await fetch(path);
       if (response.ok) {
         const config = await response.json();
-        return { ...DEFAULT_CONFIG, ...config };
+        return { ...MAIN_DEFAULT_CONFIG, ...config };
       }
     } catch (error) {
       // ignore and try next path
     }
   }
-  return { ...DEFAULT_CONFIG };
+  return { ...MAIN_DEFAULT_CONFIG };
 }
 
 let deferredInstallPrompt = null;
@@ -322,7 +420,7 @@ function formatPassedExamsLabel(value) {
 function getThemeStatus(progressSummary) {
   const passMark = Number.isFinite(state.config?.scoreConfig?.passPercent)
     ? state.config.scoreConfig.passPercent
-    : DEFAULT_CONFIG.scoreConfig.passPercent;
+    : MAIN_DEFAULT_CONFIG.scoreConfig.passPercent;
   if (!progressSummary) {
     return {
       label: "New",
