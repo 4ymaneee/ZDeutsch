@@ -51,7 +51,44 @@ const LESEN_PROGRESS_STORAGE_KEY = "zdeutsch.lesen.progress.v1";
 const BOTTOM_BANNER_DISMISS_KEY = "zdeutsch.ads.bottom.dismissed.v1";
 const WHATSAPP_WELCOME_GATE_ACCEPTED_KEY = "zdeutsch.whatsappWelcomeGate.accepted.v1";
 const WHATSAPP_WELCOME_GATE_COUNTDOWN_SECONDS = 20;
-const WHATSAPP_WELCOME_GATE_FINAL_MESSAGE = "انضم للمجموعة وساهم في تحسين المحتوي";
+// Keep this file in sync with your uploaded portrait.
+const WHATSAPP_WELCOME_MAIN_AVATAR = "assets/admin.png";
+const WHATSAPP_WELCOME_MAIN_AUTHOR = "zadelkhair";
+const WHATSAPP_WELCOME_MAIN_ROLE = "Admin";
+const WHATSAPP_WELCOME_MAIN_MESSAGE = `السلام عليكم، هاد السيت قاديتو بالمجان للناس لي كايوجدو الامتحان ديال الألمانية telc . يعني ما عندي رباح فيه . قاديت هاد الغروب باش ايلا كان شي خطاء ولا شي مشكل تقني تبارطاجيوه هنا ونصلحوه كاملين .
+ايلا بان لك شي خطاء ، بارطاجيه مع الدراري هنا وغادي نصحوه.
+مئات ديال الناس كتستعمل الموقع يوميا . و نسبة كبيرة منهم خدات الشهادة و انا منهم.
+🔴🔴 التصحيح فالسيت ماشي قران منزل. ماكنصحكمش تحفضو الأجوبة . ديما جاوبو بالعقل . ونتأكدو من الأجوبة من مصادر مختلفة.
+شكرا`;
+const WHATSAPP_WELCOME_MAIN_REACTION_COUNT = "72";
+const WHATSAPP_WELCOME_REPLY_ONE = "ناضي طريقة الخدمة الأنسان يطبع الطييمات ونفس الوقت يخدم بال site ويقارن الأجوبة";
+const WHATSAPP_WELCOME_REPLY_TWO = "ويخدم بهم بجوج";
+const WHATSAPP_WELCOME_PROFILE_TAGLINE = "Moroccan IT engeneer";
+const WHATSAPP_WELCOME_CONTACT_URL = "https://wa.me/212680096104";
+const WHATSAPP_CONTENT = Object.freeze({
+  title: "مرحبا بك",
+  // subtitle: "اقرأ الرسائل ثم ابدأ التدريب",
+  bottomTitle: "مجتمع واتساب",
+  // bottomSubtitle: "نفس الرسائل، نفس الستايل، ونفس طريقة التواصل.",
+  avatar: WHATSAPP_WELCOME_MAIN_AVATAR,
+  author: WHATSAPP_WELCOME_MAIN_AUTHOR,
+  role: WHATSAPP_WELCOME_MAIN_ROLE,
+  message: WHATSAPP_WELCOME_MAIN_MESSAGE,
+  reactionCount: WHATSAPP_WELCOME_MAIN_REACTION_COUNT,
+  reactions: ["👍", "❤️"],
+  replies: [WHATSAPP_WELCOME_REPLY_ONE, WHATSAPP_WELCOME_REPLY_TWO],
+  composerPlaceholder: "اكتب رسالتك ثم أرسلها إلى مجموعة واتساب",
+  composerEmptyError: "اكتب الرسالة أولاً.",
+  joinLabel: "انضم إلى WhatsApp",
+  acceptCountdownLabel: (seconds) => `انتظر ${seconds} ثانية`,
+  acceptReadyLabel: "موافق، الدخول إلى الموقع",
+  countdownLabel: (seconds) => `يمكنك المتابعة بعد ${seconds} ثانية`,
+  countdownReadyLabel: "يمكنك الآن الدخول إلى الموقع.",
+  profileLabel: "عرض صورة المدير",
+  profileTagline: WHATSAPP_WELCOME_PROFILE_TAGLINE,
+  profileContactLabel: "Contact me on WhatsApp",
+  profileContactUrl: WHATSAPP_WELCOME_CONTACT_URL
+});
 const DEFAULT_BOTTOM_BANNER_INTERVAL_HOURS = 3;
 const LEGACY_PROMO_PATH_PREFIX = "assets/ads/banners/";
 const PUBLIC_PROMO_PATH_PREFIX = "assets/highlights/slots/";
@@ -648,6 +685,13 @@ function buildWhatsAppComposeUrl(message) {
   return `${COMMUNITY_WHATSAPP_COMPOSE_URL}${encodeURIComponent(message || "")}`;
 }
 
+function buildWhatsAppGroupSuggestionMessage(message) {
+  const trimmedMessage = String(message || "").trim();
+  return trimmedMessage
+    ? `${trimmedMessage}\n\nالمجموعة: ${COMMUNITY_WHATSAPP_GROUP_URL}`
+    : COMMUNITY_WHATSAPP_GROUP_URL;
+}
+
 function copyTextFallback(text) {
   const temp = document.createElement("textarea");
   temp.value = text;
@@ -685,6 +729,174 @@ function closeWhatsAppWelcomeGate() {
   document.body.classList.remove("whatsapp-welcome-open");
 }
 
+function createWhatsAppChatThread(content) {
+  const chat = createEl("div", "whatsapp-welcome-gate__chat");
+  const buildIncomingRow = (text) => {
+    const incomingRow = createEl("div", "whatsapp-welcome-gate__message-row is-incoming");
+    const incomingBubble = createEl("div", "whatsapp-welcome-gate__bubble is-received");
+    incomingBubble.append(createEl("p", "whatsapp-welcome-gate__bubble-text", text));
+    incomingRow.append(incomingBubble);
+    return incomingRow;
+  };
+
+  const outgoingRow = createEl("div", "whatsapp-welcome-gate__message-row is-outgoing");
+  const outgoingWrap = createEl("div", "whatsapp-welcome-gate__message-wrap");
+  const outgoingMeta = createEl("div", "whatsapp-welcome-gate__message-meta");
+  const outgoingAvatar = createEl("img", "whatsapp-welcome-gate__avatar");
+  outgoingAvatar.src = content.avatar;
+  outgoingAvatar.alt = content.author;
+  outgoingAvatar.loading = "lazy";
+  outgoingAvatar.decoding = "async";
+  outgoingAvatar.addEventListener("error", () => {
+    outgoingAvatar.classList.add("is-hidden");
+  }, { once: true });
+  outgoingAvatar.setAttribute("role", "button");
+  outgoingAvatar.setAttribute("tabindex", "0");
+  outgoingAvatar.setAttribute("aria-label", content.profileLabel);
+
+  const outgoingAuthor = createEl("span", "whatsapp-welcome-gate__author", content.author);
+  outgoingAuthor.setAttribute("role", "button");
+  outgoingAuthor.setAttribute("tabindex", "0");
+  outgoingAuthor.setAttribute("aria-label", content.profileLabel);
+
+  outgoingMeta.append(
+    outgoingAvatar,
+    outgoingAuthor,
+    createEl("span", "whatsapp-welcome-gate__admin-label", content.role)
+  );
+
+  const outgoingBubble = createEl("div", "whatsapp-welcome-gate__bubble is-outgoing");
+  outgoingBubble.append(createEl("p", "whatsapp-welcome-gate__bubble-text", content.message));
+
+  const outgoingReactions = createEl("div", "whatsapp-welcome-gate__reactions");
+  outgoingReactions.append(createEl("span", "whatsapp-welcome-gate__reactions-count", content.reactionCount));
+  content.reactions.forEach((emoji) => {
+    outgoingReactions.append(createEl("span", "whatsapp-welcome-gate__reactions-emoji", emoji));
+  });
+
+  outgoingWrap.append(outgoingMeta, outgoingReactions, outgoingBubble);
+  outgoingRow.append(outgoingWrap);
+  chat.append(outgoingRow);
+  content.replies.forEach((reply) => {
+    chat.append(buildIncomingRow(reply));
+  });
+
+  return {
+    chat,
+    profileTargets: [outgoingAvatar, outgoingAuthor]
+  };
+}
+
+function createWhatsAppProfileModal(content) {
+  const profileModal = createEl("div", "whatsapp-welcome-gate__profile-modal is-hidden");
+  profileModal.setAttribute("role", "dialog");
+  profileModal.setAttribute("aria-modal", "true");
+  profileModal.setAttribute("aria-label", "صورة المدير");
+  const profileModalBackdrop = createEl("button", "whatsapp-welcome-gate__profile-modal-backdrop");
+  profileModalBackdrop.type = "button";
+  profileModalBackdrop.setAttribute("aria-label", "إغلاق الصورة");
+  const profileModalCard = createEl("div", "whatsapp-welcome-gate__profile-modal-card");
+  const profileModalClose = createEl("button", "whatsapp-welcome-gate__profile-modal-close", "×");
+  profileModalClose.type = "button";
+  profileModalClose.setAttribute("aria-label", "إغلاق");
+  const profileModalImage = createEl("img", "whatsapp-welcome-gate__profile-modal-image");
+  profileModalImage.src = content.avatar;
+  profileModalImage.alt = content.author;
+  const profileModalFooter = createEl("div", "whatsapp-welcome-gate__profile-modal-footer");
+  const profileModalTagline = createEl("p", "whatsapp-welcome-gate__profile-modal-tagline", content.profileTagline);
+  const profileModalContact = createEl("a", "whatsapp-welcome-gate__profile-modal-contact", content.profileContactLabel);
+  profileModalContact.href = content.profileContactUrl;
+  profileModalContact.target = "_blank";
+  profileModalContact.rel = "noopener noreferrer";
+  profileModalFooter.append(profileModalTagline, profileModalContact);
+  profileModalCard.append(profileModalClose, profileModalImage, profileModalFooter);
+  profileModal.append(profileModalBackdrop, profileModalCard);
+
+  return {
+    profileModal,
+    openProfileModal() {
+      profileModal.classList.remove("is-hidden");
+    },
+    closeProfileModal() {
+      profileModal.classList.add("is-hidden");
+    },
+    profileModalBackdrop,
+    profileModalClose
+  };
+}
+
+function bindWhatsAppProfileModal(profileTargets, profileModalState) {
+  profileTargets.forEach((target) => {
+    target.addEventListener("click", profileModalState.openProfileModal);
+    target.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        profileModalState.openProfileModal();
+      }
+    });
+  });
+
+  profileModalState.profileModalBackdrop.addEventListener("click", profileModalState.closeProfileModal);
+  profileModalState.profileModalClose.addEventListener("click", profileModalState.closeProfileModal);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      profileModalState.closeProfileModal();
+    }
+  });
+}
+
+function createWhatsAppComposer(content) {
+  const composer = createEl("form", "whatsapp-welcome-gate__composer");
+  const composerInput = document.createElement("input");
+  composerInput.type = "text";
+  composerInput.className = "whatsapp-welcome-gate__composer-input";
+  composerInput.placeholder = content.composerPlaceholder;
+  composerInput.maxLength = 700;
+  composerInput.autocomplete = "off";
+  const composerSend = createEl("button", "whatsapp-welcome-gate__composer-send", "إرسال");
+  composerSend.type = "submit";
+  composer.append(composerInput, composerSend);
+  const composerStatus = createEl("p", "whatsapp-welcome-gate__composer-status", "");
+  return { composer, composerInput, composerStatus };
+}
+
+function bindWhatsAppComposerSubmit(composer, composerInput, composerStatus, content) {
+  composer.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const message = composerInput.value.trim();
+    if (!message) {
+      composerStatus.textContent = content.composerEmptyError;
+      composerInput.focus();
+      return;
+    }
+    const payload = buildWhatsAppGroupSuggestionMessage(message);
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(payload);
+      } catch (error) {
+        copyTextFallback(payload);
+      }
+    } else {
+      copyTextFallback(payload);
+    }
+    composerStatus.textContent = "";
+    window.location.assign(COMMUNITY_WHATSAPP_GROUP_URL);
+  });
+}
+
+function buildWhatsAppHeader(titleText, subtitleText, titleId) {
+  const header = createEl("div", "whatsapp-welcome-gate__header");
+  const title = createEl("h2", "whatsapp-welcome-gate__title", titleText);
+  if (titleId) {
+    title.id = titleId;
+  }
+  header.append(title);
+  if (subtitleText) {
+    header.append(createEl("p", "whatsapp-welcome-gate__subtitle", subtitleText));
+  }
+  return header;
+}
+
 function setupWhatsAppWelcomeGate() {
   if (hasAcceptedWhatsAppWelcomeGate()) {
     return;
@@ -702,22 +914,13 @@ function setupWhatsAppWelcomeGate() {
   overlay.setAttribute("aria-labelledby", "whatsapp-welcome-title");
 
   const panel = createEl("section", "whatsapp-welcome-gate__panel");
-  const header = createEl("div", "whatsapp-welcome-gate__header");
-  const title = createEl("h2", "whatsapp-welcome-gate__title", "رسالة ترحيب");
-  title.id = "whatsapp-welcome-title";
-  const subtitle = createEl("p", "whatsapp-welcome-gate__subtitle", "اقرأ الرسائل ثم ابدأ التدريب");
-  header.append(title, subtitle);
-
-  const chat = createEl("div", "whatsapp-welcome-gate__chat");
-  chat.append(
-    createEl("p", "whatsapp-welcome-gate__bubble is-received", "أهلاً بك في ZDeutsch 👋"),
-    createEl("p", "whatsapp-welcome-gate__bubble is-received", "انتظر 20 ثانية، ثم اضغط موافق للدخول إلى الموقع."),
-    createEl("p", "whatsapp-welcome-gate__bubble is-received", WHATSAPP_WELCOME_GATE_FINAL_MESSAGE)
-  );
-
+  const header = buildWhatsAppHeader(WHATSAPP_CONTENT.title, WHATSAPP_CONTENT.subtitle, "whatsapp-welcome-title");
+  const { chat, profileTargets } = createWhatsAppChatThread(WHATSAPP_CONTENT);
+  const { composer, composerInput, composerStatus } = createWhatsAppComposer(WHATSAPP_CONTENT);
   const countdownNote = createEl("p", "whatsapp-welcome-gate__countdown", "");
+
   const actions = createEl("div", "whatsapp-welcome-gate__actions");
-  const joinButton = createEl("a", "whatsapp-welcome-gate__button whatsapp-welcome-gate__button--join", "انضم إلى WhatsApp");
+  const joinButton = createEl("a", "whatsapp-welcome-gate__button whatsapp-welcome-gate__button--join", WHATSAPP_CONTENT.joinLabel);
   joinButton.href = COMMUNITY_WHATSAPP_GROUP_URL;
   joinButton.target = "_blank";
   joinButton.rel = "noopener noreferrer";
@@ -726,29 +929,29 @@ function setupWhatsAppWelcomeGate() {
   acceptButton.type = "button";
   acceptButton.disabled = true;
   actions.append(joinButton, acceptButton);
-  panel.append(header, chat, countdownNote, actions);
-  overlay.append(panel);
+
+  const profileModalState = createWhatsAppProfileModal(WHATSAPP_CONTENT);
+  panel.append(header, chat, composerStatus, composer, actions);
+  overlay.append(panel, profileModalState.profileModal);
   document.body.append(overlay);
 
   document.documentElement.classList.add("whatsapp-welcome-open");
   document.body.classList.add("whatsapp-welcome-open");
 
   let secondsLeft = WHATSAPP_WELCOME_GATE_COUNTDOWN_SECONDS;
-
   const renderCountdown = () => {
     if (secondsLeft > 0) {
-      countdownNote.textContent = `يمكنك المتابعة بعد ${secondsLeft} ثانية`;
-      acceptButton.textContent = `انتظر ${secondsLeft} ثانية`;
+      countdownNote.textContent = WHATSAPP_CONTENT.countdownLabel(secondsLeft);
+      acceptButton.textContent = WHATSAPP_CONTENT.acceptCountdownLabel(secondsLeft);
       acceptButton.disabled = true;
       return;
     }
-    countdownNote.textContent = "يمكنك الآن الدخول إلى الموقع.";
-    acceptButton.textContent = "موافق، الدخول إلى الموقع";
+    countdownNote.textContent = WHATSAPP_CONTENT.countdownReadyLabel;
+    acceptButton.textContent = WHATSAPP_CONTENT.acceptReadyLabel;
     acceptButton.disabled = false;
   };
 
   renderCountdown();
-
   const timerId = window.setInterval(() => {
     secondsLeft -= 1;
     if (secondsLeft <= 0) {
@@ -762,6 +965,43 @@ function setupWhatsAppWelcomeGate() {
     markWhatsAppWelcomeGateAccepted();
     closeWhatsAppWelcomeGate();
   });
+
+  bindWhatsAppProfileModal(profileTargets, profileModalState);
+  bindWhatsAppComposerSubmit(composer, composerInput, composerStatus, WHATSAPP_CONTENT);
+}
+
+function setupWhatsAppBottomSection() {
+  if (document.getElementById("whatsapp-bottom-section")) {
+    return;
+  }
+
+  const section = createEl("section", "whatsapp-bottom-section");
+  section.id = "whatsapp-bottom-section";
+  section.setAttribute("dir", "rtl");
+
+  const panel = createEl("section", "whatsapp-welcome-gate__panel");
+  const header = buildWhatsAppHeader(WHATSAPP_CONTENT.bottomTitle, WHATSAPP_CONTENT.bottomSubtitle);
+  const { chat, profileTargets } = createWhatsAppChatThread(WHATSAPP_CONTENT);
+  const { composer, composerInput, composerStatus } = createWhatsAppComposer(WHATSAPP_CONTENT);
+
+  const actions = createEl("div", "whatsapp-welcome-gate__actions");
+  const joinButton = createEl("a", "whatsapp-welcome-gate__button whatsapp-welcome-gate__button--join", WHATSAPP_CONTENT.joinLabel);
+  joinButton.href = COMMUNITY_WHATSAPP_GROUP_URL;
+  joinButton.target = "_blank";
+  joinButton.rel = "noopener noreferrer";
+  const contactButton = createEl("a", "whatsapp-welcome-gate__button whatsapp-welcome-gate__button--accept", WHATSAPP_CONTENT.profileContactLabel);
+  contactButton.href = WHATSAPP_CONTENT.profileContactUrl;
+  contactButton.target = "_blank";
+  contactButton.rel = "noopener noreferrer";
+  actions.append(joinButton, contactButton);
+
+  const profileModalState = createWhatsAppProfileModal(WHATSAPP_CONTENT);
+  panel.append(header, chat, composerStatus, composer, actions);
+  section.append(panel, profileModalState.profileModal);
+  document.body.append(section);
+
+  bindWhatsAppProfileModal(profileTargets, profileModalState);
+  bindWhatsAppComposerSubmit(composer, composerInput, composerStatus, WHATSAPP_CONTENT);
 }
 
 function setupCommunityWidgets() {
@@ -772,23 +1012,24 @@ function setupCommunityWidgets() {
   const promoTarget = document.getElementById("community-promo-target");
   if (promoTarget) {
     const promoCard = createEl("section", "community-promo");
+    promoCard.setAttribute("dir", "rtl");
     const content = createEl("div", "community-promo-content");
     const title = createEl(
       "h3",
       "community-promo-title",
-      "WhatsApp Community | مجتمع واتساب | WhatsApp Gemeinschaft"
+      "مجتمع واتساب الرسمي"
     );
     const line = createEl(
       "p",
       "community-promo-line",
-      "Suggest updates or new exam themes: EN | AR | DE"
+      "انضم للمجموعة للتحديثات السريعة، الدعم، وتصحيح أي خطأ تقني في الموقع."
     );
     const actions = createEl("div", "community-promo-actions");
-    const joinLink = createEl("a", "community-btn community-btn-primary", "Join WhatsApp");
+    const joinLink = createEl("a", "community-btn community-btn-primary", "انضم إلى واتساب");
     joinLink.href = COMMUNITY_WHATSAPP_GROUP_URL;
     joinLink.target = "_blank";
     joinLink.rel = "noopener noreferrer";
-    const suggestBtn = createEl("button", "community-btn community-btn-secondary community-open-btn", "Suggest a change");
+    const suggestBtn = createEl("button", "community-btn community-btn-secondary community-open-btn", "اقترح تعديلا");
     suggestBtn.type = "button";
     actions.append(joinLink, suggestBtn);
     content.append(title, line);
@@ -796,13 +1037,14 @@ function setupCommunityWidgets() {
     promoTarget.append(promoCard);
   }
 
-  const floatingButton = createEl("button", "community-floating-btn community-open-btn", "WhatsApp Suggestions");
+  const floatingButton = createEl("button", "community-floating-btn community-open-btn", "اقتراحات واتساب");
   floatingButton.type = "button";
   floatingButton.id = "community-floating-btn";
   document.body.append(floatingButton);
 
   const modal = createEl("div", "community-modal hidden");
   modal.id = "community-suggest-modal";
+  modal.setAttribute("dir", "rtl");
   modal.setAttribute("role", "dialog");
   modal.setAttribute("aria-modal", "true");
   modal.setAttribute("aria-labelledby", "community-modal-title");
@@ -818,24 +1060,24 @@ function setupCommunityWidgets() {
   const title = createEl(
     "h3",
     "community-modal-title",
-    "Suggest Modifications / New Themes"
+    "اقتراح تعديل أو موضوع جديد"
   );
   title.id = "community-modal-title";
   const textEn = createEl(
     "p",
     "community-modal-line",
-    "EN: Write your idea, copy it, then open the WhatsApp group and paste it."
+    "اكتب اقتراحك بوضوح، ثم انسخه وافتح مجموعة واتساب لإرساله."
   );
   const textAr = createEl(
     "p",
     "community-modal-line",
-    "AR: اكتب اقتراحك، انسخه، ثم افتح مجموعة واتساب وأرسله."
+    "كل الملاحظات مرحب بها: أخطاء تقنية، تعديلات، أو أفكار جديدة."
   );
   textAr.setAttribute("dir", "rtl");
   const textDe = createEl(
     "p",
     "community-modal-line",
-    "DE: Schreibe deinen Vorschlag, kopiere ihn und sende ihn in der WhatsApp-Gruppe."
+    "مهم: اشرح المشكلة أو الفكرة باختصار وبشكل مباشر."
   );
 
   const textarea = document.createElement("textarea");
@@ -848,10 +1090,10 @@ function setupCommunityWidgets() {
   status.id = "community-copy-status";
 
   const actionRow = createEl("div", "community-modal-actions");
-  const copyBtn = createEl("button", "community-btn community-btn-secondary", "Copy suggestion");
+  const copyBtn = createEl("button", "community-btn community-btn-secondary", "نسخ الاقتراح");
   copyBtn.type = "button";
   copyBtn.id = "community-copy-btn";
-  const openGroup = createEl("a", "community-btn community-btn-primary", "Open WhatsApp (Prefilled)");
+  const openGroup = createEl("a", "community-btn community-btn-primary", "فتح مجموعة واتساب");
   openGroup.href = buildWhatsAppComposeUrl("");
   openGroup.target = "_blank";
   openGroup.rel = "noopener noreferrer";
@@ -901,14 +1143,14 @@ function setupCommunityWidgets() {
     if (navigator.clipboard?.writeText) {
       try {
         await navigator.clipboard.writeText(message);
-        status.textContent = "Copied. Open WhatsApp and paste your suggestion.";
+        status.textContent = "تم النسخ. افتح واتساب والصق الاقتراح.";
         return;
       } catch (error) {
         // ignore and fallback
       }
     }
     copyTextFallback(message);
-    status.textContent = "Copied. Open WhatsApp and paste your suggestion.";
+    status.textContent = "تم النسخ. افتح واتساب والصق الاقتراح.";
   });
 
   openGroup.addEventListener("click", (event) => {
@@ -926,6 +1168,9 @@ function setupCommunityWidgets() {
 }
 
 async function initSharedSiteFeatures() {
+  setupWhatsAppWelcomeGate();
+  setupCommunityWidgets();
+  setupWhatsAppBottomSection();
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("./sw.js").catch(() => {
