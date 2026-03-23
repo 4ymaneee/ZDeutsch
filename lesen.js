@@ -67,9 +67,6 @@ const state = {
   }
 };
 
-function sharingIsEnabled(config) {
-  return config?.sharing?.enabled !== false;
-}
 
 let partTransitionBusy = false;
 const DESKTOP_ASIDE_QUERY = "(min-width: 768px)";
@@ -1964,9 +1961,6 @@ syncAsideToggleHint();
 
 async function init() {
   state.config = await loadConfig();
-  if (sharingIsEnabled(state.config) && typeof setupCommunityWidgets === "function") {
-    setupCommunityWidgets();
-  }
   const storedScale = getStoredFontScale();
   const scale = storedScale ?? state.config.fontScale ?? DEFAULT_CONFIG.fontScale;
   applyFontScale(scale);

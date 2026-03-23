@@ -41,10 +41,6 @@ const homeLoaderState = {
   intervalId: null
 };
 
-function sharingIsEnabled(config) {
-  return config?.sharing?.enabled !== false;
-}
-
 async function loadConfigSafe() {
   if (typeof window.loadConfig === "function") {
     return window.loadConfig();
@@ -1958,9 +1954,6 @@ async function init() {
     () => loadConfigSafe()
   );
 
-  if (sharingIsEnabled(state.config) && typeof setupCommunityWidgets === "function") {
-    setupCommunityWidgets();
-  }
 
   state.db = await runHomeLoaderStep(
     {

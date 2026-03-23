@@ -1,3 +1,5 @@
+return;
+
 const DEFAULT_MODULE = {
   name: "lesen",
   dataFile: "lesen.json",
@@ -17,17 +19,12 @@ const DEFAULT_MODULE = {
   }
 };
 
-const DEFAULT_SHARING_CONFIG = {
-  enabled: true
-};
-
 const DEFAULT_CONFIG = {
   fontScale: 1,
   asideWidth: "40%",
   homepagePromo: {
     enabled: true
   },
-  sharing: DEFAULT_SHARING_CONFIG,
   ads: {
     top: {
       enabled: false,
@@ -60,6 +57,8 @@ const BOTTOM_BANNER_DISMISS_KEY = "zdeutsch.ads.bottom.dismissed.v1";
 const WHATSAPP_SHARE_GATE_USER_ID_KEY = "zdeutsch.shareGate.userId.v1";
 const WHATSAPP_SHARE_GATE_STARTED_AT_KEY = "zdeutsch.shareGate.startedAt.v1";
 const WHATSAPP_SHARE_GATE_UNLOCK_KEY = "zdeutsch.shareGate.unlocked.v2";
+const CACHE_PURGE_VERSION = "20260316-1";
+const CACHE_PURGE_KEY = "zdeutsch.cachePurge.version";
 const WHATSAPP_SHARE_GATE_DELAY_HOURS = 24 * 7; // 7 days
 const WHATSAPP_SHARE_GATE_DELAY_MS = WHATSAPP_SHARE_GATE_DELAY_HOURS * 60 * 60 * 1000;
 const WHATSAPP_SHARE_GATE_UNLOCK_THRESHOLD = 2;
@@ -80,6 +79,52 @@ const shareGateRuntime = {
   pollTimerId: 0,
   closeTimerId: 0
 };
+
+function clearShareGateArtifacts() {
+  try {
+    window.localStorage.removeItem(WHATSAPP_SHARE_GATE_USER_ID_KEY);
+    window.localStorage.removeItem(WHATSAPP_SHARE_GATE_STARTED_AT_KEY);
+    window.localStorage.removeItem(WHATSAPP_SHARE_GATE_UNLOCK_KEY);
+  } catch (error) {
+    // ignore storage failures
+  }
+
+  const overlay = document.getElementById("whatsapp-share-gate");
+  if (overlay) {
+    overlay.remove();
+  }
+  document.documentElement.classList.remove("share-gate-open");
+  document.body.classList.remove("share-gate-open");
+}
+
+async function purgeClientCachesIfNeeded() {
+  let storedVersion = null;
+  try {
+    storedVersion = window.localStorage.getItem(CACHE_PURGE_KEY);
+  } catch (error) {
+    storedVersion = null;
+  }
+  if (storedVersion === CACHE_PURGE_VERSION) {
+    return;
+  }
+
+  clearShareGateArtifacts();
+
+  if ("caches" in window) {
+    try {
+      const keys = await caches.keys();
+      await Promise.all(keys.map((key) => caches.delete(key)));
+    } catch (error) {
+      // ignore cache failures
+    }
+  }
+
+  try {
+    window.localStorage.setItem(CACHE_PURGE_KEY, CACHE_PURGE_VERSION);
+  } catch (error) {
+    // ignore storage failures
+  }
+}
 
 function classNames(...items) {
   return items.filter(Boolean).join(" ");
@@ -164,13 +209,6 @@ function normalizeHomepagePromoConfig(value) {
   };
 }
 
-function normalizeSharingConfig(value) {
-  const source = value && typeof value === "object" && !Array.isArray(value) ? value : {};
-  return {
-    enabled: typeof source.enabled === "boolean" ? source.enabled : Boolean(DEFAULT_SHARING_CONFIG.enabled)
-  };
-}
-
 function normalizeConfig(config) {
   const merged = { ...DEFAULT_CONFIG, ...(config || {}) };
   const entries = Array.isArray(config?.modules) && config.modules.length
@@ -181,7 +219,6 @@ function normalizeConfig(config) {
   const activeModule = modules.find((module) => module.name === defaultModuleName) || modules[0];
   return {
     ...merged,
-    sharing: normalizeSharingConfig(config?.sharing),
     homepagePromo: normalizeHomepagePromoConfig(config?.homepagePromo),
     ads: normalizeAdsConfig(config?.ads),
     modules,
@@ -1227,6 +1264,7 @@ function setupCommunityWidgets() {
 }
 
 async function initSharedSiteFeatures() {
+  await purgeClientCachesIfNeeded();
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("./sw.js").catch(() => {
@@ -1235,10 +1273,6 @@ async function initSharedSiteFeatures() {
     }, { once: true });
   }
   const config = await loadConfig();
-  window.__ZDeutschSharingEnabled = config?.sharing?.enabled !== false;
-  if (config?.sharing?.enabled !== false) {
-    void setupWhatsAppShareGate();
-  }
   void setupSiteBanners(config);
 }
 

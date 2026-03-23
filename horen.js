@@ -707,9 +707,6 @@ if (returnBtn) {
 }
 
 async function init() {
-  if (typeof setupCommunityWidgets === "function" && window.__ZDeutschSharingEnabled !== false) {
-    setupCommunityWidgets();
-  }
   const response = await fetch("database/horen-codes.json");
   state.data = await response.json();
   const params = new URLSearchParams(window.location.search);
