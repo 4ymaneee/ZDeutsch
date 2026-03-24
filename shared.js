@@ -971,6 +971,11 @@ function setupWhatsAppWelcomeGate() {
 }
 
 function setupWhatsAppBottomSection() {
+  const currentPage = String(window.location.pathname || "").split("/").pop().toLowerCase();
+  if (currentPage === "horen.html" || currentPage === "shreiben.html") {
+    return;
+  }
+
   if (document.getElementById("whatsapp-bottom-section")) {
     return;
   }
@@ -1022,7 +1027,7 @@ function setupCommunityWidgets() {
     const line = createEl(
       "p",
       "community-promo-line",
-      "انضم للمجموعة للتحديثات السريعة، الدعم، وتصحيح أي خطأ تقني في الموقع."
+      "انضم للمجموعة للتحديثات السريعة، الدعم، وتصحيح الأخطاء."
     );
     const actions = createEl("div", "community-promo-actions");
     const joinLink = createEl("a", "community-btn community-btn-primary", "انضم إلى واتساب");
@@ -1031,7 +1036,7 @@ function setupCommunityWidgets() {
     joinLink.rel = "noopener noreferrer";
     const suggestBtn = createEl("button", "community-btn community-btn-secondary community-open-btn", "اقترح تعديلا");
     suggestBtn.type = "button";
-    actions.append(joinLink, suggestBtn);
+    actions.append(joinLink);
     content.append(title, line);
     promoCard.append(content, actions);
     promoTarget.append(promoCard);

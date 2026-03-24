@@ -377,6 +377,43 @@ body.home-loader-active {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
+.home-page .home-community-card-gold {
+  border-color: rgba(198, 147, 0, 0.42);
+  background:
+    radial-gradient(120% 120% at 0% 0%, rgba(255, 215, 110, 0.34) 0%, rgba(255, 215, 110, 0) 56%),
+    linear-gradient(145deg, rgba(255, 250, 231, 0.96) 0%, rgba(255, 243, 198, 0.9) 55%, rgba(255, 233, 157, 0.84) 100%);
+  box-shadow:
+    0 14px 28px rgba(179, 119, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+}
+
+.home-page .home-community-card-gold > div:first-child {
+  color: #8c5b00;
+}
+
+.home-page .home-community-card-gold h3 {
+  color: #6f4700;
+}
+
+.home-page .home-community-card-gold p {
+  color: #4a3a18;
+}
+
+.home-page .home-community-card-link {
+  border-color: #4a3a18;
+  background: #4a3a18;
+  color: #ffffff;
+  box-shadow: 0 8px 16px rgba(74, 58, 24, 0.24);
+}
+
+.home-page .home-community-card-link:visited,
+.home-page .home-community-card-link:hover,
+.home-page .home-community-card-link:focus-visible {
+  border-color: #4a3a18;
+  background: #4a3a18;
+  color: #ffffff;
+}
+
 .home-search-scope {
   font-size: 0.68rem;
 }
@@ -2432,5 +2469,275 @@ body.whatsapp-welcome-open {
   .whatsapp-welcome-gate__profile-modal-card {
     width: min(94vw, 420px);
     border-radius: 16px;
+  }
+}
+
+.correction-page .theme-card {
+  min-height: 128px;
+}
+
+.correction-page .home-header-inner {
+  max-width: 1180px;
+  min-height: 4.6rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.correction-page .home-header-brand {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.correction-page .home-header-copy {
+  min-width: 0;
+}
+
+.correction-page .home-header-eyebrow {
+  margin: 0 0 0.2rem;
+  font-size: 0.68rem;
+}
+
+.correction-page .home-header-title {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.correction-page .home-header-title h1 {
+  margin: 0;
+  color: #131a21;
+}
+
+.correction-page .correction-header-link {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.correction-page .home-view {
+  padding-top: 1.2rem;
+}
+
+.correction-page .theme-card-clickable {
+  cursor: pointer;
+}
+
+.correction-page .theme-card-clickable:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.26);
+  outline-offset: 2px;
+}
+
+.correction-page .correction-stats-btn {
+  align-self: flex-start;
+  margin-top: 0.15rem;
+}
+
+.correction-page .correction-stats-panel {
+  width: min(94vw, 680px);
+  max-height: min(86vh, 760px);
+  display: flex;
+  flex-direction: column;
+}
+
+.correction-page .correction-stats-body {
+  margin-top: 0.9rem;
+  overflow: auto;
+  padding-right: 0.2rem;
+}
+
+.correction-page .correction-stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.correction-page .correction-stats-item {
+  border: 1px solid var(--flag-stone-200);
+  border-radius: 14px;
+  background: #fafaf9;
+  padding: 0.7rem 0.8rem;
+}
+
+.correction-page .correction-stats-item-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #0f766e;
+}
+
+.correction-page .correction-stats-item-main {
+  margin-top: 0.3rem;
+  font-size: 0.86rem;
+  color: #131a21;
+}
+
+.correction-page .correction-stats-item-detail {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #4b5563;
+  line-height: 1.45;
+}
+
+.correction-page .correction-disabled-btn {
+  opacity: 0.52;
+  cursor: not-allowed;
+}
+
+.correction-page .correction-part-contributed {
+  border-color: #16a34a;
+  color: #166534;
+  background: rgba(22, 163, 74, 0.08);
+}
+
+.correction-page .correction-theme-contributed-badge {
+  align-self: flex-start;
+  border-radius: 999px;
+  border: 1px solid rgba(22, 163, 74, 0.45);
+  background: rgba(22, 163, 74, 0.1);
+  color: #166534;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.correction-page .correction-action-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.correction-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+}
+
+.correction-modal.hidden {
+  display: none;
+}
+
+.correction-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(3px);
+}
+
+.correction-modal-panel {
+  position: relative;
+  margin: clamp(2rem, 10vh, 6rem) auto;
+  width: min(92vw, 520px);
+  border-radius: 24px;
+  border: 1px solid var(--flag-stone-300);
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2);
+  padding: 1.25rem;
+}
+
+.correction-modal-title {
+  margin: 0;
+  color: #131a21;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.15rem;
+}
+
+.correction-modal-line {
+  margin: 0.7rem 0 0;
+  color: var(--flag-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.correction-email-input {
+  width: 100%;
+  margin-top: 0.85rem;
+  border-radius: 14px;
+  border: 1px solid var(--flag-stone-300);
+  background: #fff;
+  color: #131a21;
+  min-height: 2.85rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.correction-email-input:focus {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+}
+
+.correction-email-error {
+  margin: 0.55rem 0 0;
+  color: #dc2626;
+  font-size: 0.82rem;
+}
+
+.correction-email-error.hidden {
+  display: none;
+}
+
+.correction-modal-actions {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+@media (max-width: 767px) {
+  .correction-page .home-header-inner {
+    min-height: 4rem;
+    padding: 0.8rem 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .correction-page .home-header-brand {
+    gap: 0.75rem;
+  }
+
+  .correction-page #brand-logo {
+    height: 2.5rem !important;
+    width: auto;
+  }
+
+  .correction-page .home-header-eyebrow {
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+  }
+
+  .correction-page .home-header-title {
+    gap: 0.45rem;
+  }
+
+  .correction-page .home-header-title h1 {
+    font-size: 1rem;
+    max-width: 12rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .correction-page #level-pill {
+    font-size: 9px;
+  }
+
+  .correction-page .correction-header-link {
+    font-size: 9px !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  .correction-page .home-view {
+    padding-top: 0.85rem !important;
+    padding-right: 0.75rem !important;
+    padding-left: 0.75rem !important;
+    padding-bottom: 1rem !important;
   }
 }

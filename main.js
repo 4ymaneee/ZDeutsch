@@ -486,8 +486,8 @@ function makeLucideIcon(name, className) {
   return icon;
 }
 
-function makeDownloadIcon() {
-  return makeLucideIcon("download", "h-4 w-4");
+function makeShareIcon() {
+  return makeLucideIcon("share-2", "h-4 w-4");
 }
 
 async function loadParts() {
@@ -1602,6 +1602,80 @@ function buildLesenUrl(themeKey, versionKey) {
   return `lesen.html${query ? `?${query}` : ""}`;
 }
 
+function buildThemeShareUrl(themeKey, themeEntry) {
+  if (!themeKey || !themeEntry) {
+    return window.location.href;
+  }
+  const versionKeys = getVersionKeys(themeEntry);
+  const defaultVersion = themeEntry.defaultVersion || versionKeys[0] || "default";
+  const relativeUrl = buildLesenUrl(themeKey, defaultVersion);
+  return new URL(relativeUrl, window.location.href).toString();
+}
+
+async function copyTextToClipboard(text) {
+  const value = String(text || "");
+  if (!value) {
+    return false;
+  }
+  if (window.navigator.clipboard && typeof window.navigator.clipboard.writeText === "function") {
+    try {
+      await window.navigator.clipboard.writeText(value);
+      return true;
+    } catch (error) {
+      // try legacy fallback
+    }
+  }
+
+  try {
+    const textarea = document.createElement("textarea");
+    textarea.value = value;
+    textarea.setAttribute("readonly", "true");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    textarea.style.pointerEvents = "none";
+    document.body.append(textarea);
+    textarea.focus();
+    textarea.select();
+    const copied = Boolean(document.execCommand("copy"));
+    textarea.remove();
+    return copied;
+  } catch (error) {
+    return false;
+  }
+}
+
+async function shareThemePage(themeKey, themeEntry) {
+  if (!themeKey || !themeEntry) {
+    return;
+  }
+  const shareUrl = buildThemeShareUrl(themeKey, themeEntry);
+  const title = themeEntry.title || themeKey;
+  const level = String(state.level || "").toUpperCase();
+  const shareData = {
+    title: `ZDeutsch · ${title}`,
+    text: level ? `${title} (${level})` : title,
+    url: shareUrl
+  };
+
+  if (window.navigator.share && typeof window.navigator.share === "function") {
+    try {
+      await window.navigator.share(shareData);
+      return;
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        return;
+      }
+    }
+  }
+
+  const copied = await copyTextToClipboard(shareUrl);
+  if (copied) {
+    window.alert("Theme link copied. Share it with your community.");
+    return;
+  }
+  window.prompt("Copy and share this theme link:", shareUrl);
+}
+
 function selectThemeVersion(themeKey, versionKey) {
   closeVersionModal();
   window.location.href = buildLesenUrl(themeKey, versionKey);
@@ -1816,18 +1890,19 @@ function renderThemeCards() {
       "theme-card-level",
       (state.level || "").toUpperCase()
     );
-    const downloadBtn = createEl(
+    const shareBtn = createEl(
       "button",
       "theme-card-download"
     );
-    downloadBtn.type = "button";
-    downloadBtn.title = "Download PDF";
-    downloadBtn.append(makeDownloadIcon());
-    downloadBtn.addEventListener("click", (event) => {
+    shareBtn.type = "button";
+    shareBtn.title = "Share theme";
+    shareBtn.setAttribute("aria-label", "Share theme");
+    shareBtn.append(makeShareIcon());
+    shareBtn.addEventListener("click", async (event) => {
       event.stopPropagation();
-      downloadThemePdf(themeKey, themeEntry);
+      await shareThemePage(themeKey, themeEntry);
     });
-    actions.append(levelBadge, downloadBtn);
+    actions.append(levelBadge, shareBtn);
     header.append(titleWrap, actions);
 
     const progressSummary = getThemeProgressSummary(levelKey, themeKey, versionKeys);

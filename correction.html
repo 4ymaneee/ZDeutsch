@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffcc00">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ZDeutsch">
+    <title>ZDeutsch | Community Corrections</title>
+    <link rel="manifest" href="manifest.webmanifest?v=20260313-1">
+    <link rel="apple-touch-icon" href="pwa/apple-touch-icon.png?v=20260313-1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Newsreader:wght@400;500;600&display=swap">
+    <script type="text/javascript">
+      (function(c, l, a, r, i, t, y) {
+        c[a] = c[a] || function() {
+          (c[a].q = c[a].q || []).push(arguments);
+        };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
+      })(window, document, "clarity", "script", "vugci4h4o0");
+    </script>
+    <script>
+      window.tailwind = window.tailwind || {};
+      window.tailwind.config = {
+        safelist: [
+          "bg-stone-50",
+          "bg-stone-100",
+          "bg-stone-200",
+          "bg-azure",
+          "bg-white",
+          "bg-white/80",
+          "bg-white/90",
+          "bg-azure/10",
+          "bg-mint/10",
+          "bg-mint/20",
+          "bg-rose/10",
+          "bg-rose/15",
+          "border-stone-200",
+          "border-stone-300",
+          "border-azure/30",
+          "border-azure/40",
+          "border-azure/50",
+          "border-azure/60",
+          "border-mint/30",
+          "border-mint/40",
+          "border-mint/50",
+          "border-mint/60",
+          "border-rose/30",
+          "border-rose/40",
+          "border-rose/50",
+          "border-black/20",
+          "text-azure",
+          "text-mint",
+          "text-rose",
+          "text-white",
+          "ring-2",
+          "ring-azure/20",
+          "ring-azure/30",
+          "shadow-sm",
+          "shadow-panel",
+          "shadow-lg",
+          "hover:border-stone-300",
+          "hover:-translate-y-0.5"
+        ],
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ["Space Grotesk", "sans-serif"],
+              body: ["Newsreader", "serif"]
+            },
+            colors: {
+              ink: "#1f2933",
+              mist: "#f8f5f0",
+              shell: "#ffffff",
+              haze: "#f2f3f5",
+              slate: "#5c6672",
+              azure: "#0f766e",
+              mint: "#15803d",
+              amber: "#b45309",
+              rose: "#dc2626"
+            },
+            boxShadow: {
+              panel: "0 24px 60px rgba(15, 23, 42, 0.12)"
+            }
+          }
+        }
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="theme.css?v=20260324-6">
+  </head>
+  <body class="theme-body font-body min-h-screen correction-page">
+    <div class="fixed inset-0">
+      <div class="absolute inset-0 flag-glow-top"></div>
+      <div class="absolute inset-0 flag-glow-bottom"></div>
+      <div class="absolute inset-0 grid-overlay"></div>
+    </div>
+
+    <div class="relative min-h-screen">
+      <header class="home-header sticky top-0 z-40 border-b border-black/10 bg-white/90 backdrop-blur-md shadow-sm">
+        <div class="home-header-inner w-full px-6">
+          <div class="home-header-brand">
+            <img id="brand-logo" src="logo.svg?v=20260312-1" alt="ZDeutsch" class="h-16 w-auto">
+            <div class="home-header-copy">
+              <p class="home-header-eyebrow font-display uppercase tracking-[0.24em] text-slate">Zadelkhair Deutsch</p>
+              <div class="home-header-title">
+                <h1 class="font-display text-base">Community Corrections</h1>
+                <span id="level-pill" class="rounded-full border border-azure/40 bg-azure/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] text-azure font-display">B1</span>
+              </div>
+            </div>
+          </div>
+          <a href="index.html" class="correction-header-link rounded-full border border-stone-300 bg-white/90 px-4 py-2 text-[10px] font-display uppercase tracking-[0.2em] text-slate shadow-sm">
+            Back to Library
+          </a>
+        </div>
+      </header>
+
+      <main class="home-view pb-16 px-6 relative">
+        <div class="w-full">
+          <div class="home-shell rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-8">
+            <div class="space-y-2" style="direction: rtl;">
+              <h2 class="text-2xl font-display text-ink">أرسل اقتراح تصحيح</h2>
+              <p class="text-sm text-slate">
+ابدأ باختيار Level، ثم ابحث عن Theme وحدد Part، وبعدها افتح الاستمارة المناسبة وقم بتعبئتها بالإجابات الصحيحة.                 
+              </p>
+            </div>
+
+            <div class="home-sections mt-8 space-y-6">
+              <div class="home-control-card">
+                <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Levels</div>
+                <div id="level-list" class="mt-3 flex flex-wrap gap-3"></div>
+              </div>
+
+              <div class="home-control-card">
+                <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Parts</div>
+                <div id="module-list" class="mt-3 flex flex-wrap gap-3"></div>
+                <p class="mt-2 text-xs text-slate">Only <strong>Lesen</strong> is available for now.</p>
+              </div>
+
+              <div class="home-control-card home-search-card">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Search</div>
+                  <div id="theme-search-scope" class="home-search-scope font-display uppercase tracking-[0.18em] text-slate"></div>
+                </div>
+                <div class="mt-3">
+                  <input id="theme-search" type="search" placeholder="Search Lesen themes..."
+                    class="home-search-input w-full rounded-2xl border border-stone-300 bg-white/80 px-4 py-2 text-sm text-ink shadow-sm focus:border-azure/40 focus:outline-none">
+                </div>
+              </div>
+
+              <div class="home-control-card">
+                <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Exam Part</div>
+                <div id="exam-part-list" class="mt-3 flex flex-wrap gap-3"></div>
+              </div>
+
+              <div class="home-control-card">
+                <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Contribution Email</div>
+                <div id="email-state" class="mt-3 text-sm text-slate">No email saved yet.</div>
+                <div class="mt-3">
+                  <button id="change-email-btn" type="button"
+                    class="rounded-full border border-stone-300 bg-white px-4 py-2 text-[10px] font-display uppercase tracking-[0.2em] text-slate shadow-sm">
+                    Set / Change Email
+                  </button>
+                </div>
+                <p class="mt-2 text-xs text-slate">
+                  Use the same email as your Google account in Forms to track your contributions.
+                </p>
+              </div>
+
+              <div class="home-themes-block">
+                <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Themes</div>
+                <div id="theme-grid" class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+              </div>
+
+              <div class="home-control-card correction-action-card">
+                <div class="text-xs uppercase tracking-[0.2em] text-slate font-display">Ready</div>
+                <div id="selection-summary" class="mt-3 text-sm text-slate">
+                  Select level, theme and part.
+                </div>
+                <div class="mt-4">
+                  <button id="open-form-btn" type="button"
+                    class="rounded-full bg-azure px-5 py-2 text-xs font-display uppercase tracking-[0.2em] text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                    Open Correction Form
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div id="email-modal" class="correction-modal hidden" role="dialog" aria-modal="true" aria-labelledby="email-modal-title">
+      <div class="correction-modal-backdrop" data-email-modal-close="true"></div>
+      <div class="correction-modal-panel">
+        <h3 id="email-modal-title" class="correction-modal-title">Set your email before contributing</h3>
+        <p class="correction-modal-line">
+          Use the same email as Google Forms account so contributed parts can be marked.
+        </p>
+        <input id="email-input" type="email" autocomplete="email" placeholder="you@example.com" class="correction-email-input">
+        <p id="email-error" class="correction-email-error hidden"></p>
+        <div class="correction-modal-actions">
+          <button id="email-cancel-btn" type="button" class="community-btn community-btn-secondary" data-email-modal-close="true">Cancel</button>
+          <button id="email-save-btn" type="button" class="community-btn community-btn-primary">Save & Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="stats-modal" class="correction-modal hidden" role="dialog" aria-modal="true" aria-labelledby="stats-modal-title">
+      <div class="correction-modal-backdrop" data-stats-modal-close="true"></div>
+      <div class="correction-modal-panel correction-stats-panel">
+        <h3 id="stats-modal-title" class="correction-modal-title">Community Stats</h3>
+        <p id="stats-modal-meta" class="correction-modal-line"></p>
+        <div id="stats-modal-body" class="correction-stats-body"></div>
+        <div class="correction-modal-actions">
+          <button id="stats-modal-close-btn" type="button" class="community-btn community-btn-secondary">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="correction.js?v=20260324-19"></script>
+  </body>
+</html>

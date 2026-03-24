@@ -1,8 +1,9 @@
-const STATIC_CACHE = "zdeutsch-static-v8";
-const RUNTIME_CACHE = "zdeutsch-runtime-v8";
+const STATIC_CACHE = "zdeutsch-static-v20";
+const RUNTIME_CACHE = "zdeutsch-runtime-v20";
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./correction.html",
   "./lesen.html",
   "./horen.html",
   "./shreiben.html",
@@ -10,6 +11,7 @@ const APP_SHELL = [
   "./horen.css",
   "./shared.js",
   "./main.js",
+  "./correction.js",
   "./lesen.js",
   "./horen.js",
   "./shreiben.js",
