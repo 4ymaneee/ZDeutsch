@@ -51,32 +51,52 @@ const LESEN_PROGRESS_STORAGE_KEY = "zdeutsch.lesen.progress.v1";
 const BOTTOM_BANNER_DISMISS_KEY = "zdeutsch.ads.bottom.dismissed.v1";
 const WHATSAPP_WELCOME_GATE_ACCEPTED_KEY = "zdeutsch.whatsappWelcomeGate.accepted.v1";
 const WHATSAPP_WELCOME_GATE_COUNTDOWN_SECONDS = 20;
+const WHATSAPP_WELCOME_MESSAGES_FILE = "whatsapp-welcome-messages.json";
 // Keep this file in sync with your uploaded portrait.
 const WHATSAPP_WELCOME_MAIN_AVATAR = "assets/admin.png";
 const WHATSAPP_WELCOME_MAIN_AUTHOR = "zadelkhair";
 const WHATSAPP_WELCOME_MAIN_ROLE = "Admin";
-const WHATSAPP_WELCOME_MAIN_MESSAGE = `السلام عليكم، هاد السيت قاديتو بالمجان للناس لي كايوجدو الامتحان ديال الألمانية telc . يعني ما عندي رباح فيه . قاديت هاد الغروب باش ايلا كان شي خطاء ولا شي مشكل تقني تبارطاجيوه هنا ونصلحوه كاملين .
-ايلا بان لك شي خطاء ، بارطاجيه مع الدراري هنا وغادي نصحوه.
-مئات ديال الناس كتستعمل الموقع يوميا . و نسبة كبيرة منهم خدات الشهادة و انا منهم.
-🔴🔴 التصحيح فالسيت ماشي قران منزل. ماكنصحكمش تحفضو الأجوبة . ديما جاوبو بالعقل . ونتأكدو من الأجوبة من مصادر مختلفة.
-شكرا`;
-const WHATSAPP_WELCOME_MAIN_REACTION_COUNT = "72";
-const WHATSAPP_WELCOME_REPLY_ONE = "ناضي طريقة الخدمة الأنسان يطبع الطييمات ونفس الوقت يخدم بال site ويقارن الأجوبة";
-const WHATSAPP_WELCOME_REPLY_TWO = "ويخدم بهم بجوج";
 const WHATSAPP_WELCOME_PROFILE_TAGLINE = "Moroccan IT engeneer";
 const WHATSAPP_WELCOME_CONTACT_URL = "https://wa.me/212680096104";
-const WHATSAPP_CONTENT = Object.freeze({
+const DEFAULT_WHATSAPP_WELCOME_MESSAGES = Object.freeze([
+  {
+    userName: WHATSAPP_WELCOME_MAIN_AUTHOR,
+    imageType: "outgoing",
+    direction: "rtl",
+    messageContent: "مرحبا بك في مجتمع ZDeutsch على واتساب. شارك أي ملاحظة أو تصحيح.",
+    avatar: WHATSAPP_WELCOME_MAIN_AVATAR,
+    role: WHATSAPP_WELCOME_MAIN_ROLE,
+    reactionCount: "72",
+    reactions: ["👍", "❤️"]
+  },
+  {
+    userName: "Member",
+    imageType: "incoming",
+    direction: "rtl",
+    messageContent: "شكرا على المجهود 🙏"
+  }
+]);
+const DEFAULT_WHATSAPP_OUTGOING_MESSAGE = DEFAULT_WHATSAPP_WELCOME_MESSAGES.find((entry) => entry.imageType === "outgoing")
+  || DEFAULT_WHATSAPP_WELCOME_MESSAGES[0];
+const DEFAULT_WHATSAPP_INCOMING_REPLIES = DEFAULT_WHATSAPP_WELCOME_MESSAGES
+  .filter((entry) => entry.imageType !== "outgoing")
+  .map((entry) => entry.messageContent)
+  .filter(Boolean);
+const WHATSAPP_CONTENT = {
   title: "مرحبا بك",
   // subtitle: "اقرأ الرسائل ثم ابدأ التدريب",
   bottomTitle: "مجتمع واتساب",
   // bottomSubtitle: "نفس الرسائل، نفس الستايل، ونفس طريقة التواصل.",
-  avatar: WHATSAPP_WELCOME_MAIN_AVATAR,
-  author: WHATSAPP_WELCOME_MAIN_AUTHOR,
-  role: WHATSAPP_WELCOME_MAIN_ROLE,
-  message: WHATSAPP_WELCOME_MAIN_MESSAGE,
-  reactionCount: WHATSAPP_WELCOME_MAIN_REACTION_COUNT,
-  reactions: ["👍", "❤️"],
-  replies: [WHATSAPP_WELCOME_REPLY_ONE, WHATSAPP_WELCOME_REPLY_TWO],
+  avatar: DEFAULT_WHATSAPP_OUTGOING_MESSAGE?.avatar || WHATSAPP_WELCOME_MAIN_AVATAR,
+  author: DEFAULT_WHATSAPP_OUTGOING_MESSAGE?.userName || WHATSAPP_WELCOME_MAIN_AUTHOR,
+  role: DEFAULT_WHATSAPP_OUTGOING_MESSAGE?.role || WHATSAPP_WELCOME_MAIN_ROLE,
+  message: DEFAULT_WHATSAPP_OUTGOING_MESSAGE?.messageContent || "",
+  reactionCount: DEFAULT_WHATSAPP_OUTGOING_MESSAGE?.reactionCount || "",
+  reactions: Array.isArray(DEFAULT_WHATSAPP_OUTGOING_MESSAGE?.reactions)
+    ? [...DEFAULT_WHATSAPP_OUTGOING_MESSAGE.reactions]
+    : [],
+  replies: DEFAULT_WHATSAPP_INCOMING_REPLIES,
+  messages: DEFAULT_WHATSAPP_WELCOME_MESSAGES.map((entry) => ({ ...entry })),
   composerPlaceholder: "اكتب رسالتك ثم أرسلها إلى مجموعة واتساب",
   composerEmptyError: "اكتب الرسالة أولاً.",
   joinLabel: "انضم إلى WhatsApp",
@@ -88,7 +108,7 @@ const WHATSAPP_CONTENT = Object.freeze({
   profileTagline: WHATSAPP_WELCOME_PROFILE_TAGLINE,
   profileContactLabel: "Contact me on WhatsApp",
   profileContactUrl: WHATSAPP_WELCOME_CONTACT_URL
-});
+};
 const DEFAULT_BOTTOM_BANNER_INTERVAL_HOURS = 3;
 const LEGACY_PROMO_PATH_PREFIX = "assets/ads/banners/";
 const PUBLIC_PROMO_PATH_PREFIX = "assets/highlights/slots/";
@@ -135,6 +155,130 @@ function buildDatabaseCandidatePaths(fileName) {
     seen.add(key);
     return true;
   });
+}
+
+function normalizeWhatsAppMessageType(value) {
+  const raw = normalize(value);
+  if (raw === "outgoing" || raw === "admin") {
+    return "outgoing";
+  }
+  return "incoming";
+}
+
+function normalizeWhatsAppMessageDirection(value) {
+  const raw = normalize(value);
+  if (raw === "rtl" || raw === "ltr") {
+    return raw;
+  }
+  return "auto";
+}
+
+function sanitizeWhatsAppMessageEntry(entry, fallbackOutgoing) {
+  if (!entry || typeof entry !== "object") {
+    return null;
+  }
+  const messageContent = String(entry.messageContent || entry.message || "").trim();
+  if (!messageContent) {
+    return null;
+  }
+  const imageType = normalizeWhatsAppMessageType(entry.imageType || entry.type);
+  const direction = normalizeWhatsAppMessageDirection(entry.direction || entry.dir);
+  const userName = String(
+    entry.userName
+    || entry.author
+    || (imageType === "outgoing" ? fallbackOutgoing?.userName : "Member")
+    || ""
+  ).trim();
+  const avatar = String(entry.avatar || fallbackOutgoing?.avatar || WHATSAPP_WELCOME_MAIN_AVATAR).trim();
+  const role = String(entry.role || fallbackOutgoing?.role || WHATSAPP_WELCOME_MAIN_ROLE).trim();
+  const reactionCount = String(entry.reactionCount || "").trim();
+  const reactions = Array.isArray(entry.reactions)
+    ? entry.reactions.map((item) => String(item || "").trim()).filter(Boolean)
+    : [];
+
+  return {
+    userName,
+    imageType,
+    direction,
+    messageContent,
+    avatar,
+    role,
+    reactionCount,
+    reactions
+  };
+}
+
+function getDefaultWhatsAppWelcomeMessages() {
+  return DEFAULT_WHATSAPP_WELCOME_MESSAGES.map((entry) => ({
+    ...entry,
+    reactions: Array.isArray(entry.reactions) ? [...entry.reactions] : []
+  }));
+}
+
+function extractWhatsAppMessagesFromPayload(payload) {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+  if (payload && typeof payload === "object" && Array.isArray(payload.messages)) {
+    return payload.messages;
+  }
+  return [];
+}
+
+function getWhatsAppChatMessages(content) {
+  const fallbackDefaults = getDefaultWhatsAppWelcomeMessages();
+  const fallbackOutgoing = fallbackDefaults.find((entry) => entry.imageType === "outgoing") || fallbackDefaults[0];
+  const fromContent = Array.isArray(content?.messages)
+    ? content.messages
+    : [
+      {
+        userName: content?.author,
+        imageType: "outgoing",
+        messageContent: content?.message,
+        avatar: content?.avatar,
+        role: content?.role,
+        reactionCount: content?.reactionCount,
+        reactions: content?.reactions
+      },
+      ...((content?.replies || []).map((replyText) => ({
+        userName: "Member",
+        imageType: "incoming",
+        messageContent: replyText
+      })))
+    ];
+
+  const sanitized = fromContent
+    .map((entry) => sanitizeWhatsAppMessageEntry(entry, fallbackOutgoing))
+    .filter(Boolean);
+
+  return sanitized.length ? sanitized : fallbackDefaults;
+}
+
+async function loadWhatsAppWelcomeMessages() {
+  const paths = buildDatabaseCandidatePaths(WHATSAPP_WELCOME_MESSAGES_FILE);
+  const fallbackDefaults = getDefaultWhatsAppWelcomeMessages();
+  const fallbackOutgoing = fallbackDefaults.find((entry) => entry.imageType === "outgoing") || fallbackDefaults[0];
+
+  for (const path of paths) {
+    try {
+      const response = await fetch(path, { cache: "no-store" });
+      if (!response.ok) {
+        continue;
+      }
+      const payload = await response.json();
+      const rawMessages = extractWhatsAppMessagesFromPayload(payload);
+      const messages = rawMessages
+        .map((entry) => sanitizeWhatsAppMessageEntry(entry, fallbackOutgoing))
+        .filter(Boolean);
+      if (messages.length) {
+        return messages;
+      }
+    } catch (error) {
+      // Ignore malformed JSON/path errors and try next candidate.
+    }
+  }
+
+  return fallbackDefaults;
 }
 
 function classNames(...items) {
@@ -731,63 +875,81 @@ function closeWhatsAppWelcomeGate() {
 
 function createWhatsAppChatThread(content) {
   const chat = createEl("div", "whatsapp-welcome-gate__chat");
-  const buildIncomingRow = (text) => {
+  const buildIncomingRow = (text, direction = "auto") => {
     const incomingRow = createEl("div", "whatsapp-welcome-gate__message-row is-incoming");
     const incomingBubble = createEl("div", "whatsapp-welcome-gate__bubble is-received");
+    incomingBubble.setAttribute("dir", direction);
     incomingBubble.append(createEl("p", "whatsapp-welcome-gate__bubble-text", text));
     incomingRow.append(incomingBubble);
     return incomingRow;
   };
+  const profileTargets = [];
+  const messages = getWhatsAppChatMessages(content);
 
-  const outgoingRow = createEl("div", "whatsapp-welcome-gate__message-row is-outgoing");
-  const outgoingWrap = createEl("div", "whatsapp-welcome-gate__message-wrap");
-  const outgoingMeta = createEl("div", "whatsapp-welcome-gate__message-meta");
-  const outgoingAvatar = createEl("img", "whatsapp-welcome-gate__avatar");
-  outgoingAvatar.src = content.avatar;
-  outgoingAvatar.alt = content.author;
-  outgoingAvatar.loading = "lazy";
-  outgoingAvatar.decoding = "async";
-  outgoingAvatar.addEventListener("error", () => {
-    outgoingAvatar.classList.add("is-hidden");
-  }, { once: true });
-  outgoingAvatar.setAttribute("role", "button");
-  outgoingAvatar.setAttribute("tabindex", "0");
-  outgoingAvatar.setAttribute("aria-label", content.profileLabel);
+  messages.forEach((messageEntry) => {
+    if (messageEntry.imageType !== "outgoing") {
+      chat.append(buildIncomingRow(messageEntry.messageContent, messageEntry.direction));
+      return;
+    }
 
-  const outgoingAuthor = createEl("span", "whatsapp-welcome-gate__author", content.author);
-  outgoingAuthor.setAttribute("role", "button");
-  outgoingAuthor.setAttribute("tabindex", "0");
-  outgoingAuthor.setAttribute("aria-label", content.profileLabel);
+    const outgoingRow = createEl("div", "whatsapp-welcome-gate__message-row is-outgoing");
+    const outgoingWrap = createEl("div", "whatsapp-welcome-gate__message-wrap");
+    const outgoingMeta = createEl("div", "whatsapp-welcome-gate__message-meta");
+    const outgoingAvatar = createEl("img", "whatsapp-welcome-gate__avatar");
+    outgoingAvatar.src = messageEntry.avatar || content.avatar;
+    outgoingAvatar.alt = messageEntry.userName || content.author;
+    outgoingAvatar.loading = "lazy";
+    outgoingAvatar.decoding = "async";
+    outgoingAvatar.addEventListener("error", () => {
+      outgoingAvatar.classList.add("is-hidden");
+    }, { once: true });
+    outgoingAvatar.setAttribute("role", "button");
+    outgoingAvatar.setAttribute("tabindex", "0");
+    outgoingAvatar.setAttribute("aria-label", content.profileLabel);
 
-  outgoingMeta.append(
-    outgoingAvatar,
-    outgoingAuthor,
-    createEl("span", "whatsapp-welcome-gate__admin-label", content.role)
-  );
+    const outgoingAuthor = createEl("span", "whatsapp-welcome-gate__author", messageEntry.userName || content.author);
+    outgoingAuthor.setAttribute("role", "button");
+    outgoingAuthor.setAttribute("tabindex", "0");
+    outgoingAuthor.setAttribute("aria-label", content.profileLabel);
 
-  const outgoingBubble = createEl("div", "whatsapp-welcome-gate__bubble is-outgoing");
-  outgoingBubble.append(createEl("p", "whatsapp-welcome-gate__bubble-text", content.message));
+    outgoingMeta.append(outgoingAvatar, outgoingAuthor);
+    if (messageEntry.role) {
+      outgoingMeta.append(createEl("span", "whatsapp-welcome-gate__admin-label", messageEntry.role));
+    }
 
-  const outgoingReactions = createEl("div", "whatsapp-welcome-gate__reactions");
-  outgoingReactions.append(createEl("span", "whatsapp-welcome-gate__reactions-count", content.reactionCount));
-  content.reactions.forEach((emoji) => {
-    outgoingReactions.append(createEl("span", "whatsapp-welcome-gate__reactions-emoji", emoji));
-  });
+    const outgoingBubble = createEl("div", "whatsapp-welcome-gate__bubble is-outgoing");
+    outgoingBubble.setAttribute("dir", messageEntry.direction || "auto");
+    outgoingBubble.append(createEl("p", "whatsapp-welcome-gate__bubble-text", messageEntry.messageContent));
 
-  outgoingWrap.append(outgoingMeta, outgoingReactions, outgoingBubble);
-  outgoingRow.append(outgoingWrap);
-  chat.append(outgoingRow);
-  content.replies.forEach((reply) => {
-    chat.append(buildIncomingRow(reply));
+    const hasReactions = Boolean(messageEntry.reactionCount) || Boolean(messageEntry.reactions?.length);
+    if (hasReactions) {
+      const outgoingReactions = createEl("div", "whatsapp-welcome-gate__reactions");
+      if (messageEntry.reactionCount) {
+        outgoingReactions.append(createEl("span", "whatsapp-welcome-gate__reactions-count", messageEntry.reactionCount));
+      }
+      (messageEntry.reactions || []).forEach((emoji) => {
+        outgoingReactions.append(createEl("span", "whatsapp-welcome-gate__reactions-emoji", emoji));
+      });
+      outgoingWrap.append(outgoingMeta, outgoingReactions, outgoingBubble);
+    } else {
+      outgoingWrap.append(outgoingMeta, outgoingBubble);
+    }
+
+    outgoingRow.append(outgoingWrap);
+    chat.append(outgoingRow);
+    profileTargets.push(outgoingAvatar, outgoingAuthor);
   });
 
   return {
     chat,
-    profileTargets: [outgoingAvatar, outgoingAuthor]
+    profileTargets
   };
 }
 
 function createWhatsAppProfileModal(content) {
+  const primaryOutgoing = getWhatsAppChatMessages(content).find((entry) => entry.imageType === "outgoing") || null;
+  const profileAvatar = primaryOutgoing?.avatar || content.avatar;
+  const profileAuthor = primaryOutgoing?.userName || content.author;
   const profileModal = createEl("div", "whatsapp-welcome-gate__profile-modal is-hidden");
   profileModal.setAttribute("role", "dialog");
   profileModal.setAttribute("aria-modal", "true");
@@ -800,8 +962,8 @@ function createWhatsAppProfileModal(content) {
   profileModalClose.type = "button";
   profileModalClose.setAttribute("aria-label", "إغلاق");
   const profileModalImage = createEl("img", "whatsapp-welcome-gate__profile-modal-image");
-  profileModalImage.src = content.avatar;
-  profileModalImage.alt = content.author;
+  profileModalImage.src = profileAvatar;
+  profileModalImage.alt = profileAuthor;
   const profileModalFooter = createEl("div", "whatsapp-welcome-gate__profile-modal-footer");
   const profileModalTagline = createEl("p", "whatsapp-welcome-gate__profile-modal-tagline", content.profileTagline);
   const profileModalContact = createEl("a", "whatsapp-welcome-gate__profile-modal-contact", content.profileContactLabel);
@@ -1173,6 +1335,19 @@ function setupCommunityWidgets() {
 }
 
 async function initSharedSiteFeatures() {
+  WHATSAPP_CONTENT.messages = await loadWhatsAppWelcomeMessages();
+  const primaryOutgoing = getWhatsAppChatMessages(WHATSAPP_CONTENT)
+    .find((entry) => entry.imageType === "outgoing");
+  if (primaryOutgoing) {
+    WHATSAPP_CONTENT.avatar = primaryOutgoing.avatar || WHATSAPP_CONTENT.avatar;
+    WHATSAPP_CONTENT.author = primaryOutgoing.userName || WHATSAPP_CONTENT.author;
+    WHATSAPP_CONTENT.role = primaryOutgoing.role || WHATSAPP_CONTENT.role;
+    WHATSAPP_CONTENT.message = primaryOutgoing.messageContent || WHATSAPP_CONTENT.message;
+    WHATSAPP_CONTENT.reactionCount = primaryOutgoing.reactionCount || WHATSAPP_CONTENT.reactionCount;
+    WHATSAPP_CONTENT.reactions = Array.isArray(primaryOutgoing.reactions) && primaryOutgoing.reactions.length
+      ? [...primaryOutgoing.reactions]
+      : WHATSAPP_CONTENT.reactions;
+  }
   setupWhatsAppWelcomeGate();
   setupCommunityWidgets();
   setupWhatsAppBottomSection();

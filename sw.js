@@ -1,5 +1,5 @@
-const STATIC_CACHE = "zdeutsch-static-v20";
-const RUNTIME_CACHE = "zdeutsch-runtime-v20";
+const STATIC_CACHE = "zdeutsch-static-v22";
+const RUNTIME_CACHE = "zdeutsch-runtime-v22";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -23,7 +23,8 @@ const APP_SHELL = [
   "./database/config.json",
   "./database/parts.json",
   "./database/shreiben.json",
-  "./database/horen-codes.json"
+  "./database/horen-codes.json",
+  "./database/whatsapp-welcome-messages.json"
 ];
 const NETWORK_FIRST_ASSET_PATTERN = /\.(?:css|html|js|webmanifest)$/i;
 
