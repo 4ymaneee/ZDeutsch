@@ -2031,7 +2031,7 @@ body.whatsapp-welcome-open {
 
 .whatsapp-bottom-section .whatsapp-welcome-gate__panel {
   width: 100%;
-  max-height: none;
+  max-height: 80vh;
   overflow: visible;
 }
 

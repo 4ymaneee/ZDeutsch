@@ -490,6 +490,10 @@ function makeShareIcon() {
   return makeLucideIcon("share-2", "h-4 w-4");
 }
 
+function makeDownloadIcon() {
+  return makeLucideIcon("download", "h-4 w-4");
+}
+
 async function loadParts() {
   const paths = ["database/parts.json", "../database/parts.json"];
   for (const path of paths) {
@@ -660,14 +664,20 @@ const PDF_STYLES = `
   .pdf-export h2 {
     font-size: 18px;
     margin: 0 0 12px;
+    page-break-after: avoid;
+    break-after: avoid-page;
   }
   .pdf-export h3 {
     font-size: 14px;
     margin: 12px 0 8px;
+    page-break-after: avoid;
+    break-after: avoid-page;
   }
   .pdf-export p {
     margin: 0 0 8px;
     line-height: 1.5;
+    orphans: 3;
+    widows: 3;
   }
   .pdf-export .page {
     padding: 8px 0 16px;
@@ -694,12 +704,19 @@ const PDF_STYLES = `
   .pdf-export .question,
   .pdf-export .text-block,
   .pdf-export .correction-block,
+  .pdf-export .translation-ar,
   .pdf-export .blank-lines,
+  .pdf-export .blank-row,
   .pdf-export .word-bank,
   .pdf-export .anzeige-list,
-  .pdf-export .answer-line {
+  .pdf-export .answer-line,
+  .pdf-export .section,
+  .pdf-export .columns,
+  .pdf-export .grid-two,
+  .pdf-export .grid-two > .item,
+  .pdf-export .list li {
     page-break-inside: avoid;
-    break-inside: avoid;
+    break-inside: avoid-page;
   }
   .pdf-export .meta-title {
     font-size: 16px;
@@ -764,6 +781,8 @@ const PDF_STYLES = `
   .pdf-export .list li {
     overflow-wrap: anywhere;
     word-break: break-word;
+    orphans: 2;
+    widows: 2;
   }
   .pdf-export .question {
     border: 1px solid #e7d9c6;
@@ -785,6 +804,18 @@ const PDF_STYLES = `
     margin-bottom: 12px;
     overflow-wrap: anywhere;
     word-break: break-word;
+  }
+  .pdf-export .translation-ar {
+    margin-top: 8px;
+    border-radius: 10px;
+    border-right: 3px solid #0f766e;
+    background: #eef7f6;
+    padding: 8px 10px;
+    font-size: 11px;
+    line-height: 1.6;
+    text-align: right;
+    font-family: "Tajawal", "Helvetica Neue", Arial, sans-serif;
+    color: #111827;
   }
   .pdf-export .answer-line {
     display: flex;
@@ -887,19 +918,7 @@ function escapeHtml(value) {
 }
 
 function wrapWords(value) {
-  const text = String(value || "");
-  return text
-    .split(/(\s+)/)
-    .map((chunk) => {
-      if (!chunk) {
-        return "";
-      }
-      if (/^\s+$/.test(chunk)) {
-        return chunk;
-      }
-      return `<span class="no-break">${escapeHtml(chunk)}</span>`;
-    })
-    .join("");
+  return escapeHtml(value);
 }
 
 function wrapAllWords(root) {
@@ -951,6 +970,38 @@ function wrapAllWords(root) {
     });
     textNode.parentNode.replaceChild(fragment, textNode);
   });
+}
+
+function getTranslatedText(source) {
+  if (!source || typeof source !== "object" || Array.isArray(source)) {
+    return "";
+  }
+  const candidates = [
+    source.translated,
+    source.translation,
+    source.translationAr,
+    source.textAr,
+    source.promptAr,
+    source.titleAr,
+    source.instructionAr
+  ];
+  const value = candidates.find((item) => typeof item === "string" && item.trim());
+  return value ? String(value).trim() : "";
+}
+
+function renderArabicTranslation(text) {
+  const safeText = String(text || "").trim();
+  if (!safeText) {
+    return "";
+  }
+  return `<div class="translation-ar" dir="rtl" lang="ar">${wrapWords(safeText)}</div>`;
+}
+
+function normalizeExportOptions(options = {}) {
+  return {
+    includeArabicTranslation: Boolean(options.includeArabicTranslation),
+    includeCorrections: options.includeCorrections !== false
+  };
 }
 
 function renderHeaderBlock(title, subtitle) {
@@ -1032,48 +1083,57 @@ function renderBlankLines(blankIds) {
 
 function renderTextList(items, options = {}) {
   const answerLabel = options.answerLabel;
+  const includeArabicTranslation = Boolean(options.includeArabicTranslation);
   return (items || [])
-    .map(
-      (item) => `
+    .map((item) => {
+      const translated = includeArabicTranslation ? getTranslatedText(item) : "";
+      return `
         <div class="item">
           <div class="item-id">${wrapWords(item.id)}</div>
           <div class="item-text">${wrapWords(item.text)}</div>
+          ${translated ? renderArabicTranslation(translated) : ""}
           ${answerLabel ? renderAnswerLine(answerLabel) : ""}
         </div>
-      `
-    )
+      `;
+    })
     .join("");
 }
 
 function renderTextGrid(items, options = {}) {
   const answerLabel = options.answerLabel;
+  const includeArabicTranslation = Boolean(options.includeArabicTranslation);
   return `
     <div class="grid-two">
       ${(items || [])
-        .map(
-          (item) => `
+        .map((item) => {
+          const translated = includeArabicTranslation ? getTranslatedText(item) : "";
+          return `
             <div class="item">
               <div class="item-id">${wrapWords(item.id)}</div>
               <div class="item-text">${wrapWords(item.text)}</div>
+              ${translated ? renderArabicTranslation(translated) : ""}
               ${answerLabel ? renderAnswerLine(answerLabel) : ""}
             </div>
-          `
-        )
+          `;
+        })
         .join("")}
     </div>
   `;
 }
 
-function renderHeadlines(items) {
+function renderHeadlines(items, options = {}) {
+  const includeArabicTranslation = Boolean(options.includeArabicTranslation);
   return `
     <ul class="list">
-      ${(items || [])
-        .map(
-          (item) => `
-            <li><strong>${wrapWords(item.id)}.</strong> ${wrapWords(item.text)}</li>
-          `
-        )
-        .join("")}
+      ${(items || []).map((item) => {
+        const translated = includeArabicTranslation ? getTranslatedText(item) : "";
+        return `
+          <li>
+            <strong>${wrapWords(item.id)}.</strong> ${wrapWords(item.text)}
+            ${translated ? renderArabicTranslation(translated) : ""}
+          </li>
+        `;
+      }).join("")}
     </ul>
   `;
 }
@@ -1103,18 +1163,25 @@ function splitParagraphs(paragraphs) {
   return [first, second].filter((block) => block.length);
 }
 
-function renderQuestion(question) {
-  const options = (question.options || [])
-    .map(
-      (option) => `
-        <li><strong>${wrapWords(option.id.toUpperCase())})</strong> ${wrapWords(option.text)}</li>
-      `
-    )
+function renderQuestion(question, options = {}) {
+  const includeArabicTranslation = Boolean(options.includeArabicTranslation);
+  const optionList = (question.options || [])
+    .map((option) => {
+      const optionTranslated = includeArabicTranslation ? getTranslatedText(option) : "";
+      return `
+        <li>
+          <strong>${wrapWords(option.id.toUpperCase())})</strong> ${wrapWords(option.text)}
+          ${optionTranslated ? renderArabicTranslation(optionTranslated) : ""}
+        </li>
+      `;
+    })
     .join("");
+  const questionTranslated = includeArabicTranslation ? getTranslatedText(question) : "";
   return `
     <div class="question">
       <div class="question-title">${wrapWords(question.id)}. ${wrapWords(question.prompt)}</div>
-      <ul class="list">${options}</ul>
+      ${questionTranslated ? renderArabicTranslation(questionTranslated) : ""}
+      <ul class="list">${optionList}</ul>
       ${renderAnswerLine("Antwort")}
     </div>
   `;
@@ -1160,33 +1227,45 @@ function renderWordBank(options) {
   `;
 }
 
-function renderTeil1(content) {
+function renderTeil1(content, exportOptions = {}) {
+  const includeArabicTranslation = Boolean(exportOptions.includeArabicTranslation);
   return `
     <section class="page">
       ${renderHeaderBlock("Lesen Teil 1", content.instruction || "")}
       <div class="section">
         <h3>${wrapWords("Überschriften")}</h3>
-        ${renderHeadlines(content.headlines || [])}
+        ${renderHeadlines(content.headlines || [], { includeArabicTranslation })}
       </div>
       <div class="section">
         <h3>${wrapWords("Texte")}</h3>
-        ${renderTextList(content.texts || [], { answerLabel: "Antwort" })}
+        ${renderTextList(content.texts || [], { answerLabel: "Antwort", includeArabicTranslation })}
       </div>
     </section>
   `;
 }
 
-function renderTeil2(content) {
+function renderTeil2(content, exportOptions = {}) {
+  const includeArabicTranslation = Boolean(exportOptions.includeArabicTranslation);
   const paragraphList = content.passage?.paragraphs || [];
+  const translatedParagraphs = includeArabicTranslation ? (content.passage?.translated || []) : [];
+  let paragraphCursor = 0;
   const textBlocks = splitParagraphs(paragraphList)
-    .map((block) => block.map((para) => `<p>${wrapWords(para)}</p>`).join(""))
+    .map((block) => block.map((para) => {
+      const translated = translatedParagraphs[paragraphCursor] || "";
+      paragraphCursor += 1;
+      return `<p>${wrapWords(para)}</p>${translated ? renderArabicTranslation(translated) : ""}`;
+    }).join(""))
     .map((block) => `<div class="text-block">${block || ""}</div>`)
     .join("");
-  const questions = (content.questions || []).map(renderQuestion).join("");
+  const passageTranslatedTitle = includeArabicTranslation ? getTranslatedText(content.passage) : "";
+  const questions = (content.questions || [])
+    .map((question) => renderQuestion(question, { includeArabicTranslation }))
+    .join("");
   return `
     <section class="page">
       ${renderHeaderBlock("Lesen Teil 2", content.instruction || "")}
       <h3>${wrapWords(content.passage?.title || "")}</h3>
+      ${passageTranslatedTitle ? renderArabicTranslation(passageTranslatedTitle) : ""}
       ${textBlocks}
       <h3>${wrapWords("Aufgaben")}</h3>
       ${questions}
@@ -1194,25 +1273,29 @@ function renderTeil2(content) {
   `;
 }
 
-function renderTeil3(content) {
+function renderTeil3(content, exportOptions = {}) {
+  const includeArabicTranslation = Boolean(exportOptions.includeArabicTranslation);
   return `
     <section class="page">
       ${renderHeaderBlock("Lesen Teil 3", "Ordnen Sie die Situationen den Anzeigen zu.")}
       <h3>${wrapWords("Situationen")}</h3>
-      ${renderTextGrid(content.situations || [], { answerLabel: "Antwort" })}
+      ${renderTextGrid(content.situations || [], { answerLabel: "Antwort", includeArabicTranslation })}
       <h3>${wrapWords("Anzeigen")}</h3>
-      ${renderTextGrid(content.ads || [])}
+      ${renderTextGrid(content.ads || [], { includeArabicTranslation })}
     </section>
   `;
 }
 
-function renderSprach1(content) {
+function renderSprach1(content, exportOptions = {}) {
+  const includeArabicTranslation = Boolean(exportOptions.includeArabicTranslation);
   const blanks = content.blanks || [];
   const blankIds = getBlankIds(content);
+  const translatedText = includeArabicTranslation ? getTranslatedText(content) : "";
   return `
     <section class="page">
       ${renderHeaderBlock("Sprachbausteine 1", content.instruction || "")}
       <div class="text-block">${renderSegments(content.segments || [])}</div>
+      ${translatedText ? renderArabicTranslation(translatedText) : ""}
       ${renderBlankLines(blankIds)}
       <h3>${wrapWords("Optionen")}</h3>
       ${renderOptionsPerBlank(blanks)}
@@ -1220,17 +1303,20 @@ function renderSprach1(content) {
   `;
 }
 
-function renderSprach2(content) {
+function renderSprach2(content, exportOptions = {}) {
+  const includeArabicTranslation = Boolean(exportOptions.includeArabicTranslation);
   const blankIds = getBlankIds(content);
   const wordBank = (content.wordBank && content.wordBank.length)
     ? content.wordBank.map((item) => item.text || item.answer || item)
     : (content.options || []).length
       ? content.options
       : (content.blanks || []).map((item) => item.answer).filter(Boolean);
+  const translatedText = includeArabicTranslation ? getTranslatedText(content) : "";
   return `
     <section class="page">
       ${renderHeaderBlock("Sprachbausteine 2", content.instruction || "")}
       <div class="text-block">${renderSegments(content.segments || [])}</div>
+      ${translatedText ? renderArabicTranslation(translatedText) : ""}
       ${renderBlankLines(blankIds)}
       <h3>${wrapWords("Wortliste")}</h3>
       ${renderWordBank(wordBank)}
@@ -1322,7 +1408,8 @@ function renderCorrections(lesenEntry, label) {
   `;
 }
 
-function buildPdfMarkup({ levelLabel, versions }) {
+function buildPdfMarkup({ levelLabel, versions, exportOptions = {} }) {
+  const options = normalizeExportOptions(exportOptions);
   const versionBlocks = (versions || []).map((version) => {
     const lesenEntry = version.lesenEntry || {};
     const parts = lesenEntry.parts || {};
@@ -1331,19 +1418,19 @@ function buildPdfMarkup({ levelLabel, versions }) {
       .map((partKey) => {
         const content = parts[partKey].content || {};
         if (partKey === "teil-1") {
-          return renderTeil1(content);
+          return renderTeil1(content, options);
         }
         if (partKey === "teil-2") {
-          return renderTeil2(content);
+          return renderTeil2(content, options);
         }
         if (partKey === "teil-3") {
-          return renderTeil3(content);
+          return renderTeil3(content, options);
         }
         if (partKey === "sprachbausteine-1") {
-          return renderSprach1(content);
+          return renderSprach1(content, options);
         }
         if (partKey === "sprachbausteine-2") {
-          return renderSprach2(content);
+          return renderSprach2(content, options);
         }
         return "";
       });
@@ -1353,7 +1440,7 @@ function buildPdfMarkup({ levelLabel, versions }) {
         <div class="doc-title">${wrapWords(version.examTitle || "")}</div>
         <div class="doc-subtitle">${wrapWords(levelLabel)} · ${wrapWords(version.versionLabel || "")}</div>
         ${orderedParts.join("")}
-        ${renderCorrections(lesenEntry, version.versionLabel)}
+        ${options.includeCorrections ? renderCorrections(lesenEntry, version.versionLabel) : ""}
       </div>
     `;
   });
@@ -1457,7 +1544,7 @@ function addPdfHeaderFooter(pdf, { headerTitle, footerText, logoData }) {
   }
 }
 
-async function generatePdfFromData({ levelLabel, versions, fileName, headerTitle }) {
+async function generatePdfFromData({ levelLabel, versions, fileName, headerTitle, exportOptions = {} }) {
   if (!window.html2pdf) {
     throw new Error("html2pdf is not available.");
   }
@@ -1480,9 +1567,9 @@ async function generatePdfFromData({ levelLabel, versions, fileName, headerTitle
   container.style.boxSizing = "border-box";
   container.innerHTML = buildPdfMarkup({
     levelLabel,
-    versions
+    versions,
+    exportOptions
   });
-  wrapAllWords(container);
 
   overlay.append(container);
   document.body.append(overlay);
@@ -1505,8 +1592,25 @@ async function generatePdfFromData({ levelLabel, versions, fileName, headerTitle
           scrollY: 0
         },
         pagebreak: {
-          mode: ["css", "legacy"],
-          avoid: ".meta,.columns,.item,.question,.text-block,.correction-block,.blank-lines,.answer-line"
+          mode: ["avoid-all", "css", "legacy"],
+          avoid: [
+            ".meta",
+            ".section",
+            ".columns",
+            ".grid-two",
+            ".grid-two > .item",
+            ".item",
+            ".question",
+            ".text-block",
+            ".translation-ar",
+            ".correction-block",
+            ".blank-lines",
+            ".blank-row",
+            ".answer-line",
+            ".word-bank",
+            ".list li",
+            "h3"
+          ]
         },
         jsPDF: { unit: "pt", format: "a4", orientation: "portrait" }
       })
@@ -1525,19 +1629,19 @@ async function generatePdfFromData({ levelLabel, versions, fileName, headerTitle
   }
 }
 
-async function downloadThemePdf(themeKey, themeEntry) {
+function prepareThemeExport(themeKey, themeEntry, exportOptions = {}) {
   if (!themeEntry || !themeKey) {
-    return;
+    return null;
   }
+  const resolvedExportOptions = normalizeExportOptions(exportOptions);
   const versionKeys = getVersionKeys(themeEntry);
   const defaultVersion = themeEntry.defaultVersion || versionKeys[0] || "default";
   const hasMultipleVersions = versionKeys.length > 1;
   const resolvedVersionKeys = hasMultipleVersions ? versionKeys : [defaultVersion];
   const levelKey = state.level || "b1";
-  const fileName = hasMultipleVersions
+  const pdfFileName = hasMultipleVersions
     ? getPdfFilename(levelKey, themeKey, "all")
     : getPdfFilename(levelKey, themeKey, defaultVersion);
-  const url = new URL(`exports/${fileName}`, window.location.href).href;
   const buildVersionData = (versionKey) => {
     const versionEntry = themeEntry.versions?.[versionKey] || themeEntry.versions?.default;
     const lesenEntry = versionEntry?.lesen || themeEntry.lesen;
@@ -1555,10 +1659,221 @@ async function downloadThemePdf(themeKey, themeEntry) {
     .map(buildVersionData)
     .filter(Boolean);
 
-  const existingBlob = await fetchPdfBlob(url);
-  if (existingBlob) {
-    downloadBlob(existingBlob, fileName);
+  return {
+    levelKey,
+    versions,
+    pdfFileName,
+    headerTitle: themeEntry.title || themeKey,
+    exportOptions: resolvedExportOptions
+  };
+}
+
+function buildHtmlExportDocument({ levelLabel, versions, headerTitle, exportOptions = {} }) {
+  const title = escapeHtml(`${headerTitle || "Lesen"} - ${levelLabel}`);
+  const markup = buildPdfMarkup({ levelLabel, versions, exportOptions });
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${title}</title>
+    <style>
+      ${PDF_STYLES}
+      body {
+        margin: 0;
+        padding: 24px;
+        background: #f3f4f6;
+      }
+      .pdf-export {
+        margin: 0 auto;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.14);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pdf-export">${markup}</div>
+  </body>
+</html>`;
+}
+
+function openDownloadOptionsModal(themeLabel) {
+  return new Promise((resolve) => {
+    const overlay = document.createElement("div");
+    overlay.style.position = "fixed";
+    overlay.style.inset = "0";
+    overlay.style.background = "rgba(15, 23, 42, 0.45)";
+    overlay.style.display = "flex";
+    overlay.style.alignItems = "center";
+    overlay.style.justifyContent = "center";
+    overlay.style.padding = "16px";
+    overlay.style.zIndex = "1300";
+
+    const panel = document.createElement("div");
+    panel.style.width = "min(440px, 96vw)";
+    panel.style.background = "#ffffff";
+    panel.style.border = "1px solid #d8cdbb";
+    panel.style.borderRadius = "18px";
+    panel.style.boxShadow = "0 28px 70px rgba(15, 23, 42, 0.24)";
+    panel.style.padding = "18px";
+    panel.style.display = "grid";
+    panel.style.gap = "14px";
+
+    const title = document.createElement("div");
+    title.style.fontFamily = "\"Space Grotesk\", sans-serif";
+    title.style.fontSize = "14px";
+    title.style.letterSpacing = "0.14em";
+    title.style.textTransform = "uppercase";
+    title.style.color = "#5f6165";
+    title.textContent = "Download Options";
+
+    const subtitle = document.createElement("div");
+    subtitle.style.fontFamily = "\"Newsreader\", serif";
+    subtitle.style.fontSize = "20px";
+    subtitle.style.fontWeight = "600";
+    subtitle.style.color = "#1f2933";
+    subtitle.textContent = themeLabel ? `Export "${themeLabel}"` : "Export this theme";
+
+    const optionsWrap = document.createElement("div");
+    optionsWrap.style.display = "grid";
+    optionsWrap.style.gap = "10px";
+    optionsWrap.style.padding = "10px 12px";
+    optionsWrap.style.border = "1px solid #e8e2d6";
+    optionsWrap.style.borderRadius = "12px";
+    optionsWrap.style.background = "#faf9f6";
+
+    const arabicLabel = document.createElement("label");
+    arabicLabel.style.display = "flex";
+    arabicLabel.style.alignItems = "center";
+    arabicLabel.style.gap = "10px";
+    arabicLabel.style.cursor = "pointer";
+    const arabicCheckbox = document.createElement("input");
+    arabicCheckbox.type = "checkbox";
+    arabicCheckbox.checked = false;
+    const arabicText = document.createElement("span");
+    arabicText.style.fontSize = "14px";
+    arabicText.style.color = "#1f2933";
+    arabicText.textContent = "with arabic translation";
+    arabicLabel.append(arabicCheckbox, arabicText);
+
+    const correctionLabel = document.createElement("label");
+    correctionLabel.style.display = "flex";
+    correctionLabel.style.alignItems = "center";
+    correctionLabel.style.gap = "10px";
+    correctionLabel.style.cursor = "pointer";
+    const correctionCheckbox = document.createElement("input");
+    correctionCheckbox.type = "checkbox";
+    correctionCheckbox.checked = true;
+    const correctionText = document.createElement("span");
+    correctionText.style.fontSize = "14px";
+    correctionText.style.color = "#1f2933";
+    correctionText.textContent = "with correction";
+    correctionLabel.append(correctionCheckbox, correctionText);
+
+    optionsWrap.append(arabicLabel, correctionLabel);
+
+    const actions = document.createElement("div");
+    actions.style.display = "flex";
+    actions.style.flexWrap = "wrap";
+    actions.style.gap = "10px";
+    actions.style.justifyContent = "flex-end";
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.type = "button";
+    cancelBtn.textContent = "Cancel";
+    cancelBtn.style.border = "1px solid #d8cdbb";
+    cancelBtn.style.background = "#ffffff";
+    cancelBtn.style.color = "#1f2933";
+    cancelBtn.style.borderRadius = "999px";
+    cancelBtn.style.padding = "8px 14px";
+    cancelBtn.style.fontSize = "12px";
+    cancelBtn.style.textTransform = "uppercase";
+    cancelBtn.style.letterSpacing = "0.14em";
+    cancelBtn.style.fontFamily = "\"Space Grotesk\", sans-serif";
+
+    const htmlBtn = document.createElement("button");
+    htmlBtn.type = "button";
+    htmlBtn.textContent = "HTML";
+    htmlBtn.style.border = "1px solid #d8cdbb";
+    htmlBtn.style.background = "#ffffff";
+    htmlBtn.style.color = "#1f2933";
+    htmlBtn.style.borderRadius = "999px";
+    htmlBtn.style.padding = "8px 14px";
+    htmlBtn.style.fontSize = "12px";
+    htmlBtn.style.textTransform = "uppercase";
+    htmlBtn.style.letterSpacing = "0.14em";
+    htmlBtn.style.fontFamily = "\"Space Grotesk\", sans-serif";
+
+    const pdfBtn = document.createElement("button");
+    pdfBtn.type = "button";
+    pdfBtn.textContent = "PDF";
+    pdfBtn.style.border = "1px solid #0f766e";
+    pdfBtn.style.background = "#0f766e";
+    pdfBtn.style.color = "#ffffff";
+    pdfBtn.style.borderRadius = "999px";
+    pdfBtn.style.padding = "8px 14px";
+    pdfBtn.style.fontSize = "12px";
+    pdfBtn.style.textTransform = "uppercase";
+    pdfBtn.style.letterSpacing = "0.14em";
+    pdfBtn.style.fontFamily = "\"Space Grotesk\", sans-serif";
+
+    actions.append(cancelBtn, htmlBtn, pdfBtn);
+    panel.append(title, subtitle, optionsWrap, actions);
+    overlay.append(panel);
+
+    const finish = (value) => {
+      window.removeEventListener("keydown", onKeyDown);
+      overlay.remove();
+      resolve(value);
+    };
+
+    const buildOptions = (format) => ({
+      format,
+      includeArabicTranslation: arabicCheckbox.checked,
+      includeCorrections: correctionCheckbox.checked
+    });
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        finish(null);
+      }
+    };
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) {
+        finish(null);
+      }
+    });
+    cancelBtn.addEventListener("click", () => finish(null));
+    pdfBtn.addEventListener("click", () => finish(buildOptions("pdf")));
+    htmlBtn.addEventListener("click", () => finish(buildOptions("html")));
+
+    window.addEventListener("keydown", onKeyDown);
+    document.body.append(overlay);
+    pdfBtn.focus();
+  });
+}
+
+async function downloadThemePdf(themeKey, themeEntry, exportOptions = {}) {
+  const prepared = prepareThemeExport(themeKey, themeEntry, exportOptions);
+  if (!prepared) {
     return;
+  }
+  const {
+    levelKey,
+    versions,
+    pdfFileName: fileName,
+    headerTitle,
+    exportOptions: resolvedExportOptions
+  } = prepared;
+  const canUsePrebuiltPdf = !resolvedExportOptions.includeArabicTranslation && resolvedExportOptions.includeCorrections;
+
+  if (canUsePrebuiltPdf) {
+    const url = new URL(`exports/${fileName}`, window.location.href).href;
+    const existingBlob = await fetchPdfBlob(url);
+    if (existingBlob) {
+      downloadBlob(existingBlob, fileName);
+      return;
+    }
   }
 
   if (!versions.length) {
@@ -1571,12 +1886,54 @@ async function downloadThemePdf(themeKey, themeEntry) {
       levelLabel: levelKey.toUpperCase(),
       versions,
       fileName,
-      headerTitle: themeEntry.title || themeKey
+      headerTitle,
+      exportOptions: resolvedExportOptions
     });
   } catch (error) {
     console.error(error);
     window.alert("Failed to generate the PDF in the browser.");
   }
+}
+
+async function downloadThemeHtml(themeKey, themeEntry, exportOptions = {}) {
+  const prepared = prepareThemeExport(themeKey, themeEntry, exportOptions);
+  if (!prepared) {
+    return;
+  }
+  const {
+    levelKey,
+    versions,
+    pdfFileName,
+    headerTitle,
+    exportOptions: resolvedExportOptions
+  } = prepared;
+
+  if (!versions.length) {
+    window.alert("HTML data is missing for this theme.");
+    return;
+  }
+
+  const fileName = pdfFileName.replace(/\.pdf$/i, ".html");
+  const html = buildHtmlExportDocument({
+    levelLabel: levelKey.toUpperCase(),
+    versions,
+    headerTitle,
+    exportOptions: resolvedExportOptions
+  });
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  downloadBlob(blob, fileName);
+}
+
+async function downloadThemeWithFormat(themeKey, themeEntry) {
+  const options = await openDownloadOptionsModal(themeEntry?.title || themeKey);
+  if (!options) {
+    return;
+  }
+  if (options.format === "html") {
+    await downloadThemeHtml(themeKey, themeEntry, options);
+    return;
+  }
+  await downloadThemePdf(themeKey, themeEntry, options);
 }
 
 function closeVersionModal() {
@@ -1885,11 +2242,18 @@ function renderThemeCards() {
       createEl("div", "theme-card-subtitle", "Reading practice")
     );
     const actions = createEl("div", "theme-card-actions");
-    const levelBadge = createEl(
-      "span",
-      "theme-card-level",
-      (state.level || "").toUpperCase()
+    const downloadBtn = createEl(
+      "button",
+      "theme-card-download"
     );
+    downloadBtn.type = "button";
+    downloadBtn.title = "Download file";
+    downloadBtn.setAttribute("aria-label", "Download file");
+    downloadBtn.append(makeDownloadIcon());
+    downloadBtn.addEventListener("click", async (event) => {
+      event.stopPropagation();
+      await downloadThemeWithFormat(themeKey, themeEntry);
+    });
     const shareBtn = createEl(
       "button",
       "theme-card-download"
@@ -1902,7 +2266,7 @@ function renderThemeCards() {
       event.stopPropagation();
       await shareThemePage(themeKey, themeEntry);
     });
-    actions.append(levelBadge, shareBtn);
+    actions.append(downloadBtn, shareBtn);
     header.append(titleWrap, actions);
 
     const progressSummary = getThemeProgressSummary(levelKey, themeKey, versionKeys);
