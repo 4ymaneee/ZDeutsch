@@ -5,6 +5,7 @@ const sectionList = document.getElementById("section-list");
 const themeGrid = document.getElementById("theme-grid");
 const themeSearchInput = document.getElementById("theme-search");
 const themeSearchScope = document.getElementById("theme-search-scope");
+const themeSearchCount = document.getElementById("theme-search-count");
 const homeLoader = document.getElementById("home-loader");
 const homeLoaderStage = document.getElementById("home-loader-stage");
 const homeLoaderPercent = document.getElementById("home-loader-percent");
@@ -372,6 +373,19 @@ function updateSearchInputContext() {
     themeSearchInput.setAttribute("aria-label", placeholder);
     themeSearchInput.value = state.search || "";
   }
+}
+
+function updateSearchResultCount(count, query = state.search) {
+  if (!themeSearchCount) {
+    return;
+  }
+  const safeCount = Number.isFinite(count) ? Math.max(0, Math.round(count)) : 0;
+  const normalizedQuery = normalize(query);
+  if (normalizedQuery) {
+    themeSearchCount.textContent = `${safeCount} result${safeCount === 1 ? "" : "s"} found`;
+    return;
+  }
+  themeSearchCount.textContent = `${safeCount} item${safeCount === 1 ? "" : "s"} listed`;
 }
 
 function matchesSearchQuery(query, ...values) {
@@ -2146,6 +2160,7 @@ function renderThemeCards() {
   themeGrid.innerHTML = "";
   const levelKey = state.level || "b1";
   const query = normalize(state.search);
+  updateSearchResultCount(0, query);
   if (state.section === "horen") {
     const partConfig = getPartConfig(levelKey, "horen");
     const hasMatch = partConfig && matchesSearchQuery(
@@ -2154,6 +2169,7 @@ function renderThemeCards() {
       partConfig?.description,
       partConfig?.module
     );
+    updateSearchResultCount(hasMatch ? 1 : 0, query);
     if (hasMatch) {
       themeGrid.append(
         createEl(
@@ -2181,6 +2197,7 @@ function renderThemeCards() {
     const tasks = getShreibenTasks(levelKey).filter((task) => {
       return matchesSearchQuery(query, task?.title, task?.prompt, task?.partLabel);
     });
+    updateSearchResultCount(partConfig ? tasks.length : 0, query);
     if (partConfig && tasks.length) {
       tasks.forEach((task) => {
         themeGrid.append(buildShreibenCard(levelKey, task));
@@ -2209,6 +2226,7 @@ function renderThemeCards() {
       return normalize(title).includes(query);
     });
   }
+  updateSearchResultCount(themes.length, query);
   if (state.theme && !themes.includes(state.theme)) {
     state.theme = null;
   }

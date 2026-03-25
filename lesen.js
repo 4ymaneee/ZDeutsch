@@ -32,6 +32,103 @@ const nextBtn = document.getElementById("next-btn");
 const asideToggle = document.getElementById("aside-toggle");
 const asideOverlay = document.getElementById("aside-overlay");
 const ASIDE_TOGGLE_HINT_KEY = "zdeutsch.lesen.asideToggleHintDismissed.v1";
+const CORRECTION_EMAIL_STORAGE_KEY = "zdeutsch.corrections.email.v1";
+const REPORT_MISTAKE_CONFIRMATION_MESSAGE = [
+  "شكرًا على مساهمتك في تحسين المحتوى 🙏",
+  "من فضلك لا ترسل التصحيح إلا إذا كنت متأكدًا من الجواب.",
+  "",
+  "Thank you for your contribution 🙏",
+  "Please submit a correction only if you are sure about the answer.",
+  "",
+  "هل تريد المتابعة؟ / Do you want to continue?"
+].join("\n");
+const LESEN_CORRECTION_FORMS = {
+  "teil-1": {
+    formPublicUrl: "https://docs.google.com/forms/d/e/1FAIpQLSc4WcBFOL2OFmRBe0lSSH8GjOvSvg_R3U6FEUPRBBMj4i_AIg/viewform",
+    entryIds: {
+      answers: {
+        "1": 608169195,
+        "2": 486631907,
+        "3": 255875646,
+        "4": 680311433,
+        "5": 1559916900
+      },
+      reason: 1146294854,
+      context: 1294619841
+    }
+  },
+  "teil-2": {
+    formPublicUrl: "https://docs.google.com/forms/d/e/1FAIpQLSed1Xxo_zfG0ozKtLQ2GGX325r3WxeZ7feL8LOAPW3M_wNqZw/viewform",
+    entryIds: {
+      answers: {
+        "6": 1942309452,
+        "7": 48384739,
+        "8": 1277328977,
+        "9": 1990280893,
+        "10": 456499565
+      },
+      reason: 1537699883,
+      context: 323789999
+    }
+  },
+  "teil-3": {
+    formPublicUrl: "https://docs.google.com/forms/d/e/1FAIpQLSdu1eywCJ14MYRcZb1mLrn5w4d3C6Ow60rDKZzhLor5vjzpHw/viewform",
+    entryIds: {
+      answers: {
+        "11": 193826433,
+        "12": 2133238239,
+        "13": 2111176029,
+        "14": 912302831,
+        "15": 1058223429,
+        "16": 739494426,
+        "17": 1163581501,
+        "18": 1132441893,
+        "19": 1879637878,
+        "20": 405416558
+      },
+      reason: 994223364,
+      context: 152745191
+    }
+  },
+  "sprachbausteine-1": {
+    formPublicUrl: "https://docs.google.com/forms/d/e/1FAIpQLSc3aLwNw_G9n22SjBAzBO2uALpM-PJQslKb7Bu7gE6DT0Alzw/viewform",
+    entryIds: {
+      answers: {
+        "21": 278258345,
+        "22": 1943007061,
+        "23": 680678314,
+        "24": 443488925,
+        "25": 1567659002,
+        "26": 1735232479,
+        "27": 754200758,
+        "28": 1920675639,
+        "29": 1949677206,
+        "30": 353647433
+      },
+      reason: 805332884,
+      context: 1339229360
+    }
+  },
+  "sprachbausteine-2": {
+    formPublicUrl: "https://docs.google.com/forms/d/e/1FAIpQLSdpaDGeFsAgysCYh-Sv-V8rGHtnCJDMKgx0lgn0BLBU-OpnWA/viewform",
+    entryIds: {
+      answers: {
+        "31": 642780204,
+        "32": 1634073346,
+        "33": 759616188,
+        "34": 508037502,
+        "35": 20789561,
+        "36": 2077713554,
+        "37": 1002917196,
+        "38": 713566520,
+        "39": 1652072552,
+        "40": 1988182962
+      },
+      reason: 1316167128,
+      context: 1485658245
+    }
+  }
+};
 
 // initialize ARIA state
 if (asideToggle) {
@@ -957,10 +1054,15 @@ function renderActionBar(partKey) {
   const { key, submitted } = ensurePartState(partKey);
   const wrapper = createEl("div", "exam-action-bar sticky bottom-0 left-0 right-0 pt-4");
   const bar = createEl("div", "exam-action-bar-inner flex items-center justify-between gap-2");
+  const themeEntry = getThemeEntry();
+  const lesenEntry = getActiveLesen(themeEntry);
+  const partData = lesenEntry?.parts?.[partKey];
   const button = createEl(
     "button",
     classNames(
-      "w-full rounded-xl px-4 py-2 text-sm font-display",
+      submitted
+        ? "flex-1 rounded-xl px-4 py-2 text-sm font-display"
+        : "w-full rounded-xl px-4 py-2 text-sm font-display",
       submitted
         ? "border border-stone-300 bg-stone-50 text-slate"
         : "bg-azure text-white shadow-lg ring-2 ring-azure/20"
@@ -979,9 +1081,147 @@ function renderActionBar(partKey) {
     renderCurrentPart();
   });
 
+  if (submitted && partData) {
+    const score = computePartScore(partKey, partData);
+    if (score && Number.isFinite(score.total) && score.total > 0) {
+      const scoreLine = createEl(
+        "div",
+        "mb-2 rounded-xl border border-azure/30 bg-azure/10 px-3 py-2 text-xs font-display text-azure",
+        `Teil score: ${score.correct}/${score.total} | Points: ${formatPoints(score.earnedPoints)} / ${formatPoints(score.maxPoints)}`
+      );
+      wrapper.append(scoreLine);
+    }
+  }
+
   bar.append(button);
+  if (submitted) {
+    const reportButton = createEl(
+      "button",
+      "flex-1 rounded-xl border border-rose/50 bg-rose/15 px-4 py-2 text-sm font-display text-rose shadow-sm",
+      "الإبلاغ عن خطأ"
+    );
+    reportButton.type = "button";
+    reportButton.setAttribute("dir", "rtl");
+    reportButton.addEventListener("click", () => {
+      openCorrectionFormFromExam(partKey);
+    });
+    bar.append(reportButton);
+  }
   wrapper.append(bar);
   return wrapper;
+}
+
+function normalizePrefillValue(partKey, value) {
+  const raw = String(value || "").trim();
+  if (!raw) {
+    return "";
+  }
+  if (partKey === "teil-1" || partKey === "teil-3") {
+    return raw.toUpperCase();
+  }
+  if (partKey === "teil-2") {
+    return raw.toLowerCase();
+  }
+  return raw;
+}
+
+function getDefaultAnswersForPart(partKey) {
+  const themeEntry = getThemeEntry();
+  const lesenEntry = getActiveLesen(themeEntry);
+  const content = lesenEntry?.parts?.[partKey]?.content;
+  const map = {};
+  if (!content) {
+    return map;
+  }
+
+  if (partKey === "teil-1") {
+    (content.answers || []).forEach((item) => {
+      const itemId = String(item?.textId || "").trim();
+      const value = String(item?.headlineId || "").trim();
+      if (itemId && value) {
+        map[itemId] = value;
+      }
+    });
+    return map;
+  }
+
+  if (partKey === "teil-2") {
+    (content.questions || []).forEach((question) => {
+      const itemId = String(question?.id || "").trim();
+      const value = String(question?.answerId || "").trim();
+      if (itemId && value) {
+        map[itemId] = value;
+      }
+    });
+    return map;
+  }
+
+  if (partKey === "teil-3") {
+    (content.answers || []).forEach((item) => {
+      const itemId = String(item?.situationId || "").trim();
+      const value = String(item?.adId || "").trim();
+      if (itemId && value) {
+        map[itemId] = value;
+      }
+    });
+    return map;
+  }
+
+  if (partKey === "sprachbausteine-1" || partKey === "sprachbausteine-2") {
+    (content.answers || []).forEach((item) => {
+      const itemId = String(item?.id || "").trim();
+      const value = String(item?.answer || item?.text || "").trim();
+      if (itemId && value) {
+        map[itemId] = value;
+      }
+    });
+  }
+
+  return map;
+}
+
+function buildCorrectionContextToken(partKey) {
+  const level = String(state.level || "").replace(/[^a-zA-Z0-9_-]/g, "");
+  const theme = String(state.theme || "").replace(/[^a-zA-Z0-9_-]/g, "");
+  const version = String(getActiveVersionKey() || "default").replace(/[^a-zA-Z0-9_-]/g, "");
+  const part = String(partKey || "").replace(/[^a-zA-Z0-9_-]/g, "");
+  const emailToken = String(window.localStorage.getItem(CORRECTION_EMAIL_STORAGE_KEY) || "unknown")
+    .replace(/[^a-zA-Z0-9_.@-]/g, "");
+  return `ctx_${level}_${theme}_${version}_${part}_${emailToken}_${Date.now()}`;
+}
+
+function buildCorrectionFormUrl(partKey) {
+  const formConfig = LESEN_CORRECTION_FORMS[partKey];
+  if (!formConfig?.formPublicUrl || !formConfig?.entryIds) {
+    return "";
+  }
+
+  const targetParams = new URLSearchParams();
+  targetParams.set("usp", "pp_url");
+  const answers = getDefaultAnswersForPart(partKey);
+
+  Object.entries(formConfig.entryIds.answers || {}).forEach(([itemNumber, entryId]) => {
+    const value = normalizePrefillValue(partKey, answers[itemNumber] || "");
+    targetParams.set(`entry.${entryId}`, value);
+  });
+
+  const context = buildCorrectionContextToken(partKey);
+  targetParams.set(`entry.${formConfig.entryIds.context}`, context);
+  targetParams.set(`entry.${formConfig.entryIds.reason}`, context);
+  return `${formConfig.formPublicUrl}?${targetParams.toString()}`;
+}
+
+function openCorrectionFormFromExam(partKey) {
+  const url = buildCorrectionFormUrl(partKey);
+  if (!url) {
+    window.alert("Google Form mapping is not available for this part.");
+    return;
+  }
+  const confirmed = window.confirm(REPORT_MISTAKE_CONFIRMATION_MESSAGE);
+  if (!confirmed) {
+    return;
+  }
+  window.open(url, "_blank", "noopener,noreferrer");
 }
 
 function renderLesenTeil1(content) {
