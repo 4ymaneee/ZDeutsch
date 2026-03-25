@@ -31,6 +31,16 @@ const state = {
   parts: null
 };
 
+const CREATOR_SECTION_ID = "home-creator-section";
+const CREATOR_PROFILE = Object.freeze({
+  name: "Abdelkoddous Zadelkhair",
+  image: "assets/admin.png",
+  description: "Moroccan IT engineer. I built ZDeutsch to make learning more accessible and useful for everyone.",
+  welcome: "Welcome to ZDeutsch, and thank you for being part of this community.",
+  contactUrl: "https://wa.me/212680096104",
+  contactLabel: "Contact Me"
+});
+
 const SECTION_KEYS = ["lesen", "horen", "shreiben"];
 const SECTION_LABELS = {
   lesen: "LESEN",
@@ -2408,6 +2418,67 @@ function renderHome() {
   updateInstallPromptUi();
 }
 
+function createHomeCreatorSection() {
+  const existing = document.getElementById(CREATOR_SECTION_ID);
+  if (existing) {
+    return existing;
+  }
+
+  const section = createEl("a", "home-creator-card home-creator-footer-section");
+  section.id = CREATOR_SECTION_ID;
+  section.href = CREATOR_PROFILE.contactUrl;
+  section.target = "_blank";
+  section.rel = "noopener noreferrer";
+  section.setAttribute("aria-label", "Created by");
+
+  const avatarWrap = createEl("div", "home-creator-avatar-wrap");
+  const avatar = createEl("img", "home-creator-avatar");
+  avatar.src = CREATOR_PROFILE.image;
+  avatar.alt = CREATOR_PROFILE.name;
+  avatar.loading = "lazy";
+  avatar.decoding = "async";
+  avatarWrap.append(avatar);
+
+  const copy = createEl("div", "home-creator-copy");
+  const eyebrow = createEl("p", "home-creator-eyebrow font-display uppercase tracking-[0.2em]", "Created by");
+  const name = createEl("h3", "home-creator-name font-display", CREATOR_PROFILE.name);
+  const description = createEl("p", "home-creator-description", CREATOR_PROFILE.description);
+  const welcome = createEl("p", "home-creator-welcome", CREATOR_PROFILE.welcome);
+  const contact = createEl(
+    "span",
+    "home-creator-contact inline-flex rounded-full border px-4 py-2 text-[10px] font-display uppercase tracking-[0.2em] shadow-sm",
+    CREATOR_PROFILE.contactLabel
+  );
+  copy.append(eyebrow, name, description, welcome, contact);
+
+  section.append(avatarWrap, copy);
+  return section;
+}
+
+function placeHomeCreatorSection() {
+  const section = createHomeCreatorSection();
+  const target = document.getElementById("whatsapp-bottom-section");
+  if (target && target.parentNode) {
+    if (target.nextSibling !== section) {
+      target.parentNode.insertBefore(section, target.nextSibling);
+    }
+    return;
+  }
+  document.body.append(section);
+}
+
+function setupHomeCreatorSection() {
+  placeHomeCreatorSection();
+  let tries = 0;
+  const timer = window.setInterval(() => {
+    tries += 1;
+    placeHomeCreatorSection();
+    if (document.getElementById("whatsapp-bottom-section") || tries >= 24) {
+      window.clearInterval(timer);
+    }
+  }, 250);
+}
+
 function resolveInitialLevel() {
   const levels = Object.keys(state.db.levels || {});
   if (!levels.length) {
@@ -2563,6 +2634,7 @@ async function init() {
     state.section = hashSection;
   }
   renderHome();
+  setupHomeCreatorSection();
   setHomeLoaderStage("Library ready");
   setHomeLoaderProgress(100);
   await delay(220);
